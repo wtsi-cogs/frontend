@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import MainPage from './pages/main_page.js';
 import DefaultPage from './pages/default_page.js';
 import Header from './header.js';
+import api_url from './config.js'
 import './index.css';
 
 class App extends Component {
@@ -20,9 +21,9 @@ class App extends Component {
     }
 
     async componentDidMount() {
-        const loggedInUser = await fetch("http://127.0.0.1:5000/api/users/me");
+        const loggedInUser = await fetch(api_url+"/users/me");
         const loggedInUserJson = await loggedInUser.json();
-        const mostRecentGroup = await fetch("http://127.0.0.1:5000/api/series/latest");
+        const mostRecentGroup = await fetch(api_url+"/series/latest");
         const mostRecentGroupJson = await mostRecentGroup.json();
 
         this.setState({ loggedInUser: loggedInUserJson,

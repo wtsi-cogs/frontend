@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import GroupEditForm from '../components/group_edit_form';
+import GroupEditor from './group_editor';
 
 
 class MainPage extends Component {
@@ -12,7 +12,10 @@ class MainPage extends Component {
             <div className="container">
                 <h4>Welcome, {this.props.user.data.name}</h4>
                 <div className="clearfix"></div>
-                {this.props.user.data.permissions.create_project_groups && <GroupEditForm group={this.props.mostRecentGroup} submitName = "Edit Group"/>}
+                {this.props.mostRecentGroup && this.props.user.data.permissions.create_project_groups && <GroupEditor
+                    user = {this.props.user}
+                    group = {this.props.mostRecentGroup}
+                />}
             </div>
         );
     }
