@@ -4,12 +4,29 @@ import {
     Route,
     Switch
   } from 'react-router-dom';
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom';
+import rootReducer from './reducers/root.js';
 import MainPage from './pages/main_page.js';
 import DefaultPage from './pages/default_page.js';
+import fetchProjects from './actions/projects'
+import fetchMe from './actions/users'
 import Header from './header.js';
 import api_url from './config.js'
 import './index.css';
+
+
+const loggerMiddleware = createLogger()
+const store = createStore(
+    rootReducer,
+    applyMiddleware(
+      thunkMiddleware, // lets us dispatch() functions
+      loggerMiddleware // neat middleware that logs actions
+    )
+  )
 
 class App extends Component {
     constructor() {
@@ -21,19 +38,18 @@ class App extends Component {
     }
 
     async componentDidMount() {
-        const loggedInUser = await fetch(api_url+"/users/me");
-        const loggedInUserJson = await loggedInUser.json();
-        const mostRecentGroup = await fetch(api_url+"/series/latest");
+        store.dispatch(fetchProjects(2017, 2));
+        store.dispatch(fetchMe());
+        const mostRecentGroup = await fetch(api_url+"/api/series/latest");
         const mostRecentGroupJson = await mostRecentGroup.json();
 
-        this.setState({ loggedInUser: loggedInUserJson,
-                        mostRecentGroup: mostRecentGroupJson
+        this.setState({ mostRecentGroup: mostRecentGroupJson
         });
     }
 
     render() {
         return (
-            <div>
+            <Provider store={store}>
                 <Router>
                     <div>
                         <Header
@@ -54,7 +70,7 @@ class App extends Component {
                         </Switch>
                     </div>
                 </Router>
-            </div>
+            </Provider>
         );
         }
     }

@@ -50,9 +50,7 @@ class GroupEditor extends Component {
                 rotationName = {"Rotation " + this.props.group.data.part}
                 submitName = "Edit Group"
                 updateDeadline = {(deadlineName, date) => {
-                    const delta = {};
-                    delta[deadlineName] = date;
-                    this.setState(update(this.state, {deltaDeadlines: {$merge: delta}}));
+                    this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}
                 onSubmit = {() => {this.onSubmit()}}
             />

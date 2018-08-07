@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './datepicker.css'
+import './datepicker.css';
+import moment from 'moment';
 
 
 class GroupForm extends Component {
@@ -11,7 +12,7 @@ class GroupForm extends Component {
                 <b>{deadline.name}</b>
                 <DatePicker
                     selected={deadline.value}
-                    filterDate={date => deadline.value.isBefore(date.add(1, "days"))}
+                    filterDate={date => date.isAfter(moment(new Date()).subtract(1, "days"))}
                     dateFormat="DD/MM/YYYY"
                     onChange={(date) => {this.props.updateDeadline(deadlineName, date)}}
                 />
