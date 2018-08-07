@@ -25,7 +25,7 @@ function projects(state={
     }
 }
 
-function user(state={
+function users(state={
     fetching: 0,
     users: {},
     loggedInID: null
@@ -51,7 +51,7 @@ function user(state={
 
 const rootReducer = combineReducers({
   projects,
-  user
+  users
 });
 
 export default rootReducer

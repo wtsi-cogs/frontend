@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import { connect } from 'react-redux'
 import moment from 'moment';
 import { withRouter } from 'react-router-dom'
 
@@ -18,7 +19,10 @@ class Header extends Component {
     }
 
     renderLeftNav() {
-        const user = this.props.loggedInUser.data;
+        const user = this.props.user;
+        if (user === null) {
+            return "";
+        }
         const permissions = user.permissions;
         const mostRecentGroup = this.props.mostRecentGroup.data;
         return (
@@ -33,7 +37,10 @@ class Header extends Component {
     }
 
     renderRightNav() {
-        const user = this.props.loggedInUser.data;
+        const user = this.props.user;
+        if (user === null) {
+            return "";
+        }
         const permissions = user.permissions;
         const mostRecentGroup = this.props.mostRecentGroup.data;
         const studentChoicePassed = moment.utc(mostRecentGroup.student_choice).valueOf() - moment.utc() < 0
@@ -69,4 +76,16 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header);
+
+const mapStateToProps = state => {
+    if (state.users.loggedInID === null) {
+        return {user: null}
+    }
+    return {user: state.users.users[state.users.loggedInID].data}
+};  
+const mapDispatchToProps = dispatch => {return {}};
+
+export default withRouter(connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Header));

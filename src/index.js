@@ -53,7 +53,6 @@ class App extends Component {
                 <Router>
                     <div>
                         <Header
-                            loggedInUser={this.state.loggedInUser}
                             mostRecentGroup={this.state.mostRecentGroup}
                         />
                         <Switch>
@@ -75,4 +74,4 @@ class App extends Component {
         }
     }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
