@@ -22,12 +22,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import GroupEditor from './group_editor';
 import { connect } from 'react-redux';
-import {saveRotation} from '../actions/rotations';
+import {fetchLatestSeries, saveRotation} from '../actions/rotations';
 
 
 class MainPage extends Component {
     async componentDidMount() {
         document.title = "Dashboard";
+        this.props.fetchLatestSeries();
+    }
+
+    renderRotations() {
+        return Object.values(this.props.rotations).sort(rotation => rotation.data.part).map(rotation =>
+            <GroupEditor
+                user = {this.props.user}
+                group = {rotation}
+                onSave = {this.props.saveRotation}
+            />
+        );
     }
 
     render() {
@@ -38,11 +49,7 @@ class MainPage extends Component {
             <div className="container">
                 <h4>Welcome, {this.props.user.name}</h4>
                 <div className="clearfix"></div>
-                {this.props.rotation && this.props.user.permissions.create_project_groups && <GroupEditor
-                    user = {this.props.user}
-                    group = {this.props.rotation}
-                    onSave = {this.props.saveRotation}
-                />}
+                {this.props.user.permissions.create_project_groups && this.renderRotations()}
             </div>
         );
     }
@@ -55,15 +62,25 @@ const mapStateToProps = state => {
             rotation: null
         }
     }
+    const allRotations = state.rotations.rotations
+    const latestSeries = allRotations[state.rotations.latestID].data.series;
+    const rotations = Object.keys(allRotations).reduce((filtered, id) => {
+        if (allRotations[id].data.series === latestSeries) {
+            filtered[id] = allRotations[id];
+        }
+        return filtered;
+    }, {});
+
     return {
         user: state.users.users[state.users.loggedInID].data,
-        rotation: state.rotations.rotations[state.rotations.latestID]
+        rotations
     }
 };  
 
 const mapDispatchToProps = dispatch => {
     return {
-        saveRotation: rotation => dispatch(saveRotation(rotation)) 
+        saveRotation: rotation => dispatch(saveRotation(rotation)),
+        fetchLatestSeries: () => dispatch(fetchLatestSeries())
     }
 };
 

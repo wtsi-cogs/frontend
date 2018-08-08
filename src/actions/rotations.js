@@ -59,6 +59,29 @@ function receiveLatestRotation(rotationID) {
     }
 }
 
+export function fetchLatestSeries() {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/series`).then(response => {
+            const yearData = response.data;
+            const latestSeries = Math.max(...Object.keys(yearData.links));
+            axios.get(`${api_url}/api/series/${latestSeries}`).then(response => {
+                const seriesParts = Object.keys(response.data.links);
+                const latestPart = Math.max(...seriesParts);
+                dispatch(requestRotations(seriesParts.length));
+                seriesParts.forEach(part => {
+                    axios.get(`${api_url}/api/series/${latestSeries}/${part}`).then(response => {
+                        const rotation = response.data;
+                        dispatch(receiveRotation(rotation));
+                        if (rotation.data.part === latestPart) {
+                            dispatch(receiveLatestRotation(rotation.data.id));
+                        }
+                    });
+                });
+            });
+        });
+    }
+}
+
 export function fetchLatestRotation() {
     return function (dispatch) {
         dispatch(requestRotations(1));
