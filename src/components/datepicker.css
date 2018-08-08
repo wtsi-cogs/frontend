@@ -1,4 +1,8 @@
-\\ The default size is far too small
+/*
+The default size is far too small
+This code is a slightly modified version by localjo
+https://github.com/Hacker0x01/react-datepicker/issues/624#issuecomment-261696513
+*/
 
 .react-datepicker {
   font-size: 1.3em !important;
