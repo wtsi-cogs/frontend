@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import GroupForm from '../components/group_form';
 import moment from 'moment';
 import update from 'immutability-helper';
-import api_url from '../config.js'
 
 class GroupEditor extends Component {
     constructor(props) {
@@ -31,10 +30,9 @@ class GroupEditor extends Component {
         Object.keys(this.state.deltaDeadlines).forEach(key => {
             finalDeadlines[key] = this.state.deltaDeadlines[key].format("YYYY-MM-DD");
         });
-        console.log(finalDeadlines);
-        await fetch(api_url+"/series/"+this.props.group.data.series+"/"+this.props.group.data.part, {
-            method: "PUT",
-            body: JSON.stringify(finalDeadlines)
+        this.props.onSave({
+            id: this.props.group.data.id,
+            deadlines: finalDeadlines
         });
     }
 

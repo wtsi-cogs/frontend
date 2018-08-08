@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Navbar, Nav, NavItem} from 'react-bootstrap';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import moment from 'moment';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 
 
@@ -20,17 +20,17 @@ class Header extends Component {
 
     renderLeftNav() {
         const user = this.props.user;
-        if (user === null) {
+        const rotation = this.props.rotation;
+        if (user === null || rotation === null) {
             return "";
         }
         const permissions = user.permissions;
-        const mostRecentGroup = this.props.mostRecentGroup.data;
         return (
             <Nav activeKey={this.getActiveKey()}>
                 {this.renderLink("/", "Home", true)}
-                {this.renderLink("/projects/create", "Create Project", permissions.create_projects && !mostRecentGroup.read_only)}
+                {this.renderLink("/projects/create", "Create Project", permissions.create_projects && !rotation.read_only)}
                 {this.renderLink("/projects/markable", "My Markable Projects", permissions.create_projects || permissions.review_other_projects)}
-                {this.renderLink("/projects", "All Projects", permissions.view_projects_predeadline || mostRecentGroup.student_viewable)}
+                {this.renderLink("/projects", "All Projects", permissions.view_projects_predeadline || rotation.student_viewable)}
                 {this.renderLink("/projects/upload", "Upload final project", user.can_upload_project)}
             </Nav>
         );
@@ -38,16 +38,16 @@ class Header extends Component {
 
     renderRightNav() {
         const user = this.props.user;
-        if (user === null) {
+        const rotation = this.props.rotation;
+        if (user === null || rotation === null) {
             return "";
         }
         const permissions = user.permissions;
-        const mostRecentGroup = this.props.mostRecentGroup.data;
-        const studentChoicePassed = moment.utc(mostRecentGroup.student_choice).valueOf() - moment.utc() < 0
+        const studentChoicePassed = moment.utc(rotation.deadlines.student_choice.value).valueOf() - moment.utc() < 0;
         return (
             <Nav pullRight={true} activeKey={this.getActiveKey()}>
-                {this.renderLink("/choices/view", "View Student Choices", permissions.set_readonly && mostRecentGroup.student_choosable)}
-                {this.renderLink("/choices/finalise", "Finalise Student Choices", permissions.set_readonly && mostRecentGroup.can_finalise)}
+                {this.renderLink("/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
+                {this.renderLink("/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
                 {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
                 {this.renderLink("/users/edit", "Edit Users", permissions.modify_permissions)}
@@ -78,14 +78,20 @@ class Header extends Component {
 
 
 const mapStateToProps = state => {
-    if (state.users.loggedInID === null) {
-        return {user: null}
+    if (state.users.loggedInID === null || state.rotations.latestID === null) {
+        return {
+            user: null,
+            rotation: null
+        }
     }
-    return {user: state.users.users[state.users.loggedInID].data}
+    return {
+        user: state.users.users[state.users.loggedInID].data,
+        rotation: state.rotations.rotations[state.rotations.latestID].data
+    }
 };  
 const mapDispatchToProps = dispatch => {return {}};
 
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Header));
+)(Header));

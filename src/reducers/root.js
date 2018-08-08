@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'immutability-helper';
-import {
-    REQUEST_PROJECTS,
-    RECEIVE_PROJECT
-} from '../actions/projects';
+import {REQUEST_PROJECTS, RECEIVE_PROJECT} from '../actions/projects';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
+import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION } from '../actions/rotations';
 
 function projects(state={
     fetching: 0,
@@ -49,9 +47,34 @@ function users(state={
     }
 }
 
+function rotations(state={
+    fetching: 0,
+    rotations: {},
+    latestID: null
+}, action) {
+    switch (action.type) {
+        case REQUEST_ROTATIONS:
+            return update(state, {
+                fetching: {$set: state.fetching + action.noRotations}
+            });
+       case RECEIVE_ROTATION:
+            return update(state, {
+                fetching: {$set: state.fetching-1},
+                rotations: {$merge: {[action.rotation.data.id]: action.rotation}}
+            }); 
+        case RECEIVE_LATEST_ROTATION:
+            return update(state, {
+                latestID: {$set: action.rotationID}
+            });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
   projects,
-  users
+  users,
+  rotations
 });
 
 export default rootReducer

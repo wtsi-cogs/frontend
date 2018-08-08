@@ -15,8 +15,8 @@ import DefaultPage from './pages/default_page.js';
 import fetchProjects from './actions/projects'
 import fetchMe from './actions/users'
 import Header from './header.js';
-import api_url from './config.js'
 import './index.css';
+import {fetchLatestRotation} from './actions/rotations.js';
 
 
 const loggerMiddleware = createLogger()
@@ -29,22 +29,10 @@ const store = createStore(
   )
 
 class App extends Component {
-    constructor() {
-        super();
-        this.state = {
-            loggedInUser: {data: {user_type: [], permissions: {}}, links: {}},
-            mostRecentGroup: {data: {}, links: {}}
-        };
-    }
-
     async componentDidMount() {
         store.dispatch(fetchProjects(2017, 2));
         store.dispatch(fetchMe());
-        const mostRecentGroup = await fetch(api_url+"/api/series/latest");
-        const mostRecentGroupJson = await mostRecentGroup.json();
-
-        this.setState({ mostRecentGroup: mostRecentGroupJson
-        });
+        store.dispatch(fetchLatestRotation());
     }
 
     render() {
@@ -52,17 +40,11 @@ class App extends Component {
             <Provider store={store}>
                 <Router>
                     <div>
-                        <Header
-                            mostRecentGroup={this.state.mostRecentGroup}
-                        />
+                        <Header/>
                         <Switch>
                             <Route exact path="/"
                                 render={(props)=>
-                                    <MainPage
-                                        user={this.state.loggedInUser}
-                                        mostRecentGroup={this.state.mostRecentGroup}
-                                        location={props.location}
-                                    />
+                                    <MainPage location={props.location}/>
                                 }
                             />
                             <Route component={DefaultPage} />
