@@ -58,7 +58,17 @@ function receiveMe(userID) {
     }
 }
 
-export default function fetchMe() {
+export function fetchUser(userID) {
+    return function (dispatch) {
+        dispatch(requestUsers(1));
+        axios.get(`${api_url}/api/users/${userID}`).then(response => {
+            const user = response.data;
+            dispatch(receiveUser(user));
+        });
+    }
+}
+
+export function fetchMe() {
     return function (dispatch) {
         dispatch(requestUsers(1));
         dispatch(requestMe());

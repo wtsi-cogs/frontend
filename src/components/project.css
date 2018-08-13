@@ -1,0 +1,14 @@
+.project-title {
+    margin-top: 5px;
+    padding-left: 0px;
+}
+
+.button-list {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.vote-button {
+    width: 100%;
+    margin-bottom: 16px;
+}

@@ -34,10 +34,11 @@ import rootReducer from './reducers/root.js';
 import MainPage from './pages/main_page.js';
 import DefaultPage from './pages/default_page.js';
 import fetchProjects from './actions/projects'
-import fetchMe from './actions/users'
+import {fetchMe} from './actions/users'
 import Header from './header.js';
 import './index.css';
 import {fetchLatestRotation} from './actions/rotations.js';
+import Projects from './pages/projects.js';
 
 
 const loggerMiddleware = createLogger()
@@ -63,11 +64,8 @@ class App extends Component {
                     <div>
                         <Header/>
                         <Switch>
-                            <Route exact path="/"
-                                render={(props)=>
-                                    <MainPage location={props.location}/>
-                                }
-                            />
+                            <Route exact path="/" component={MainPage}/>
+                            <Route exact path="/projects" component={Projects}/>
                             <Route component={DefaultPage} />
                         </Switch>
                     </div>
