@@ -40,12 +40,24 @@ class ProjectList extends Component {
     }
 
     renderProject(project) {
+        console.log(this.props.showVote)
         return <Project project={project} pressed={this.getPressedState(project)} onClick={this.props.voteProject} showVote={this.props.showVote} displaySupervisorName={true}/>;
+    }
+
+    getLastName(project) {
+        const supervisor = this.props.users[project.data.supervisor_id];
+        if (!supervisor) {return project.data.id}
+        const name = supervisor.data.name;
+        return name.substr(name.indexOf(' ')+1)
     }
 
     render() {
         const noProjects = Object.keys(this.props.projects).length;
-        return Object.values(this.props.projects).map((project, curProject) =>
+        return Object.values(this.props.projects).sort((a, b) => {
+            const x = this.getLastName(a);
+            const y = this.getLastName(b);
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        }).map((project, curProject) =>
             <div key={project.data.id}>
                 <div className="media">
                     {this.renderProject(project)}
@@ -60,12 +72,14 @@ class ProjectList extends Component {
 const mapStateToProps = state => {
     if (state.users.loggedInID === null) {
         return {
-            user: null
+            user: null,
+            users: {}
         }
     }
 
     return {
-        user: state.users.users[state.users.loggedInID].data
+        user: state.users.users[state.users.loggedInID].data,
+        users: state.users.users
     }
 };  
 

@@ -89,8 +89,8 @@ class Project extends Component {
             }
         }
 
-        let voteButtonClassName = "col-xs-10 col-md-11";
-        let voteButtons = this.renderVoteButtons();
+        const voteButtonClassName = this.props.showVote? "col-xs-10 col-md-11": "";
+        const voteButtons = this.props.showVote? this.renderVoteButtons(): "";
 
         return <div>
             <div className="media-body">
