@@ -20,23 +20,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
-import GroupEditor from './group_editor';
 import { connect } from 'react-redux';
 import {fetchLatestSeries, saveRotation} from '../actions/rotations';
+import {getSupervisorProjects, getCogsProjects} from '../actions/users';
+import GroupEditor from './group_editor';
 import ProjectList from '../components/project_list.js';
-
 
 class MainPage extends Component {
     async componentDidMount() {
         document.title = "Dashboard";
         this.props.fetchLatestSeries();
+        this.props.getSupervisorProjects(this.props.user);
+        this.props.getCogsProjects(this.props.user);
     }
 
     renderRotations() {
         return Object.values(this.props.rotations).sort(rotation => rotation.data.part).map(rotation =>
             <GroupEditor
                 key = {rotation.data.part}
-                user = {this.props.user}
+                user = {this.props.user.data}
                 group = {rotation}
                 onSave = {this.props.saveRotation}
             />
@@ -46,7 +48,7 @@ class MainPage extends Component {
     renderSupervisorProjects() {
         const allProjects = this.props.projects;
         const projects = Object.keys(allProjects).reduce((filtered, id) => {
-            if (allProjects[id].data.supervisor_id === this.props.user.id) {
+            if (allProjects[id].data.supervisor_id === this.props.user.data.id) {
                 filtered[id] = allProjects[id];
             }
             return filtered;
@@ -60,7 +62,7 @@ class MainPage extends Component {
     renderCogsProjects() {
         const allProjects = this.props.projects;
         const projects = Object.keys(allProjects).reduce((filtered, id) => {
-            if (allProjects[id].data.cogs_marker_id === this.props.user.id) {
+            if (allProjects[id].data.cogs_marker_id === this.props.user.data.id) {
                 filtered[id] = allProjects[id];
             }
             return filtered;
@@ -74,11 +76,11 @@ class MainPage extends Component {
     render() {
         return (
             <div className="container">
-                <h4>Welcome, {this.props.user.name}</h4>
+                <h4>Welcome, {this.props.user.data.name}</h4>
                 <div className="clearfix"></div>
-                {this.props.user.permissions.create_project_groups && this.renderRotations()}
-                {this.props.user.permissions.create_projects && this.renderSupervisorProjects()}
-                {this.props.user.permissions.review_other_projects && this.renderCogsProjects()}
+                {this.props.user.data.permissions.create_project_groups && this.renderRotations()}
+                {this.props.user.data.permissions.create_projects && this.renderSupervisorProjects()}
+                {this.props.user.data.permissions.review_other_projects && this.renderCogsProjects()}
             </div>
         );
     }
@@ -101,7 +103,7 @@ const mapStateToProps = state => {
     }, {});
 
     return {
-        user: state.users.users[state.users.loggedInID].data,
+        user: state.users.users[state.users.loggedInID],
         projects: state.projects.projects,
         rotations
     }
@@ -110,7 +112,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         saveRotation: rotation => dispatch(saveRotation(rotation)),
-        fetchLatestSeries: () => dispatch(fetchLatestSeries())
+        fetchLatestSeries: () => dispatch(fetchLatestSeries()),
+        getSupervisorProjects: (user) => dispatch(getSupervisorProjects(user)),
+        getCogsProjects: (user) => dispatch(getCogsProjects(user))
     }
 };
 
