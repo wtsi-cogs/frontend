@@ -132,3 +132,15 @@ export function getSupervisorProjects(user) {
         })
     }
 }
+
+export function getCogsProjects(user) {
+    return function (dispatch) {
+        const projects = user.links.cogs_projects;
+        dispatch(requestProjects(projects.length));
+        projects.forEach(link => {
+            axios.get(`${api_url}${link}`).then(response => {
+                dispatch(receiveProject(response.data));
+            });
+        })
+    }
+}

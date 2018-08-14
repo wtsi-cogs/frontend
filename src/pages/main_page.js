@@ -57,6 +57,20 @@ class MainPage extends Component {
         </div>
     }
 
+    renderCogsProjects() {
+        const allProjects = this.props.projects;
+        const projects = Object.keys(allProjects).reduce((filtered, id) => {
+            if (allProjects[id].data.cogs_marker_id === this.props.user.id) {
+                filtered[id] = allProjects[id];
+            }
+            return filtered;
+        }, {});
+        return <div>
+            <h4>Projects I'm a CoGS marker for</h4>
+            <ProjectList projects={projects} showVote={false}/>
+        </div>
+    }
+
     render() {
         return (
             <div className="container">
@@ -64,6 +78,7 @@ class MainPage extends Component {
                 <div className="clearfix"></div>
                 {this.props.user.permissions.create_project_groups && this.renderRotations()}
                 {this.props.user.permissions.create_projects && this.renderSupervisorProjects()}
+                {this.props.user.permissions.review_other_projects && this.renderCogsProjects()}
             </div>
         );
     }
