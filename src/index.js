@@ -33,7 +33,6 @@ import ReactDOM from 'react-dom';
 import rootReducer from './reducers/root.js';
 import MainPage from './pages/main_page.js';
 import DefaultPage from './pages/default_page.js';
-import {fetchProjects} from './actions/projects'
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import { connect } from 'react-redux';
@@ -46,14 +45,13 @@ const loggerMiddleware = createLogger()
 const store = createStore(
     rootReducer,
     applyMiddleware(
-      thunkMiddleware, // lets us dispatch() functions
-      loggerMiddleware // neat middleware that logs actions
+      thunkMiddleware // lets us dispatch() functions
+      //loggerMiddleware // neat middleware that logs actions
     )
   )
 
 class App extends Component {
     async componentDidMount() {
-        store.dispatch(fetchProjects(2017, 2));
         store.dispatch(fetchMe());
         store.dispatch(fetchLatestRotation());
     }

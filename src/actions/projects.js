@@ -27,14 +27,14 @@ export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS';
 export const RECEIVE_PROJECT = 'RECEIVE_PROJECT';
 
-function requestProjects(noProjects) {
+export function requestProjects(noProjects) {
     return {
         type: REQUEST_PROJECTS,
         noProjects
     }
 }
 
-function receiveProject(project) {
+export function receiveProject(project) {
     return {
         type: RECEIVE_PROJECT,
         project

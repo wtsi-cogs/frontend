@@ -70,7 +70,6 @@ class MainPage extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log("MappingStateToProps");
     if (state.users.loggedInID === null || state.rotations.latestID === null) {
         return {
             user: null,

@@ -21,17 +21,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import {fetchProjects} from '../actions/projects';
 import ProjectList from '../components/project_list.js';
 
 class Projects extends Component {
     async componentDidMount() {
         document.title = "All Projects";
+        const rotation = this.props.rotation;
+        this.props.fetchProjects(rotation.data.series, rotation.data.part);
     }
 
 
     render() {
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
-            if (this.props.projects[id].data.group_id === this.props.rotation.id) {
+            if (this.props.projects[id].data.group_id === this.props.rotation.data.id) {
                 filtered[id] = this.props.projects[id];
             }
             return filtered;
@@ -43,7 +46,7 @@ class Projects extends Component {
         return (
             <div className="container">
                 {text}
-                <ProjectList projects={projects} showVote={this.props.user.permissions.join_projects && this.props.rotation.student_choosable}/>
+                <ProjectList projects={projects} showVote={this.props.user.data.permissions.join_projects && this.props.rotation.data.student_choosable}/>
             </div>
         );
     }
@@ -51,8 +54,8 @@ class Projects extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.users.users[state.users.loggedInID].data,
-        rotation: state.rotations.rotations[state.rotations.latestID].data,
+        user: state.users.users[state.users.loggedInID],
+        rotation: state.rotations.rotations[state.rotations.latestID],
         fetching: state.projects.fetching,
         projects: state.projects.projects
     }
@@ -60,6 +63,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        fetchProjects: (series, part) => dispatch(fetchProjects(series, part))
     }
 };
 

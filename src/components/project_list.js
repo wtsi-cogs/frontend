@@ -22,13 +22,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import Project from './project';
 import { connect } from 'react-redux';
-import {voteProject, canMark} from '../actions/users';
+import {voteProject, canMark, getSupervisorProjects} from '../actions/users';
 
 
 class ProjectList extends Component {
     constructor(props) {
         super(props);
-        this.state = {pressed: {}}
+        this.state = {pressed: {}};
+    }
+
+    componentDidMount() {
+        this.props.getSupervisorProjects(this.props.user);
     }
 
     getPressedState(project) {
@@ -77,7 +81,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        voteProject: (projectID, option) => dispatch(voteProject(projectID, option))
+        voteProject: (projectID, option) => dispatch(voteProject(projectID, option)),
+        getSupervisorProjects: (user) => dispatch(getSupervisorProjects(user))
     }
 };
 

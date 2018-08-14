@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import axios from 'axios';
 import api_url from '../config.js';
 import update from 'immutability-helper';
-
+import {requestProjects, receiveProject} from './projects.js';
 
 export const FETCH_USERS = 'FETCH_USERS';
 export const REQUEST_USERS = 'REQUEST_USERS';
@@ -119,4 +119,16 @@ export function canMark(user, project) {
         }
     }
     return false
+}
+
+export function getSupervisorProjects(user) {
+    return function (dispatch) {
+        const projects = user.links.supervisor_projects;
+        dispatch(requestProjects(projects.length));
+        projects.forEach(link => {
+            axios.get(`${api_url}${link}`).then(response => {
+                dispatch(receiveProject(response.data));
+            });
+        })
+    }
 }
