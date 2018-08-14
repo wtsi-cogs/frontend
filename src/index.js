@@ -33,7 +33,7 @@ import ReactDOM from 'react-dom';
 import rootReducer from './reducers/root.js';
 import MainPage from './pages/main_page.js';
 import DefaultPage from './pages/default_page.js';
-import fetchProjects from './actions/projects'
+import {fetchProjects} from './actions/projects'
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import './index.css';

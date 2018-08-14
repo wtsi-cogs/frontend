@@ -21,18 +21,35 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import Project from './project';
+import { connect } from 'react-redux';
+import {voteProject} from '../actions/users';
 
 
 class ProjectList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {pressed: {}}
+    }
+
+    getPressedState(project) {
+        if (!this.props.user) {return -1}
+        if (this.props.user.first_option_id === project.data.id) {return 1}
+        if (this.props.user.second_option_id === project.data.id) {return 2}
+        if (this.props.user.third_option_id === project.data.id) {return 3}
+        return 4;
+    }
+
     renderProject(project) {
-        return <Project project={project} displaySupervisorName={true}/>;
+        return <Project project={project} pressed={this.getPressedState(project)} onClick={this.props.voteProject} showVote={this.props.showVote} displaySupervisorName={true}/>;
     }
 
     render() {
         const noProjects = Object.keys(this.props.projects).length;
-        return Object.values(this.props.projects).sort(project => project.data.id).map((project, curProject) =>
-            <div key={project.data.id} className="media">
-                {this.renderProject(project)}
+        return Object.values(this.props.projects).map((project, curProject) =>
+            <div key={project.data.id}>
+                <div className="media">
+                    {this.renderProject(project)}
+                </div>
                 {curProject+1 < noProjects ? <hr/>: ""}
             </div>
         );
@@ -40,4 +57,25 @@ class ProjectList extends Component {
 }
 
 
-export default ProjectList;
+const mapStateToProps = state => {
+    if (state.users.loggedInID === null) {
+        return {
+            user: null
+        }
+    }
+
+    return {
+        user: state.users.users[state.users.loggedInID].data
+    }
+};  
+
+const mapDispatchToProps = dispatch => {
+    return {
+        voteProject: (projectID, option) => dispatch(voteProject(projectID, option))
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProjectList);

@@ -41,7 +41,7 @@ function receiveProject(project) {
     }
 }
 
-export default function fetchProjects(series, part) {
+export function fetchProjects(series, part) {
     return function (dispatch) {
         axios.get(`${api_url}/api/series/${series}/${part}`).then(response => {
             const projects = response.data.links.projects;

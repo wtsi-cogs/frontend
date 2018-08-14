@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 import api_url from '../config.js';
+import update from 'immutability-helper';
 
 
 export const FETCH_USERS = 'FETCH_USERS';
@@ -30,6 +31,8 @@ export const RECEIVE_USER = 'RECEIVE_USER';
 export const FETCH_ME = 'FETCH_ME';
 export const REQUEST_ME = 'REQUEST_ME';
 export const RECEIVE_ME = 'RECEIVE_ME';
+
+export const VOTE_PROJECT = 'VOTE_PROJECT';
 
 function requestUsers(noUsers) {
     return {
@@ -76,6 +79,34 @@ export function fetchMe() {
             const user = response.data;
             dispatch(receiveUser(user));
             dispatch(receiveMe(user.data.id));
+        });
+    }
+}
+
+export function voteProject(projectID, option) {
+    function getLinkKey(option) {return `choice_${option}`}
+    function getDataKey(option) {return [null, "first", "second", "third"][option] + "_option_id"}
+
+    return function (dispatch, getState) {
+        axios.put(`${api_url}/api/users/me/vote`, {
+            project_id: projectID,
+            choice: option
+        }).then(response => {
+            const state = getState();
+            let me = state.users.users[state.users.loggedInID];
+            for (var i=1; i < 4; i++) {
+                if (me.links[getLinkKey(i)] === `/api/projects/${projectID}`) {
+                    me = update(me, {links: {$merge: {[getLinkKey(i)]: null}}});
+                }
+                if (me.data[getDataKey(i)] === projectID) {
+                    me = update(me, {data: {$merge: {[getDataKey(i)]: null}}});
+                }
+            } 
+            me = update(me, {
+                links: {$merge: {[getLinkKey(option)]: `/api/projects/${projectID}`}},
+                data: {$merge: {[getDataKey(option)]: projectID}}});
+            console.log(me);
+            dispatch(receiveUser(me));
         });
     }
 }

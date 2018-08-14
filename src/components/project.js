@@ -34,11 +34,16 @@ class Project extends Component {
     }
 
     renderVoteButtons() {
-        const pressed = 1;
-        return <div className="col-sm-2 col-md-1 button-list">
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 1 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off">1st Choice</button>
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 2 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off">2nd Choice</button>
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 3 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off">3rd Choice</button>
+        const pressed = this.props.pressed;
+        const onClick = (buttonID) => {
+            return () => {
+                this.props.onClick(this.props.project.data.id, buttonID);
+            }
+        }
+        return <div className="col-xs-2 col-md-1 button-list">
+            <button type="button" className={`btn btn-primary vote-button ${pressed === 1 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(1)}>1st Choice</button>
+            <button type="button" className={`btn btn-primary vote-button ${pressed === 2 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(2)}>2nd Choice</button>
+            <button type="button" className={`btn btn-primary vote-button ${pressed === 3 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(3)}>3rd Choice</button>
     </div>
     }
 
@@ -84,7 +89,7 @@ class Project extends Component {
             }
         }
 
-        let voteButtonClassName = "col-sm-10 col-md-11";
+        let voteButtonClassName = "col-xs-10 col-md-11";
         let voteButtons = this.renderVoteButtons();
 
         return <div>

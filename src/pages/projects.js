@@ -40,7 +40,7 @@ class Projects extends Component {
         return (
             <div className="container">
                 {text}
-                <ProjectList projects={this.props.projects}/>
+                <ProjectList projects={this.props.projects} showVote={true}/>
             </div>
         );
     }
