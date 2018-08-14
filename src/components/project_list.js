@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import Project from './project';
 import { connect } from 'react-redux';
-import {voteProject} from '../actions/users';
+import {voteProject, canMark} from '../actions/users';
 
 
 class ProjectList extends Component {
@@ -33,14 +33,13 @@ class ProjectList extends Component {
 
     getPressedState(project) {
         if (!this.props.user) {return -1}
-        if (this.props.user.first_option_id === project.data.id) {return 1}
-        if (this.props.user.second_option_id === project.data.id) {return 2}
-        if (this.props.user.third_option_id === project.data.id) {return 3}
+        if (this.props.user.data.first_option_id === project.data.id) {return 1}
+        if (this.props.user.data.second_option_id === project.data.id) {return 2}
+        if (this.props.user.data.third_option_id === project.data.id) {return 3}
         return 4;
     }
 
     renderProject(project) {
-        console.log(this.props.showVote)
         return <Project project={project} pressed={this.getPressedState(project)} onClick={this.props.voteProject} showVote={this.props.showVote} displaySupervisorName={true}/>;
     }
 
@@ -54,9 +53,9 @@ class ProjectList extends Component {
     render() {
         const noProjects = Object.keys(this.props.projects).length;
         return Object.values(this.props.projects).sort((a, b) => {
-            const x = this.getLastName(a);
-            const y = this.getLastName(b);
-            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            const x = [a.student_id === this.props.user.data.id, canMark(this.props.user, a), this.getLastName(a), a.data.title];
+            const y = [b.student_id === this.props.user.data.id, canMark(this.props.user, b), this.getLastName(b), b.data.title];
+            return (x > y) - (x < y);
         }).map((project, curProject) =>
             <div key={project.data.id}>
                 <div className="media">
@@ -78,7 +77,7 @@ const mapStateToProps = state => {
     }
 
     return {
-        user: state.users.users[state.users.loggedInID].data,
+        user: state.users.users[state.users.loggedInID],
         users: state.users.users
     }
 };  

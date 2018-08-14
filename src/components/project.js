@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {fetchUser} from '../actions/users';
+import {fetchUser, canMark} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import "./project.css";
 
@@ -82,11 +82,8 @@ class Project extends Component {
                 links.push(<div key="cogs_feedback"><h3><a href={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</a></h3><br/></div>);
             }
         }
-        if (project.grace_passed) {
-            if ((this.props.loggedInUserID === project.supervisor_id && project.supervisor_feedback_id !== null) ||
-                (this.props.loggedInUserID === project.cogs_marker_id && project.cogs_feedback_id !== null)) {
-                    links.push(<div key="provide_feedback"><h3><a href={`/projects/${project.id}/provide_feedback`}>Provide Feedback</a></h3><br/></div>);
-            }
+        if (canMark(this.props.user, project)) {
+            links.push(<div key="provide_feedback"><h3><a href={`/projects/${project.id}/provide_feedback`}>Provide Feedback</a></h3><br/></div>);
         }
 
         const voteButtonClassName = this.props.showVote? "col-xs-10 col-md-11": "";
@@ -115,7 +112,7 @@ class Project extends Component {
 const mapStateToProps = state => {
     return {
         users: state.users.users,
-        loggedInUserID: state.users.loggedInID,
+        user: state.users.users[state.users.loggedInID].data,
         rotations: state.rotations.rotations,
         currentRotation: state.rotations.latestID
     }

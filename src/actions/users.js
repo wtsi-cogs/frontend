@@ -110,3 +110,13 @@ export function voteProject(projectID, option) {
         });
     }
 }
+
+export function canMark(user, project) {
+    if (project.grace_passed) {
+        if ((user.data.id === project.supervisor_id && project.supervisor_feedback_id !== null) ||
+            (user.data.id === project.cogs_marker_id && project.cogs_feedback_id !== null)) {
+                return true;
+        }
+    }
+    return false
+}
