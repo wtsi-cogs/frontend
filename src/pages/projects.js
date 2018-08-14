@@ -30,15 +30,12 @@ class Projects extends Component {
 
 
     render() {
-        if (this.props.user === null) {
-            return "";
-        }
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
             if (this.props.projects[id].data.group_id === this.props.rotation.id) {
                 filtered[id] = this.props.projects[id];
             }
             return filtered;
-        }, {});;
+        }, {});
         let text = this.props.fetching? `Fetching ${this.props.fetching} more projects.`: "";
         if (this.props.fetching === 0 && Object.keys(projects).length === 0) {
             text = "There are no projects in this rotation";
@@ -53,13 +50,6 @@ class Projects extends Component {
 }
 
 const mapStateToProps = state => {
-    if (state.users.loggedInID === null || state.rotations.latestID === null) {
-        return {
-            user: null,
-            rotation: null
-        }
-    }
-
     return {
         user: state.users.users[state.users.loggedInID].data,
         rotation: state.rotations.rotations[state.rotations.latestID].data,

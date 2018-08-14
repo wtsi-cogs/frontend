@@ -36,6 +36,7 @@ import DefaultPage from './pages/default_page.js';
 import {fetchProjects} from './actions/projects'
 import {fetchMe} from './actions/users'
 import Header from './header.js';
+import { connect } from 'react-redux';
 import './index.css';
 import {fetchLatestRotation} from './actions/rotations.js';
 import Projects from './pages/projects.js';
@@ -58,6 +59,7 @@ class App extends Component {
     }
 
     render() {
+        if (!(this.props.loggedInID && this.props.latestRotationID)) {return ""}
         return (
             <Provider store={store}>
                 <Router>
@@ -72,7 +74,21 @@ class App extends Component {
                 </Router>
             </Provider>
         );
-        }
     }
+}
+    
+const mapStateToProps = state => {
+    return {
+        loggedInID: state.users.loggedInID,
+        latestRotationID: state.rotations.latestID
+    }
+};  
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+const mapDispatchToProps = dispatch => {return {}};
+
+const ConnectedApp = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)
+
+ReactDOM.render(<ConnectedApp store={store}/>, document.getElementById('root'));

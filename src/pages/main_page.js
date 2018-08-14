@@ -23,6 +23,7 @@ import React, {Component} from 'react';
 import GroupEditor from './group_editor';
 import { connect } from 'react-redux';
 import {fetchLatestSeries, saveRotation} from '../actions/rotations';
+import ProjectList from '../components/project_list.js';
 
 
 class MainPage extends Component {
@@ -42,21 +43,34 @@ class MainPage extends Component {
         );
     }
 
+    renderSupervisorProjects() {
+        const allProjects = this.props.projects;
+        const projects = Object.keys(allProjects).reduce((filtered, id) => {
+            if (allProjects[id].data.supervisor_id === this.props.user.id) {
+                filtered[id] = allProjects[id];
+            }
+            return filtered;
+        }, {});
+        return <div>
+            <h4>Projects I own</h4>
+            <ProjectList projects={projects} showVote={false}/>
+        </div>
+    }
+
     render() {
-        if (this.props.user === null) {
-            return "";
-        }
         return (
             <div className="container">
                 <h4>Welcome, {this.props.user.name}</h4>
                 <div className="clearfix"></div>
                 {this.props.user.permissions.create_project_groups && this.renderRotations()}
+                {this.props.user.permissions.create_projects && this.renderSupervisorProjects()}
             </div>
         );
     }
 }
 
 const mapStateToProps = state => {
+    console.log("MappingStateToProps");
     if (state.users.loggedInID === null || state.rotations.latestID === null) {
         return {
             user: null,
@@ -74,6 +88,7 @@ const mapStateToProps = state => {
 
     return {
         user: state.users.users[state.users.loggedInID].data,
+        projects: state.projects.projects,
         rotations
     }
 };  

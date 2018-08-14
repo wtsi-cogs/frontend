@@ -69,13 +69,6 @@ class ProjectList extends Component {
 
 
 const mapStateToProps = state => {
-    if (state.users.loggedInID === null) {
-        return {
-            user: null,
-            users: {}
-        }
-    }
-
     return {
         user: state.users.users[state.users.loggedInID],
         users: state.users.users
