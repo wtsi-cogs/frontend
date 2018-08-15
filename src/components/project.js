@@ -23,6 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchUser, canMark} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
+import {Link} from 'react-router-dom';
 import "./project.css";
 
 
@@ -63,27 +64,27 @@ class Project extends Component {
         let editUrl = "";
         if (this.props.loggedInUserID === project.supervisor_id && rotation) {
             if (!rotation.data.read_only) {
-                editUrl = <small> <a href={`/projects/${project.id}/edit`}>(edit)</a></small>;
+                editUrl = <small> <Link to={`/projects/${project.id}/edit`}>(edit)</Link></small>;
             }
             else if (rotation.data.id !== this.props.currentRotation) {
-                editUrl = <small> <a href={`/projects/${project.id}/resubmit`}>(edit and resubmit)</a></small>;
+                editUrl = <small> <Link to={`/projects/${project.id}/resubmit`}>(edit and resubmit)</Link></small>;
             }
         }
 
         let links = [];
         if (this.props.loggedInUserID === project.student_id && rotation) {
             if (rotation.student_uploadable && !project.grace_passed) {
-                links.push(<div key="upload_project"><h3><a href={`/projects/${project.id}/`}>Upload final project report</a></h3><br/></div>);
+                links.push(<div key="upload_project"><h3><Link to={`/projects/${project.id}/`}>Upload final project report</Link></h3><br/></div>);
             }
             if (project.supervisor_feedback_id !== null) {
-                links.push(<div key="supervisor_feedback"><h3><a href={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</a></h3><br/></div>);
+                links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3><br/></div>);
             }
             if (project.cogs_feedback_id !== null) {
-                links.push(<div key="cogs_feedback"><h3><a href={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</a></h3><br/></div>);
+                links.push(<div key="cogs_feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3><br/></div>);
             }
         }
         if (canMark(this.props.user, this.props.project)) {
-            links.push(<div key="provide_feedback"><h3><a href={`/projects/${project.id}/provide_feedback`}>Provide Feedback</a></h3><br/></div>);
+            links.push(<div key="provide_feedback"><h3><Link to={`/projects/${project.id}/provide_feedback`}>Provide Feedback</Link></h3><br/></div>);
         }
 
         const voteButtonClassName = this.props.showVote? "col-xs-10 col-md-11": "";
