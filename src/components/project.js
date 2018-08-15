@@ -82,7 +82,7 @@ class Project extends Component {
                 links.push(<div key="cogs_feedback"><h3><a href={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</a></h3><br/></div>);
             }
         }
-        if (canMark(this.props.user, project)) {
+        if (canMark(this.props.user, this.props.project)) {
             links.push(<div key="provide_feedback"><h3><a href={`/projects/${project.id}/provide_feedback`}>Provide Feedback</a></h3><br/></div>);
         }
 
@@ -112,7 +112,7 @@ class Project extends Component {
 const mapStateToProps = state => {
     return {
         users: state.users.users,
-        user: state.users.users[state.users.loggedInID].data,
+        user: state.users.users[state.users.loggedInID],
         rotations: state.rotations.rotations,
         currentRotation: state.rotations.latestID
     }

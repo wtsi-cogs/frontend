@@ -46,7 +46,11 @@ class Projects extends Component {
         return (
             <div className="container">
                 {text}
-                <ProjectList projects={projects} showVote={this.props.user.data.permissions.join_projects && this.props.rotation.data.student_choosable}/>
+                <ProjectList
+                    projects={projects}
+                    showVote={this.props.user.data.permissions.join_projects && this.props.rotation.data.student_choosable}
+                    displaySupervisorName={true}
+                />
             </div>
         );
     }

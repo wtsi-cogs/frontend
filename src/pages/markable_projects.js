@@ -46,7 +46,11 @@ class MarkableProjects extends Component {
         return (
             <div className="container">
                 {text}
-                <ProjectList projects={projects} showVote={false}/>
+                <ProjectList
+                    projects={projects}
+                    showVote={false}
+                    displaySupervisorName={false}
+                />
             </div>
         );
     }

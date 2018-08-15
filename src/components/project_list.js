@@ -40,7 +40,7 @@ class ProjectList extends Component {
     }
 
     renderProject(project) {
-        return <Project project={project} pressed={this.getPressedState(project)} onClick={this.props.voteProject} showVote={this.props.showVote} displaySupervisorName={true}/>;
+        return <Project project={project} pressed={this.getPressedState(project)} onClick={this.props.voteProject} showVote={this.props.showVote} displaySupervisorName={this.props.displaySupervisorName}/>;
     }
 
     getLastName(project) {
@@ -53,8 +53,8 @@ class ProjectList extends Component {
     render() {
         const noProjects = Object.keys(this.props.projects).length;
         return Object.values(this.props.projects).sort((a, b) => {
-            const x = [a.student_id === this.props.user.data.id, canMark(this.props.user, a), this.getLastName(a), a.data.title];
-            const y = [b.student_id === this.props.user.data.id, canMark(this.props.user, b), this.getLastName(b), b.data.title];
+            const x = [a.student_id !== this.props.user.data.id, !canMark(this.props.user, a), this.getLastName(a), a.data.title];
+            const y = [b.student_id !== this.props.user.data.id, !canMark(this.props.user, b), this.getLastName(b), b.data.title];
             return (x > y) - (x < y);
         }).map((project, curProject) =>
             <div key={project.data.id}>

@@ -55,7 +55,11 @@ class MainPage extends Component {
         }, {});
         return <div>
             <h4>Projects I own</h4>
-            <ProjectList projects={projects} showVote={false}/>
+            <ProjectList 
+                projects={projects}
+                showVote={false}
+                displaySupervisorName={false}
+            />
         </div>
     }
 
