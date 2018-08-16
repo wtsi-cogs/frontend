@@ -1,0 +1,10 @@
+.email_subject {
+    width: 100%;
+    margin-top: 48px;
+    margin-bottom: 32px;
+}
+
+.email_content {
+    min-height: 30em;
+    margin-bottom: 32px;
+}
