@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import axios from 'axios';
-import api_url from '../config.js';
+import {api_url} from '../config.js';
 import update from 'immutability-helper';
 import {requestProjects, receiveProject} from './projects.js';
 
@@ -79,6 +79,36 @@ export function fetchMe() {
             const user = response.data;
             dispatch(receiveUser(user));
             dispatch(receiveMe(user.data.id));
+        });
+    }
+}
+
+export function fetchAllUsers() {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/users`).then(response => {
+            const userLinks = Object.values(response.data.links);
+            dispatch(requestUsers(userLinks.length));
+            userLinks.forEach((link) => {
+                axios.get(`${api_url}${link}`).then(response => {
+                    const user = response.data;
+                    dispatch(receiveUser(user));
+                });
+            });
+        });
+    }
+}
+
+export function saveUser(userID, user) {
+    return function (dispatch, getState) {
+        dispatch(requestUsers(1));
+        axios.put(`${api_url}/api/users/${userID}`, user).then(response => {
+            const state = getState();
+            const userState = update(state.users.users[userID], {
+                $merge: {data: update(state.users.users[userID].data, {
+                    $merge: user
+                })}
+            });
+            dispatch(receiveUser(userState));
         });
     }
 }

@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import axios from 'axios';
-import api_url from '../config.js';
+import {api_url} from '../config.js';
 
 
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';

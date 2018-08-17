@@ -66,7 +66,7 @@ class EmailEditor extends Component {
     }
 
     renderEmailList() {
-        return Object.values(this.props.emails).sort(email => email.id).map(email =>
+        return Object.values(this.props.emails).map(email =>
             <MenuItem eventKey={email.id} key={email.id} onSelect={() => this.selectFocusedEmail(email)}>{email.name}</MenuItem>
         );
     }
