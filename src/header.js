@@ -64,7 +64,7 @@ class Header extends Component {
             return "";
         }
         const permissions = user.permissions;
-        const studentChoicePassed = moment.utc(rotation.deadlines.student_choice.value).valueOf() - moment.utc() < 0;
+        const studentChoicePassed = moment.utc(rotation.deadlines.student_choice.value).add(1, 'days').valueOf() - moment.utc() < 0;
         return (
             <Nav pullRight={true} activeKey={this.getActiveKey()}>
                 {this.renderLink("/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
