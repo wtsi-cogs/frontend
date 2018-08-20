@@ -62,7 +62,7 @@ class Project extends Component {
         if (project.is_computational) {projectType += "Computational "}
 
         let editUrl = "";
-        if (this.props.loggedInUserID === project.supervisor_id && rotation) {
+        if (this.props.user.data.id === project.supervisor_id && rotation) {
             if (!rotation.data.read_only) {
                 editUrl = <small> <Link to={`/projects/${project.id}/edit`}>(edit)</Link></small>;
             }

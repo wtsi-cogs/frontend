@@ -96,7 +96,7 @@ const mapStateToProps = state => {
             rotation: null
         }
     }
-    const allRotations = state.rotations.rotations
+    const allRotations = state.rotations.rotations;
     const latestSeries = allRotations[state.rotations.latestID].data.series;
     const rotations = Object.keys(allRotations).reduce((filtered, id) => {
         if (allRotations[id].data.series === latestSeries) {
