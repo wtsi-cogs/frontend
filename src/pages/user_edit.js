@@ -96,7 +96,7 @@ class UserEditor extends Component {
     }
 
     shouldUserBeShown(kv) {
-        const [id, user] = kv;
+        const id = kv[0];
         const propsUser = this.props.users[id];
         const propsRoles = propsUser.data.user_type;
         let shown = true;
