@@ -38,7 +38,6 @@ class MainPage extends Component {
         return Object.values(this.props.rotations).sort(rotation => rotation.data.part).map(rotation =>
             <GroupEditor
                 key = {rotation.data.part}
-                user = {this.props.user.data}
                 group = {rotation}
                 onSave = {this.props.saveRotation}
             />

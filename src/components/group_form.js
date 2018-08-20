@@ -60,7 +60,14 @@ class GroupForm extends Component {
                             <div className="col-sm-6 col-sm-pull-5">
                                 {Object.keys(this.props.deadlines).map(deadline => this.DateBox(deadline, this.props.deadlines[deadline]))}
                                 <br/>
-                                <button type="submit" className="btn btn-primary btn-lg" onClick={this.props.onSubmit}>{this.props.submitName}</button>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary btn-lg"
+                                    onClick={this.props.onSubmit}
+                                    disabled={!this.props.enableSubmit}
+                                >
+                                    {this.props.submitName}
+                                </button>
                             </div>
                         </div>
                     </div>

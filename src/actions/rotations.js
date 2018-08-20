@@ -118,3 +118,11 @@ export function saveRotation(rotation) {
         });
     }
 }
+
+export function createRotation(rotation) {
+    return function (dispatch) {
+        axios.post(`${api_url}/api/series`, rotation).then(response => {
+            dispatch(fetchLatestRotation());
+        });
+    };
+}

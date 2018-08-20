@@ -42,6 +42,7 @@ import Projects from './pages/projects.js';
 import MarkableProjects from './pages/markable_projects.js'
 import EmailEditor from './pages/email_edit.js';
 import UserEditor from './pages/user_edit.js';
+import RotationCreate from './pages/rotation_create.js';
 
 
 const loggerMiddleware = createLogger()
@@ -72,6 +73,7 @@ class App extends Component {
                             <Route exact path="/projects/markable" component={MarkableProjects}/>
                             <Route exact path="/emails/edit" component={EmailEditor}/>
                             <Route exact path="/users/edit" component={UserEditor}/>
+                            <Route exact path="/rotations/create" component={RotationCreate}/>
                             <Route component={DefaultPage} />
                         </Switch>
                     </div>

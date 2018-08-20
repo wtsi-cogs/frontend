@@ -68,6 +68,7 @@ class GroupEditor extends Component {
                 deadlines = {deadlines}
                 rotationName = {"Rotation " + this.props.group.data.part}
                 submitName = "Edit Group"
+                enableSubmit = {true}
                 updateDeadline = {(deadlineName, date) => {
                     this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}
