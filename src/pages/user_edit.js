@@ -42,6 +42,7 @@ class UserEditor extends Component {
     }
 
     async componentDidUpdate() {
+        console.log("Updated");
         Object.values(this.props.users).forEach(user => {
             if (!this.state.users.hasOwnProperty(user.data.id)) {
                 this.setState(update(this.state, {
@@ -62,6 +63,21 @@ class UserEditor extends Component {
             user.priority = parseInt(user.priority, 10);
             this.props.saveUser(id, user);
         });
+    }
+
+    removeStudentRole() {
+        let state = this.state;
+        Object.entries(this.state.users).forEach((kv) => {
+            const [id, user] = kv;
+            let user_type = user.user_type.slice();
+            const index = user.user_type.indexOf("student");
+            if (index !== -1) {user_type.splice(index, 1)}
+            const newUser = update(user, {$merge: {user_type}});
+            state = update(state, {
+                users: {$merge: {[id]: newUser}}
+            });
+        });
+        this.setState(state);
     }
 
     updateUser(key, user, id) {
@@ -160,7 +176,9 @@ class UserEditor extends Component {
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
                     </div>
                     <div className="col-sm-4"></div>
-                    <div className="col-sm-4"></div>
+                    <div className="col-sm-4 spacing">
+                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.removeStudentRole()}>Remove student access</button>
+                    </div>
                 </div>
                 <div className="row spacing">
                     {text}
