@@ -32,7 +32,9 @@ class UserEditor extends Component {
         super(props);
         this.state = {
             users: {},
-            dropdownOpen: null
+            dropdownOpen: null,
+            showNoRoles: false,
+            showArchived: false
         }
     }
 
@@ -42,7 +44,6 @@ class UserEditor extends Component {
     }
 
     async componentDidUpdate() {
-        console.log("Updated");
         Object.values(this.props.users).forEach(user => {
             if (!this.state.users.hasOwnProperty(user.data.id)) {
                 this.setState(update(this.state, {
@@ -65,17 +66,22 @@ class UserEditor extends Component {
         });
     }
 
-    removeStudentRole() {
+    archiveStudentRole() {
         let state = this.state;
         Object.entries(this.state.users).forEach((kv) => {
             const [id, user] = kv;
             let user_type = user.user_type.slice();
             const index = user.user_type.indexOf("student");
-            if (index !== -1) {user_type.splice(index, 1)}
-            const newUser = update(user, {$merge: {user_type}});
-            state = update(state, {
-                users: {$merge: {[id]: newUser}}
-            });
+            if (index !== -1) {
+                user_type.splice(index, 1);
+                if (user.user_type.indexOf("archive") === -1) {
+                    user_type.push("archive");
+                }
+                const newUser = update(user, {$merge: {user_type}});
+                state = update(state, {
+                    users: {$merge: {[id]: newUser}}
+                });
+            }
         });
         this.setState(state);
     }
@@ -87,6 +93,20 @@ class UserEditor extends Component {
                 users: {$merge: {[id]: newUser}}
             }));
         }
+    }
+
+    shouldUserBeShown(kv) {
+        const [id, user] = kv;
+        const propsUser = this.props.users[id];
+        const propsRoles = propsUser.data.user_type;
+        let shown = true;
+        if (!this.state.showArchived) {
+            shown &= !propsRoles.includes("archive");
+        }
+        if (!this.state.showNoRoles) {
+            shown &= !!propsRoles.length;
+        }
+        return shown;
     }
 
     renderRoleDropdown(user) {
@@ -115,7 +135,7 @@ class UserEditor extends Component {
     }
 
     renderUserList() {
-        return Object.entries(this.state.users).map((kv) => {
+        return Object.entries(this.state.users).filter(user => this.shouldUserBeShown(user)).map((kv) => {
             const [id, user] = kv;
             return (
                 <div key={id} className="row">
@@ -162,6 +182,8 @@ class UserEditor extends Component {
 
     render() {
         const text = this.props.fetching !== 0? `Fetching ${this.props.fetching} users`: "";
+        const noRoleText = this.state.showNoRoles? "Hide users with no roles": "Show users with no roles";
+        const archivedText = this.state.showArchived? "Hide archived users": "Show archived users";
         return (
             <div className="container">
                 <div className="row">
@@ -177,7 +199,17 @@ class UserEditor extends Component {
                     </div>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4 spacing">
-                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.removeStudentRole()}>Remove student access</button>
+                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveStudentRole()}>Archive all students</button>
+                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
+                            this.setState(update(this.state,
+                                {$merge: {showNoRoles: !this.state.showNoRoles}}
+                            ));
+                        }}>{noRoleText}</button>
+                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
+                            this.setState(update(this.state,
+                                {$merge: {showArchived: !this.state.showArchived}}
+                            ));
+                        }}>{archivedText}</button>
                     </div>
                 </div>
                 <div className="row spacing">
