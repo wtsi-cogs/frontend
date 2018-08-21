@@ -90,12 +90,6 @@ class MainPage extends Component {
 }
 
 const mapStateToProps = state => {
-    if (state.users.loggedInID === null || state.rotations.latestID === null) {
-        return {
-            user: null,
-            rotation: null
-        }
-    }
     const allRotations = state.rotations.rotations;
     const latestSeries = allRotations[state.rotations.latestID].data.series;
     const rotations = Object.keys(allRotations).reduce((filtered, id) => {
