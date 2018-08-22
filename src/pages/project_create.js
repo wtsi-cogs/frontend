@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
 import ProjectEditor from '../components/project_editor';
 import {programmes} from '../config';
 import {createProject} from '../actions/projects';
@@ -47,7 +48,11 @@ class ProjectCreate extends Component {
                 wetlab = {false}
                 computational = {false}
                 submitLabel="Create Project"
-                onSubmit={project => this.props.createProject(project)}
+                onSubmit={project => {
+                    this.props.createProject(project);
+                    Alert.error(`${project.title} created`);
+                    this.props.history.push("/");
+                }}
             />
         );
     }

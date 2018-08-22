@@ -55,7 +55,13 @@ class ProjectEditor extends Component {
             Alert.error("Projects must be either computational or wetlab");
             success = false;
         }
-        if (success) this.props.onSubmit(this.state);
+        if (success) {
+            const state = update(this.state, {$merge: {
+                abstract: this.state.abstract.toString("html"),
+                programmes: Object.entries(this.state.programmes).filter(([k,v])=>v).map(([k,v])=>k)
+            }})
+            this.props.onSubmit(state)
+        };
     }
 
     renderDelete() {
