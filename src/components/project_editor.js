@@ -127,19 +127,19 @@ class ProjectEditor extends Component {
                                 </div>
                             </div>
                             <div className="col-sm-5">
-                                <label className="btn"><input type="radio" checked={this.state.wetlab & !this.state.computational} onClick={() => {
+                                <label className="btn"><input type="radio" checked={this.state.wetlab & !this.state.computational} readOnly={true} onClick={() => {
                                     this.setState(update(this.state, {$merge: {
                                         wetlab: true,
                                         computational: false
                                     }}));
                                 }}/> Wetlab</label>
-                                <label className="btn"><input type="radio" checked={!this.state.wetlab & this.state.computational} onClick={() => {
+                                <label className="btn"><input type="radio" checked={!this.state.wetlab & this.state.computational} readOnly={true} onClick={() => {
                                     this.setState(update(this.state, {$merge: {
                                         wetlab: false,
                                         computational: true
                                     }}));
                                 }}/> Computational</label>
-                                <label className="btn"><input type="radio" checked={this.state.wetlab & this.state.computational} onClick={() => {
+                                <label className="btn"><input type="radio" checked={this.state.wetlab & this.state.computational} readOnly={true} onClick={() => {
                                     this.setState(update(this.state, {$merge: {
                                         wetlab: true,
                                         computational: true

@@ -55,6 +55,14 @@ export function fetchProjects(series, part) {
     }
 }
 
+export function fetchProject(projectID) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/projects/${projectID}`).then(response => {
+            dispatch(receiveProject(response.data));
+        });
+    }
+}
+
 export function createProject(project) {
     return function (dispatch) {
         console.log(project);
