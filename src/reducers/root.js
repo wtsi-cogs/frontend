@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { combineReducers } from 'redux'
 import update from 'immutability-helper';
-import {REQUEST_PROJECTS, RECEIVE_PROJECT} from '../actions/projects';
+import {REQUEST_PROJECTS, RECEIVE_PROJECT, DELETE_PROJECT} from '../actions/projects';
 import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
 import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION } from '../actions/rotations';
@@ -39,6 +39,10 @@ function projects(state={
             return update(state, {
                 fetching: {$set: state.fetching-1},
                 projects: {$merge: {[action.project.data.id]: action.project}}
+            }); 
+        case DELETE_PROJECT:
+            return update(state, {
+                projects: {$unset: [action.projectID]}
             }); 
         default:
             return state;

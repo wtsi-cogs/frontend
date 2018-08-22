@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import ProjectEditor from '../components/project_editor';
 import {programmes} from '../config';
-import {editProject, fetchProject} from '../actions/projects';
+import {editProject, deleteProject, fetchProject} from '../actions/projects';
 
 class ProjectEdit extends Component {
     constructor(props) {
@@ -60,6 +60,11 @@ class ProjectEdit extends Component {
                     this.props.editProject(projectID, project);
                     Alert.info(`${project.title} saved.`);
                 }}
+                onDelete={() => {
+                    this.props.deleteProject(projectID);
+                    Alert.info(`${project.title} deleted.`);
+                    this.props.history.push("/");
+                }}
             />
         );
     }
@@ -74,7 +79,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProject: projectID => dispatch(fetchProject(projectID)),
-        editProject: (projectID, project) => dispatch(editProject(projectID, project))
+        editProject: (projectID, project) => dispatch(editProject(projectID, project)),
+        deleteProject: projectID => dispatch(deleteProject(projectID))
     }
 };
 

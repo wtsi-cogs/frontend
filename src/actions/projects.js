@@ -26,6 +26,7 @@ import {api_url} from '../config.js';
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS';
 export const RECEIVE_PROJECT = 'RECEIVE_PROJECT';
+export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export function requestProjects(noProjects) {
     return {
@@ -38,6 +39,13 @@ export function receiveProject(project) {
     return {
         type: RECEIVE_PROJECT,
         project
+    }
+}
+
+export function removeProject(projectID) {
+    return {
+        type: DELETE_PROJECT,
+        projectID
     }
 }
 
@@ -75,6 +83,14 @@ export function editProject(projectID, project) {
     return function (dispatch) {
         axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
             dispatch(receiveProject(response.data));
+        });
+    }
+}
+
+export function deleteProject(projectID) {
+    return function (dispatch) {
+        axios.delete(`${api_url}/api/projects/${projectID}`).then(response => {
+            dispatch(removeProject(projectID));
         });
     }
 }
