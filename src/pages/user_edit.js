@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {userRoles} from '../config.js';
-import {DropdownButton, MenuItem} from 'react-bootstrap';
+import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import {fetchAllUsers, saveUser} from '../actions/users';
 import './user_edit.css';
@@ -109,31 +109,6 @@ class UserEditor extends Component {
         return shown;
     }
 
-    renderRoleDropdown(user) {
-        return Object.values(userRoles).map(role => 
-            <MenuItem eventKey={role} key={role}>
-                <input
-                    type="checkbox"
-                    checked={user.user_type.includes(role)}
-                    readOnly={true}
-                    className="dropdown_checkbox_padding"
-                />
-                {role}
-            </MenuItem>
-        );
-    }
-
-    renderRoleDropdownTitle(user) {
-        return (
-            <div>
-                <div className="no_overflow">
-                    {user.user_type.join(", ") || "No roles"}
-                </div>
-                <div className="caret pull-right"></div>
-            </div>
-        );
-    }
-
     renderUserList() {
         return Object.entries(this.state.users).filter(user => this.shouldUserBeShown(user)).map((kv) => {
             const [id, user] = kv;
@@ -143,12 +118,10 @@ class UserEditor extends Component {
                     <div className="col-sm-3"><input value={user.email} onChange={this.updateUser("email", user, id)} type="email" className="form-control"/></div>
                     <div className="col-sm-3"><input value={user.priority} onChange={this.updateUser("priority", user, id)} type="number" className="form-control"/></div>
                     <div className="col-sm-3">
-                        <DropdownButton
-                            title={this.renderRoleDropdownTitle(user)}
-                            noCaret={true}
-                            id="template-dropdown"
-                            className="form-control"
-                            onSelect={role => {
+                        <MultiselectDropDown
+                            items = {userRoles.reduce((map, role) => {map[role] = user.user_type.includes(role); return map}, {})}
+                            noneSelectedText = "No roles"
+                            onSelect = {role => {
                                 let user_type = user.user_type.slice();
                                 const index = user.user_type.indexOf(role);
                                 if (index === -1) {user_type.push(role)}
@@ -158,22 +131,7 @@ class UserEditor extends Component {
                                     users: {$merge: {[id]: newUser}}
                                 }));
                             }}
-                            open={this.state.dropdownOpen === id}
-                            onToggle={(isOpen, evt, src) => {
-                                if (isOpen) {
-                                    this.setState(update(this.state,
-                                        {$merge: {dropdownOpen: id}}
-                                    ));
-                                }
-                                else if (src.source === "rootClose") {
-                                    this.setState(update(this.state,
-                                        {$merge: {dropdownOpen: null}}
-                                    ));
-                                }
-                            }}
-                        >
-                            {this.renderRoleDropdown(user)}
-                        </DropdownButton>
+                        />
                     </div>
                 </div>
             );
