@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
 import {fetchEmails, setEmail} from '../actions/emails.js';
-import update from '../../node_modules/immutability-helper';
+import update from 'immutability-helper';
 import './email_edit.css';
 
 class EmailEditor extends Component {

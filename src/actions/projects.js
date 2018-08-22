@@ -54,3 +54,9 @@ export function fetchProjects(series, part) {
         });
     }
 }
+
+export function createProject(project) {
+    return function (dispatch) {
+        console.log(project);
+    }
+}

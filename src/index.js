@@ -36,6 +36,11 @@ import DefaultPage from './pages/default_page.js';
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import { connect } from 'react-redux';
+
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
+
 import './index.css';
 import {fetchLatestRotation} from './actions/rotations.js';
 import Projects from './pages/projects.js';
@@ -43,6 +48,7 @@ import MarkableProjects from './pages/markable_projects.js'
 import EmailEditor from './pages/email_edit.js';
 import UserEditor from './pages/user_edit.js';
 import RotationCreate from './pages/rotation_create.js';
+import ProjectCreate from './pages/project_create.js';
 
 
 const loggerMiddleware = createLogger()
@@ -74,8 +80,10 @@ class App extends Component {
                             <Route exact path="/emails/edit" component={EmailEditor}/>
                             <Route exact path="/users/edit" component={UserEditor}/>
                             <Route exact path="/rotations/create" component={RotationCreate}/>
+                            <Route exact path="/projects/create" component={ProjectCreate}/>
                             <Route component={DefaultPage} />
                         </Switch>
+                        <Alert stack={{limit: 3}} effect="stackslide"/>
                     </div>
                 </Router>
             </Provider>

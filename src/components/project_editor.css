@@ -1,0 +1,8 @@
+.abstract {
+    margin-top: 32px;
+    margin-bottom: 16px;
+}
+
+.public-DraftEditor-content {
+    min-height: 30em !important;
+}

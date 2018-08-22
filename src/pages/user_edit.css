@@ -1,20 +1,3 @@
-input[type=checkbox].dropdown_checkbox_padding {
-    margin-right: 6px;
-}
-
-.dropdown {
-    width:100%;
-}
-
-.no_overflow {
-    overflow: hidden;
-}
-
-.caret {
-    position: relative;
-    bottom: 10px;
-}
-
 .spacing {
     padding-top: 32px;
 }

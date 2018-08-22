@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {userRoles} from '../config.js';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
-import update from '../../node_modules/immutability-helper';
+import update from 'immutability-helper';
 import {fetchAllUsers, saveUser} from '../actions/users';
 import './user_edit.css';
 

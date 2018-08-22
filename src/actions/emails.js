@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 import {api_url} from '../config.js';
-import update from '../../node_modules/immutability-helper';
+import update from 'immutability-helper';
 
 export const REQUEST_EMAILS = 'REQUEST_EMAILS';
 export const RECIEVE_EMAIL = 'RECIEVE_EMAIL';
