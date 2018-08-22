@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
 import {userRoles} from '../config.js';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
@@ -64,6 +65,7 @@ class UserEditor extends Component {
             user.priority = parseInt(user.priority, 10);
             this.props.saveUser(id, user);
         });
+        Alert.info("Changes saved");
     }
 
     archiveStudentRole() {

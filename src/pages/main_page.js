@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
 import {fetchLatestSeries, saveRotation} from '../actions/rotations';
 import {getSupervisorProjects, getCogsProjects} from '../actions/users';
 import GroupEditor from './group_editor';
@@ -39,7 +40,10 @@ class MainPage extends Component {
             <GroupEditor
                 key = {rotation.data.part}
                 group = {rotation}
-                onSave = {this.props.saveRotation}
+                onSave = {(rotation) => {
+                    this.props.saveRotation(rotation);
+                    Alert.info("Rotation saved");
+                }}
             />
         );
     }

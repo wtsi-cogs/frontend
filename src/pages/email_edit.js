@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
 import {fetchEmails, setEmail} from '../actions/emails.js';
@@ -47,6 +48,7 @@ class EmailEditor extends Component {
         const subject = this.refs.input.value;
         const content = this.state.content.toString("html");
         this.props.setEmail(this.state.emailID, subject, content);
+        Alert.info("Changes saved");
     }
 
     onContentChange(value) {

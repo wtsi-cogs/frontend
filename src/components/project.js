@@ -30,7 +30,9 @@ import "./project.css";
 class Project extends Component {
     async componentDidMount() {
         const displayUserId = this.props.displaySupervisorName? this.props.project.data.supervisor_id: this.props.project.data.student_id;
-        this.props.fetchUser(displayUserId);
+        if (displayUserId !== null) {
+            this.props.fetchUser(displayUserId);
+        }
         this.props.fetchRotationFromURL(this.props.project.links.group);
     }
 
