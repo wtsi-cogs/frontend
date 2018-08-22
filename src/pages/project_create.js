@@ -50,7 +50,7 @@ class ProjectCreate extends Component {
                 submitLabel="Create Project"
                 onSubmit={project => {
                     this.props.createProject(project);
-                    Alert.error(`${project.title} created`);
+                    Alert.info(`${project.title} created`);
                     this.props.history.push("/");
                 }}
             />

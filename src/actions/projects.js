@@ -65,8 +65,15 @@ export function fetchProject(projectID) {
 
 export function createProject(project) {
     return function (dispatch) {
-        console.log(project);
         axios.post(`${api_url}/api/projects`, project).then(response => {
+            dispatch(receiveProject(response.data));
+        });
+    }
+}
+
+export function editProject(projectID, project) {
+    return function (dispatch) {
+        axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
             dispatch(receiveProject(response.data));
         });
     }

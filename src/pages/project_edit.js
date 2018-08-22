@@ -24,16 +24,16 @@ import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import ProjectEditor from '../components/project_editor';
 import {programmes} from '../config';
-import {createProject, fetchProject} from '../actions/projects';
+import {editProject, fetchProject} from '../actions/projects';
 
-class ProjectResubmit extends Component {
+class ProjectEdit extends Component {
     constructor(props) {
         super(props);
         props.fetchProject(props.match.params.projectID);
     }
 
     async componentDidMount() {
-        document.title = "Resubmit Project";
+        document.title = "Edit Project";
     }
 
     render() {
@@ -55,11 +55,10 @@ class ProjectResubmit extends Component {
                 programmes = {programmes.reduce((map, programme) => {map[programme] = project.programmes.includes(programme); return map}, {})}
                 wetlab = {project.is_wetlab}
                 computational = {project.is_computational}
-                submitLabel="Create Project"
+                submitLabel="Edit Project"
                 onSubmit={project => {
-                    this.props.createProject(project);
-                    Alert.info(`${project.title} created`);
-                    this.props.history.push("/");
+                    this.props.editProject(projectID, project);
+                    Alert.info(`${project.title} saved.`);
                 }}
             />
         );
@@ -75,11 +74,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProject: projectID => dispatch(fetchProject(projectID)),
-        createProject: project => dispatch(createProject(project))
+        editProject: (projectID, project) => dispatch(editProject(projectID, project))
     }
 };
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ProjectResubmit);
+)(ProjectEdit);

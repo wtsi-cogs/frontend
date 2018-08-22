@@ -50,6 +50,7 @@ import UserEditor from './pages/user_edit.js';
 import RotationCreate from './pages/rotation_create.js';
 import ProjectCreate from './pages/project_create.js';
 import ProjectResubmit from './pages/project_resubmit.js';
+import ProjectEdit from './pages/project_edit.js';
 
 
 const loggerMiddleware = createLogger()
@@ -83,6 +84,7 @@ class App extends Component {
                             <Route exact path="/rotations/create" component={RotationCreate}/>
                             <Route exact path="/projects/create" component={ProjectCreate}/>
                             <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
+                            <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
                             <Route component={DefaultPage} />
                         </Switch>
                         <Alert stack={{limit: 3}} effect="stackslide"/>
