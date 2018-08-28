@@ -67,10 +67,8 @@ class Project extends Component {
 
         let editUrl = "";
         if (this.props.user.data.id === project.supervisor_id && rotation) {
-            if (!rotation.data.read_only) {
-                editUrl = <small> <Link to={`/projects/${project.id}/edit`}>(edit)</Link></small>;
-            }
-            else if (rotation.data.id !== this.props.currentRotation) {
+            editUrl = <small> <Link to={`/projects/${project.id}/edit`}>(edit)</Link></small>;
+            if (rotation.data.read_only && rotation.data.id !== this.props.currentRotation) {
                 editUrl = <small> <Link to={`/projects/${project.id}/resubmit`}>(edit and resubmit)</Link></small>;
             }
         }
