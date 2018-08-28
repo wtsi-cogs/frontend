@@ -47,6 +47,10 @@ class ProjectEditor extends Component {
             Alert.error("Projects must have a title");
             success = false;
         }
+        if (!this.state.programmes) {
+            Alert.error("Projects must have at least one programme");
+            success = false;
+        }
         if (!this.state.abstract.toString("html")) {
             Alert.error("Projects must have an abstract");
             success = false;
