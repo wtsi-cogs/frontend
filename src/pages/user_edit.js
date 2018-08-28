@@ -51,6 +51,7 @@ class UserEditor extends Component {
                     users: {$merge: {[user.data.id]: {
                         name: user.data.name,
                         email: user.data.email,
+                        email_personal: user.data.email_personal,
                         priority: user.data.priority,
                         user_type: user.data.user_type
                     }}}
@@ -116,10 +117,11 @@ class UserEditor extends Component {
             const [id, user] = kv;
             return (
                 <div key={id} className="row">
-                    <div className="col-sm-3"><input value={user.name} onChange={this.updateUser("name", user, id)} className="form-control"/></div>
-                    <div className="col-sm-3"><input value={user.email} onChange={this.updateUser("email", user, id)} type="email" className="form-control"/></div>
-                    <div className="col-sm-3"><input value={user.priority} onChange={this.updateUser("priority", user, id)} type="number" className="form-control"/></div>
-                    <div className="col-sm-3">
+                    <div className="col-xs-3"><input value={user.name} onChange={this.updateUser("name", user, id)} className="form-control"/></div>
+                    <div className="col-xs-2"><input value={user.email} onChange={this.updateUser("email", user, id)} type="email" className="form-control"/></div>
+                    <div className="col-xs-2"><input value={user.email_personal} onChange={this.updateUser("email_personal", user, id)} type="email" className="form-control"/></div>
+                    <div className="col-xs-2"><input value={user.priority} onChange={this.updateUser("priority", user, id)} type="number" className="form-control"/></div>
+                    <div className="col-xs-3">
                         <MultiselectDropDown
                             items = {userRoles.reduce((map, role) => {map[role] = user.user_type.includes(role); return map}, {})}
                             noneSelectedText = "No roles"
@@ -147,10 +149,11 @@ class UserEditor extends Component {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-3">Name</div>
-                    <div className="col-sm-3">Email Address</div>
-                    <div className="col-sm-3">Student Priority</div>
-                    <div className="col-sm-3">User Type</div>
+                    <div className="col-xs-3">Name</div>
+                    <div className="col-xs-2">Email Address</div>
+                    <div className="col-xs-2">Personal Email</div>
+                    <div className="col-xs-2">Student Priority</div>
+                    <div className="col-xs-3">User Type</div>
                 </div>
                 {this.renderUserList()}
                 <div className="row">
