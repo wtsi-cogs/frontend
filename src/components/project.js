@@ -21,10 +21,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import ExpandCollapse from 'react-expand-collapse';
 import {fetchUser, canMark} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import {Link} from 'react-router-dom';
 import "./project.css";
+import "./expand-collapse.css"
 
 
 class Project extends Component {
@@ -106,7 +108,12 @@ class Project extends Component {
                 <div>
                     {links}
                 </div>
-                <div dangerouslySetInnerHTML={{__html: project.abstract}}/>
+                <ExpandCollapse
+                    previewHeight="134px"
+                    ellipsis={false}
+                >
+                    <div dangerouslySetInnerHTML={{__html: project.abstract}}/>
+                </ExpandCollapse>
             </div>
         </div>;
     }
