@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
-import {userRoles} from '../config.js';
+import {userRoles, archive, student} from '../config.js';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import {fetchAllUsers, saveUser} from '../actions/users';
@@ -74,11 +74,11 @@ class UserEditor extends Component {
         Object.entries(this.state.users).forEach((kv) => {
             const [id, user] = kv;
             let user_type = user.user_type.slice();
-            const index = user.user_type.indexOf("student");
+            const index = user.user_type.indexOf(student);
             if (index !== -1) {
                 user_type.splice(index, 1);
-                if (user.user_type.indexOf("archive") === -1) {
-                    user_type.push("archive");
+                if (user.user_type.indexOf(archive) === -1) {
+                    user_type.push(archive);
                 }
                 const newUser = update(user, {$merge: {user_type}});
                 state = update(state, {
@@ -104,7 +104,7 @@ class UserEditor extends Component {
         const propsRoles = propsUser.data.user_type;
         let shown = true;
         if (!this.state.showArchived) {
-            shown &= !propsRoles.includes("archive");
+            shown &= !propsRoles.includes(archive);
         }
         if (!this.state.showNoRoles) {
             shown &= !!propsRoles.length;

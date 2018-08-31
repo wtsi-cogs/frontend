@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 import {api_url} from '../config.js';
+import update from '../../node_modules/immutability-helper';
 
 
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
@@ -91,6 +92,28 @@ export function deleteProject(projectID) {
     return function (dispatch) {
         axios.delete(`${api_url}/api/projects/${projectID}`).then(response => {
             dispatch(removeProject(projectID));
+        });
+    }
+}
+
+export function saveCogsMarkers(project_user_map) {
+    return function (dispatch, getState) {
+        function getCogsURL(userID) {
+            if (userID === null) return null;
+            return `/api/users/${userID}`;
+        }
+
+        axios.put(`${api_url}/api/projects/set_cogs`, {projects: project_user_map}).then(response => {
+            const state = getState();
+            console.log(state)
+            const projects = Object.keys(state.projects.projects).reduce((projects, projectID) => {
+                projects[projectID] = update(state.projects.projects[projectID], {
+                    links: {$merge: {cogs_marker: getCogsURL(project_user_map[projectID])}},
+                    data: {$merge: {cogs_marker_id: project_user_map[projectID]}},
+                });
+                return projects;
+            }, {});
+            console.log(projects);
         });
     }
 }

@@ -20,11 +20,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
-
+import "./header.css"
 
 
 class Header extends Component {
@@ -32,10 +32,10 @@ class Header extends Component {
         return this.props.location.pathname;
     }
 
-    renderLink(link, name, do_render) {
+    renderLink(link, name, do_render, key=undefined) {
         if (!do_render) return;
         return (
-            <NavItem eventKey={link}>{name}</NavItem>
+            <NavItem eventKey={link} key={key}>{name}</NavItem>
         );
     }
 
@@ -56,6 +56,12 @@ class Header extends Component {
         );
     }
 
+    renderCogsEdit(max) {
+        return [...Array(max).keys()].map(i => {
+            return this.renderLink(`/rotations/${i+1}/cogs`, `Rotation ${i+1}`, true, i);
+        });
+    }
+
     renderRightNav() {
         const user = this.props.user;
         const rotation = this.props.rotation;
@@ -69,6 +75,9 @@ class Header extends Component {
                 {this.renderLink("/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
                 {this.renderLink("/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
                 {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
+                <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
+                    {this.renderCogsEdit(rotation.part)}
+                </NavDropdown>
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
                 {this.renderLink("/users/edit", "Edit Users", permissions.modify_permissions)}
                 {this.renderLink("/login", "Login", !user)}

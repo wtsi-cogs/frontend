@@ -2,7 +2,7 @@ input[type=checkbox].dropdown_checkbox_padding {
     margin-right: 6px;
 }
 
-.dropdown {
+:not(li).dropdown {
     width:100%;
 }
 

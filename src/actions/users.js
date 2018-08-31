@@ -98,6 +98,21 @@ export function fetchAllUsers() {
     }
 }
 
+export function fetchUsersWithPermissions(permissions) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/users/permissions`, {params: {permissions}}).then(response => {
+            const userLinks = Object.values(response.data.links);
+            dispatch(requestUsers(userLinks.length));
+            userLinks.forEach((link) => {
+                axios.get(`${api_url}${link}`).then(response => {
+                    const user = response.data;
+                    dispatch(receiveUser(user));
+                });
+            });
+        });
+    }
+}
+
 export function saveUser(userID, user) {
     return function (dispatch, getState) {
         dispatch(requestUsers(1));

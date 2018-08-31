@@ -51,6 +51,7 @@ import RotationCreate from './pages/rotation_create.js';
 import ProjectCreate from './pages/project_create.js';
 import ProjectResubmit from './pages/project_resubmit.js';
 import ProjectEdit from './pages/project_edit.js';
+import RotationCogsEditor from './pages/rotation_cogs_edit.js';
 
 
 const loggerMiddleware = createLogger()
@@ -58,7 +59,7 @@ const store = createStore(
     rootReducer,
     applyMiddleware(
       thunkMiddleware // lets us dispatch() functions
-      //loggerMiddleware // neat middleware that logs actions
+      //,loggerMiddleware // neat middleware that logs actions
     )
   )
 
@@ -85,6 +86,7 @@ class App extends Component {
                             <Route exact path="/projects/create" component={ProjectCreate}/>
                             <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                             <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
+                            <Route exact path="/rotations/:partID/cogs" component={RotationCogsEditor}/>
                             <Route component={DefaultPage} />
                         </Switch>
                         <Alert stack={{limit: 3}} effect="stackslide"/>
