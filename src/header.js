@@ -72,8 +72,8 @@ class Header extends Component {
         const studentChoicePassed = moment.utc(rotation.deadlines.student_choice.value).add(1, 'days').valueOf() - moment.utc() < 0;
         return (
             <Nav pullRight={true} activeKey={this.getActiveKey()}>
-                {this.renderLink("/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
-                {this.renderLink("/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
+                {this.renderLink("/rotations/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
+                {this.renderLink("/rotations/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
                 {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
                 <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
                     {this.renderCogsEdit(rotation.part)}
