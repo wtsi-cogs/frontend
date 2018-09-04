@@ -94,11 +94,11 @@ class Project extends Component {
 
         return <div>
             <div className="media-body">
-                <h2 className="col-sm-10 col-md-10 media-head project-title">
+                <h3 className="col-sm-10 col-md-10 media-head project-title">
                     {project.title} - {displayName} 
                     <small> {project.small_info}</small>
                     {editUrl}
-                </h2>
+                </h3>
                 <div className="col-sm-2 col-md-2 media-middle">{projectType}</div>
             </div>
             {voteButtons}
