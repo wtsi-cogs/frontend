@@ -53,6 +53,8 @@ import ProjectResubmit from './pages/project_resubmit.js';
 import ProjectEdit from './pages/project_edit.js';
 import RotationCogsEditor from './pages/rotation_cogs_edit.js';
 import RotationChoiceViewer from './pages/rotation_choices_view.js'
+import RotationChoiceChooser from './pages/rotation_choices_finalise.js'
+import RotationCogsFinalise from './pages/rotation_choices_cogs.js'
 
 
 const loggerMiddleware = createLogger()
@@ -87,8 +89,10 @@ class App extends Component {
                             <Route exact path="/projects/create" component={ProjectCreate}/>
                             <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                             <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
-                            <Route exact path="/rotations/:partID/cogs" component={RotationCogsEditor}/>
+                            <Route exact path="/rotations/choices/cogs" component={RotationCogsFinalise}/>
                             <Route exact path="/rotations/choices/view" component={RotationChoiceViewer}/>
+                            <Route exact path="/rotations/choices/finalise" component={RotationChoiceChooser}/>
+                            <Route exact path="/rotations/:partID/cogs" component={RotationCogsEditor}/>
                             <Route component={DefaultPage} />
                         </Switch>
                         <Alert stack={{limit: 3}} effect="stackslide"/>

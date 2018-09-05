@@ -21,6 +21,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import {DropdownButton, MenuItem} from 'react-bootstrap';
+import {createProjects} from '../config';
+import "./choice_editor.css";
 
 class ChoiceEditor extends Component {
     getProjectTitle(projectID) {
@@ -31,40 +34,197 @@ class ChoiceEditor extends Component {
         return project.data.title;
     }
 
-    renderOverride(user) {
+    getUserChoices(user) {
+        return [
+            user.first_option_id,
+            user.second_option_id,
+            user.third_option_id
+        ];
+    }
+
+    getSelectedCheckBox(userID) {
+        const userOption = this.props.choices[userID];
+        if (!userOption) {
+            return null;
+        }
+        if (userOption.type === "project") {
+            const userChoices = this.getUserChoices(this.props.users[userID].data);
+            const index = userChoices.indexOf(userOption.id);
+            if (index === -1) {
+                return 3
+            }
+            return index;
+        }
+        else if (userOption.type === "user") {
+            return 4;
+        }
+    }
+
+    onSelect(studentID, type, id) {
+        this.props.onClick(studentID, {type, id: parseInt(id, 10)});
+    }
+
+
+    invalidChoices() {
+        return Object.keys(this.props.users).filter(userID => {
+            const userOption = this.props.choices[userID];
+            if (!userOption) {
+                return false;
+            }
+            if (userOption.type === "user") {
+                return false;
+            }
+            return Object.keys(this.props.users).some(otherUserID => {
+                if (otherUserID === userID) {
+                    return false;
+                }
+                const otherUserOption = this.props.choices[otherUserID];
+                if (!otherUserOption) {
+                    return false;
+                }
+                if (otherUserOption.type === "user") {
+                    return false;
+                }
+                return userOption.id === otherUserOption.id;
+            });
+        });
+    }
+
+    renderSaveButtons(submitDisabled, saveDisabled) {
         return (
-            <div className="col-xs-3">Override</div>
+            <div className="row">
+                <div className="col-sm-4 spacing">
+                    <button
+                        className="btn btn-primary btn-lg btn-block"
+                        onClick={() => this.props.onSave()}
+                        disabled={saveDisabled}
+                    >
+                        Save
+                    </button>
+                </div>
+                <div className="col-sm-4"></div>
+                <div className="col-sm-4 spacing">
+                    <button
+                        className="btn btn-primary btn-lg btn-block"
+                        onClick={() => this.props.onSubmit()}
+                        disabled={submitDisabled}
+                    >
+                        Assign CoGS Markers
+                    </button>
+                </div>
+            </div>
         );
     }
 
-    renderStudentChoices() {
+    renderDropdowns(userID) {
         const projects = this.props.projects;
-        return Object.entries(this.props.users).map((kv) => {
+        const selected = this.getSelectedCheckBox(userID);
+        return (
+            <div>
+                <div className="one-line">
+                    <input type="checkbox" checked={selected === 3} readOnly={true}/>
+                    <DropdownButton
+                        title={selected === 3? this.props.projects[this.props.choices[userID].id].data.title: "Other Project"}
+                        id={`project_dropdown_${userID}`}
+                    >
+                        {Object.keys(this.props.projects).filter(projectID => !this.getUserChoices(this.props.users[userID].data).includes(parseInt(projectID, 10))).map(projectID => {
+                            return (
+                                <MenuItem
+                                    eventKey={projectID}
+                                    key={projectID}
+                                    onSelect={() => {this.onSelect(userID, "project", projectID)}}
+                                >
+                                    {projects[projectID].data.title}
+                                </MenuItem>
+                            );
+                        })}
+                    </DropdownButton>
+                </div>
+                <div className="one-line">
+                    <input type="checkbox" checked={selected === 4} readOnly={true}/>
+                    <DropdownButton
+                        title={selected === 4? this.props.users[this.props.choices[userID].id].data.name: "Other Supervisor"}
+                        id={`supervisor_dropdown_${userID}`}
+                    >
+                        {Object.keys(this.props.users).filter(supervisorID => this.props.users[supervisorID].data.permissions[createProjects]).map(supervisorID => {
+                            const user = this.props.users[supervisorID].data;
+                            return (
+                                <MenuItem 
+                                    eventKey={supervisorID}
+                                    key={supervisorID}
+                                    onSelect={() => {this.onSelect(userID, "user", supervisorID)}}
+                                >
+                                    {user.name}
+                                </MenuItem>
+                            );
+                        })}
+                    </DropdownButton>
+                </div>
+            </div>
+        );
+    }
+
+    renderStudentChoices(invalidUsers) {
+        const showButtons = Boolean(this.props.choices);
+        return Object.entries(this.props.users).sort((a,b) => a[1].data.priority < b[1].data.priority).map((kv) => {
             const [id, userAll] = kv;
             const user = userAll.data;
+            const projectIDs = this.getUserChoices(user);
+
             return (
-                <div className="row" key={id}>
+                <div className={`row striped${invalidUsers.includes(id)? " invalid": ""}`} key={id}>
                     <div className="col-xs-3">{user.name}</div>
-                    <div className="col-xs-2">{this.getProjectTitle(user.first_option_id)}</div>
-                    <div className="col-xs-2">{this.getProjectTitle(user.second_option_id)}</div>
-                    <div className="col-xs-2">{this.getProjectTitle(user.third_option_id)}</div>
-                    {this.props.showOverride && this.renderOverride(user)}
+                    {this.props.showPriority && (
+                        <div className="col-xs-1">{user.priority}</div>
+                    )}
+                    <div className="col-xs-8">
+                        <ol>
+                            {projectIDs.map((projectID, i) => {
+                                if (showButtons) {
+                                    return (
+                                        <li key={i}>
+                                            <input
+                                                type="checkbox"
+                                                id={`checkbox_${id}_${projectID}`}
+                                                checked={this.getSelectedCheckBox(id) === i}
+                                                readOnly={true}
+                                                disabled={!this.props.projects[projectID]}
+                                                onClick={() => {this.onSelect(id, "project", projectID)}}
+                                            />
+                                            <label htmlFor={`checkbox_${id}_${projectID}`}>
+                                                {this.getProjectTitle(projectID)}
+                                            </label>
+                                        </li>
+                                    );
+                                }
+                                return <li key={i}>{this.getProjectTitle(projectID)}</li>
+                            })}
+                        </ol>
+                       {showButtons && this.renderDropdowns(id)}
+                    </div>
                 </div>
             );
         });
     }
 
     render() {
+        const showButtons = Boolean(this.props.choices);
+        const invalidUsers = showButtons? this.invalidChoices(): [];
         return (
-            <div className="container-fluid">            
+            <div className="container">            
                 <div className="row">
                     <div className="col-xs-3">Student</div>
-                    <div className="col-xs-2">First Choice</div>
-                    <div className="col-xs-2">Second Choice</div>
-                    <div className="col-xs-2">Third Choice</div>
-                    {this.props.showOverride && <div className="col-xs-3">Override</div>}
+                    {this.props.showPriority && (
+                        <div className="col-xs-1">Priority</div>
+                    )}
+                    <div className="col-xs-8">Choices</div>
                 </div>
-                {this.renderStudentChoices()}
+                {this.renderStudentChoices(invalidUsers)}
+
+                {showButtons && this.renderSaveButtons(
+                    invalidUsers.length || Object.keys(this.props.choices).length !== Object.keys(this.props.users).length,
+                    Boolean(invalidUsers.length
+                ))}
             </div>
         );
     }

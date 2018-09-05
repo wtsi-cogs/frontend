@@ -32,8 +32,6 @@ export const FETCH_ME = 'FETCH_ME';
 export const REQUEST_ME = 'REQUEST_ME';
 export const RECEIVE_ME = 'RECEIVE_ME';
 
-export const VOTE_PROJECT = 'VOTE_PROJECT';
-
 function requestUsers(noUsers) {
     return {
         type: REQUEST_USERS,
@@ -150,8 +148,25 @@ export function voteProject(projectID, option) {
             me = update(me, {
                 links: {$merge: {[getLinkKey(option)]: `/api/projects/${projectID}`}},
                 data: {$merge: {[getDataKey(option)]: projectID}}});
-            console.log(me);
             dispatch(receiveUser(me));
+        });
+    }
+}
+
+export function saveStudentProjects(choices, callback=()=>{}) {
+    return function (dispatch) {
+        axios.put(`${api_url}/api/users/assign_projects`, {
+            choices: choices
+        }).then(response => {
+            const projects = response.data.data.projects;
+            projects.forEach(project => {
+                dispatch(receiveProject(project));
+            });
+            const users = response.data.data.users;
+            users.forEach(users => {
+                dispatch(receiveUser(users));
+            });
+            callback();
         });
     }
 }

@@ -21,17 +21,58 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
+import update from 'immutability-helper';
 import {fetchProjects} from '../actions/projects';
+import {saveStudentProjects} from '../actions/users';
 import {fetchUsersWithPermissions} from '../actions/users';
-import {joinProjects} from '../config';
+import {joinProjects, createProjects} from '../config';
 import ChoiceEditor from '../components/choice_editor.js';
 
-class RotationChoiceViewer extends Component {
+class RotationChoiceChooser extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {choices: {}};
+    }
+
     async componentDidMount() {
-        document.title = "View Student Choices";
+        document.title = "Finalise Student Choices";
         const rotation = this.props.rotation;
         this.props.fetchProjects(rotation.data.series, rotation.data.part);
-        this.props.fetchUsersWithPermissions([joinProjects]);
+        this.props.fetchUsersWithPermissions([joinProjects, createProjects]);
+    }
+
+    async componentDidUpdate() {
+        Object.values(this.props.projects).forEach(project => {
+            const studentID = project.data.student_id;
+            if (studentID !== null) {
+                if (!this.state.choices.hasOwnProperty(studentID)) {
+                    this.setChoice(studentID, {type: "project", id: project.data.id});
+                }
+            }
+        });
+    }
+
+    setChoice(studentID, newState) {
+        this.setState(update(this.state, {$merge: {
+            choices: update(this.state.choices, {$merge: {
+                [studentID]: newState
+            }})
+        }}));
+    }
+
+    onSave(unmounted=false) {
+        this.props.saveStudentProjects(this.state.choices, () => {
+            Alert.info("Saved choices.");
+            if (!unmounted) {
+                Object.values(this.props.projects).forEach(project => {
+                    const studentID = project.data.student_id;
+                    if (studentID !== null) {
+                        this.setChoice(studentID, {type: "project", id: project.data.id});
+                    }
+                });
+            }
+        });
     }
 
     render() {
@@ -66,7 +107,16 @@ class RotationChoiceViewer extends Component {
                 <ChoiceEditor
                     users={users}
                     projects={projects}
-                    showPriority={false}
+                    onClick={(studentID, newState) => {
+                        this.setChoice(studentID, newState);
+                    }}
+                    choices={this.state.choices}
+                    showPriority={true}
+                    onSubmit={() => {
+                        this.onSave(true);
+                        this.props.history.push("/rotations/choices/cogs");
+                    }}
+                    onSave={() => this.onSave(false)}
                 />
             </div>
         );
@@ -86,11 +136,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        fetchUsersWithPermissions: (permissions) => dispatch(fetchUsersWithPermissions(permissions))
+        fetchUsersWithPermissions: (permissions) => dispatch(fetchUsersWithPermissions(permissions)),
+        saveStudentProjects: (choices, callback) => dispatch(saveStudentProjects(choices, callback))
     }
 };
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(RotationChoiceViewer);
+)(RotationChoiceChooser);

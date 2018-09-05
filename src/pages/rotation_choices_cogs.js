@@ -24,10 +24,10 @@ import { connect } from 'react-redux';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
 import {fetchProjects, saveCogsMarkers} from '../actions/projects';
-import {fetchRotation} from '../actions/rotations';
 import CogsEditor from '../components/cogs_edit.js';
+import './rotation_choices_cogs.css';
 
-class RotationCogsEditor extends Component {
+class RotationCogsFinalise extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,24 +36,9 @@ class RotationCogsEditor extends Component {
     }
 
     async componentDidMount() {
-        document.title = "Edit CoGS Markers";
-        const part = parseInt(this.props.match.params.partID, 10);
-        this.fetchRotation(part);
-    }
-
-    componentDidUpdate() {
-        const part = parseInt(this.props.match.params.partID, 10);
-        if (part !== this.state.part) {
-            this.fetchRotation(part);
-        }
-    }
-
-    fetchRotation(part) {
-        const latest = this.props.rotations[this.props.latest].data;
-        const series = latest.series;
-        this.setState(update(this.state, {part: {$set: part}}));
-        this.props.fetchProjects(series, part);
-        this.props.fetchRotation(series, part);
+        document.title = "Set CoGS Markers";
+        const rotation = this.props.rotation;
+        this.props.fetchProjects(rotation.data.series, rotation.data.part);
     }
 
     save() {
@@ -68,18 +53,12 @@ class RotationCogsEditor extends Component {
         }));
     }
 
+
     render() {
-        const latest = this.props.rotations[this.props.latest].data;
-        const series = latest.series;
-        const part = parseInt(this.props.match.params.partID, 10);
-        const rotation = Object.values(this.props.rotations).find(r => r.data.series === series && r.data.part === part );
-        if (!rotation) {
-            return null;
-        }
+        const rotation = this.props.rotation;
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
             const groupID = this.props.projects[id].data.group_id;
-            const currentRotation = this.props.rotations[groupID].data;
-            if (currentRotation.series === series && currentRotation.part === part && this.props.projects[id].data.student_id !== null) {
+            if (rotation.data.id === groupID && this.props.projects[id].data.student_id !== null) {
                 filtered[id] = this.props.projects[id];
             }
             return filtered;
@@ -95,11 +74,19 @@ class RotationCogsEditor extends Component {
                     projects={projects}
                     cogsMarkers={this.state.cogsMarkers}
                     setCogsMarker={(projectID, userID) => this.setCogsMarker(projectID, userID)}
-                    key={part}
                 />
-                <div className="row">
-                    <div className="col-xs-6 col-sm-4">
-                        <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
+                <div className="row padding">
+                    <div className="col-xs-4 col-md-2">
+                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
+                            this.save();
+                            this.props.history.push("/rotations/choices/finalise");
+                        }}>Back</button>
+                    </div>
+                    <div className="col-xs-4 col-md-1"></div>
+                    <div className="col-xs-4 col-md-2">
+                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
+                            this.save();
+                        }}>Finish</button>
                     </div>
                 </div>
             </div>
@@ -109,17 +96,15 @@ class RotationCogsEditor extends Component {
 
 const mapStateToProps = state => {
     return {
-        rotations: state.rotations.rotations,
+        rotation: state.rotations.rotations[state.rotations.latestID],
         fetching: state.projects.fetching,
-        projects: state.projects.projects,
-        latest: state.rotations.latestID
+        projects: state.projects.projects
     }
 };  
 
 const mapDispatchToProps = dispatch => {
     return {
         fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        fetchRotation: (series, part) => dispatch(fetchRotation(series, part)),
         saveCogsMarkers: (project_user_map, callback) => dispatch(saveCogsMarkers(project_user_map, callback))
     }
 };
@@ -127,4 +112,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(RotationCogsEditor);
+)(RotationCogsFinalise);

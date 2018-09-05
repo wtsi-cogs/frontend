@@ -96,7 +96,7 @@ export function deleteProject(projectID) {
     }
 }
 
-export function saveCogsMarkers(project_user_map) {
+export function saveCogsMarkers(project_user_map, callback=()=>{}) {
     return function (dispatch, getState) {
         function getCogsURL(userID) {
             if (userID === null) return null;
@@ -105,15 +105,15 @@ export function saveCogsMarkers(project_user_map) {
 
         axios.put(`${api_url}/api/projects/set_cogs`, {projects: project_user_map}).then(response => {
             const state = getState();
-            console.log(state)
-            const projects = Object.keys(state.projects.projects).reduce((projects, projectID) => {
-                projects[projectID] = update(state.projects.projects[projectID], {
+            dispatch(requestProjects(state.projects.projects.length));
+            Object.keys(state.projects.projects).forEach(projectID => {
+                const project = update(state.projects.projects[projectID], {
                     links: {$merge: {cogs_marker: getCogsURL(project_user_map[projectID])}},
                     data: {$merge: {cogs_marker_id: project_user_map[projectID]}},
                 });
-                return projects;
-            }, {});
-            console.log(projects);
+                dispatch(receiveProject(project));
+            });
+            callback();
         });
     }
 }
