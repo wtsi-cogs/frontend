@@ -222,7 +222,7 @@ class ChoiceEditor extends Component {
                 {this.renderStudentChoices(invalidUsers)}
 
                 {showButtons && this.renderSaveButtons(
-                    invalidUsers.length || Object.keys(this.props.choices).length !== Object.keys(this.props.users).length,
+                    invalidUsers.length || Object.keys(this.props.choices).length <= Object.keys(this.props.users).length,
                     Boolean(invalidUsers.length
                 ))}
             </div>

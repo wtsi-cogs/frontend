@@ -23,6 +23,7 @@ import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
 import {requestProjects, receiveProject} from './projects.js';
+import {requestRotations, receiveRotation} from './rotations';
 
 export const FETCH_USERS = 'FETCH_USERS';
 export const REQUEST_USERS = 'REQUEST_USERS';
@@ -163,9 +164,47 @@ export function saveStudentProjects(choices, callback=()=>{}) {
                 dispatch(receiveProject(project));
             });
             const users = response.data.data.users;
-            users.forEach(users => {
-                dispatch(receiveUser(users));
+            users.forEach(user => {
+                dispatch(receiveUser(user));
             });
+            callback();
+        });
+    }
+}
+
+
+export function unsetVotes(callback=()=>{}) {
+    return function (dispatch, getState) {
+        const state = getState();
+        axios.post(`${api_url}/api/users/unset_votes`).then(response => {
+            const priorities = response.data.data.priorities;
+            dispatch(requestUsers(Object.keys(state.users.users).length));
+            Object.values(state.users.users).forEach(user => {
+                const newUser = update(user, {
+                    links: {$merge: {
+                        choice_1: null,
+                        choice_2: null,
+                        choice_3: null
+                    }},
+                    data: {$merge: {
+                        first_option_id: null,
+                        second_option_id: null,
+                        third_option_id: null,
+                        priority: priorities[user.data.id] || user.data.priority
+                    }}
+                });
+                dispatch(receiveUser(newUser));
+            });
+            const latestRotationOld = state.rotations.rotations[state.rotations.latestID];
+            const latestRotation = update(latestRotationOld, {
+                data: {$merge: {
+                    student_uploadable: true,
+                    can_finalise: false,
+                    student_choosable: false
+                }}
+            });
+            dispatch(requestRotations(1));
+            dispatch(receiveRotation(latestRotation));
             callback();
         });
     }

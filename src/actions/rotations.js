@@ -32,14 +32,14 @@ export const FETCH_LATEST_ROTATION = 'FETCH_LATEST_ROTATION';
 export const REQUEST_LATEST_ROTATION = 'REQUEST_LATEST_ROTATION';
 export const RECEIVE_LATEST_ROTATION = 'RECEIVE_LATEST_ROTATION';
 
-function requestRotations(noRotations) {
+export function requestRotations(noRotations) {
     return {
         type: REQUEST_ROTATIONS,
         noRotations
     }
 }
 
-function receiveRotation(rotation) {
+export function receiveRotation(rotation) {
     return {
         type: RECEIVE_ROTATION,
         rotation

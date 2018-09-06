@@ -23,7 +23,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
+import { confirmAlert } from 'react-confirm-alert';
 import {fetchProjects, saveCogsMarkers} from '../actions/projects';
+import {unsetVotes} from '../actions/users';
 import CogsEditor from '../components/cogs_edit.js';
 import './rotation_choices_cogs.css';
 
@@ -41,9 +43,10 @@ class RotationCogsFinalise extends Component {
         this.props.fetchProjects(rotation.data.series, rotation.data.part);
     }
 
-    save() {
+    save(callback=()=>{}) {
         this.props.saveCogsMarkers(this.state.cogsMarkers, () => {
             Alert.info("Saved CoGS markers.");
+            callback();
         });
     }
 
@@ -85,7 +88,24 @@ class RotationCogsFinalise extends Component {
                     <div className="col-xs-4 col-md-1"></div>
                     <div className="col-xs-4 col-md-2">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => {
-                            this.save();
+                            confirmAlert({
+                                title: "Finalise Student Projects",
+                                message: `You are about to finalise all student choices. ` +
+                                         `After this point, you will not be able to reassign projects. ` +
+                                         `CoGS markers however will continue to be able to be set. ` +
+                                         `Do you wish to continue?`,
+                                buttons: [
+                                    {label: "Yes", onClick: () => {
+                                        this.save(()=> {
+                                            this.props.unsetVotes(() => {
+                                                Alert.info("Finalised Student choices. Emails have been sent out. Students may now upload.");
+                                                this.props.history.push("/");
+                                            });
+                                        });
+                                    }},
+                                    {label: "No", onClick: () => {}},
+                                ]
+                            })
                         }}>Finish</button>
                     </div>
                 </div>
@@ -105,7 +125,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        saveCogsMarkers: (project_user_map, callback) => dispatch(saveCogsMarkers(project_user_map, callback))
+        saveCogsMarkers: (project_user_map, callback) => dispatch(saveCogsMarkers(project_user_map, callback)),
+        unsetVotes: (callback) => dispatch(unsetVotes(callback)) 
     }
 };
 
