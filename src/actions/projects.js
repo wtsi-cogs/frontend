@@ -27,6 +27,7 @@ import update from '../../node_modules/immutability-helper';
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS';
 export const RECEIVE_PROJECT = 'RECEIVE_PROJECT';
+export const RECEIVE_PROJECT_STATUS = 'RECEIVE_PROJECT_STATUS';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export function requestProjects(noProjects) {
@@ -40,6 +41,14 @@ export function receiveProject(project) {
     return {
         type: RECEIVE_PROJECT,
         project
+    }
+}
+
+export function receiveProjectStatus(projectID, projectStatus) {
+    return {
+        type: RECEIVE_PROJECT_STATUS,
+        projectID,
+        projectStatus
     }
 }
 
@@ -96,6 +105,34 @@ export function deleteProject(projectID) {
     }
 }
 
+export function uploadProject(projectID, blob, callback=()=>{}) {
+    return function (dispatch, getState) {
+        const project = update(getState().projects.projects[projectID], {
+            data: {$merge: {
+                uploaded: true
+            }}
+        });
+        dispatch(requestProjects(1));
+        dispatch(receiveProject(project));
+
+        const data = new FormData();
+        data.append('file', blob, `${projectID}.zip`);
+        axios.put(
+            `${api_url}/api/projects/${projectID}/file`, 
+            data,
+            {
+                headers: {
+                    'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                }
+            }
+        ).then(response => {
+            callback(response.data.status_message);
+        }).catch(response => {
+            callback(response.response.data.status_message);
+        });
+    }
+}
+
 export function saveCogsMarkers(project_user_map, callback=()=>{}) {
     return function (dispatch, getState) {
         function getCogsURL(userID) {
@@ -114,6 +151,14 @@ export function saveCogsMarkers(project_user_map, callback=()=>{}) {
                 dispatch(receiveProject(project));
             });
             callback();
+        });
+    }
+}
+
+export function getProjectFileStatus(projectID) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/projects/${projectID}/file/status`).then(response => {
+            dispatch(receiveProjectStatus(projectID, response.data));
         });
     }
 }

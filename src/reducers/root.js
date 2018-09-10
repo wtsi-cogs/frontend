@@ -21,14 +21,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { combineReducers } from 'redux'
 import update from 'immutability-helper';
-import {REQUEST_PROJECTS, RECEIVE_PROJECT, DELETE_PROJECT} from '../actions/projects';
+import {REQUEST_PROJECTS, RECEIVE_PROJECT, RECEIVE_PROJECT_STATUS, DELETE_PROJECT} from '../actions/projects';
 import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
 import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION } from '../actions/rotations';
 
 function projects(state={
     fetching: 0,
-    projects: {}
+    projects: {},
+    projectStatus: {}
 }, action) {
     switch (action.type) {
         case REQUEST_PROJECTS:
@@ -43,6 +44,10 @@ function projects(state={
         case DELETE_PROJECT:
             return update(state, {
                 projects: {$unset: [action.projectID]}
+            }); 
+        case RECEIVE_PROJECT_STATUS: 
+            return update(state, {
+                projectStatus: {$merge: {[action.projectID]: action.projectStatus}}
             }); 
         default:
             return state;

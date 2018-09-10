@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
-import {requestProjects, receiveProject} from './projects.js';
+import {requestProjects, receiveProject, fetchProject} from './projects.js';
 import {requestRotations, receiveRotation} from './rotations';
 
 export const FETCH_USERS = 'FETCH_USERS';
@@ -241,5 +241,12 @@ export function getCogsProjects(user) {
                 dispatch(receiveProject(response.data));
             });
         })
+    }
+}
+
+export function getCurrentStudentProject(user) {
+    return function (dispatch) {
+        const projectID = user.data.current_student_project;
+        dispatch(fetchProject(projectID));
     }
 }
