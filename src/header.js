@@ -20,14 +20,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem, NavDropdown} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
+import {fetchRotationYears} from './actions/rotations'
+import {api_url} from './config.js';
 import "./header.css"
 
 
 class Header extends Component {
+    async componentDidMount() {
+        if (this.props.user.permissions.view_all_submitted_projects && !this.props.rotationYears.length) {
+            this.props.fetchRotationYears();
+        }
+    }
+
     getActiveKey() {
         return this.props.location.pathname;
     }
@@ -62,6 +70,12 @@ class Header extends Component {
         });
     }
 
+    excelExport() {
+        return this.props.rotationYears.map(year => {
+            return <MenuItem href={`${api_url}/api/series/${year}/export.xlsx`} key={year}>{year}</MenuItem>;
+        });
+    }
+
     renderRightNav() {
         const user = this.props.user;
         const rotation = this.props.rotation;
@@ -75,9 +89,16 @@ class Header extends Component {
                 {this.renderLink("/rotations/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
                 {this.renderLink("/rotations/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
                 {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
-                <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
-                    {this.renderCogsEdit(rotation.part)}
-                </NavDropdown>
+                {permissions.view_all_submitted_projects && 
+                    <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
+                        {this.renderCogsEdit(rotation.part)}
+                    </NavDropdown>
+                }
+                {permissions.view_all_submitted_projects && 
+                    <NavDropdown title="Export to Excel" id="navbar_excel_dropdown" eventKey="excel_dropdown">
+                        {this.excelExport()}
+                    </NavDropdown>
+                }
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
                 {this.renderLink("/users/edit", "Edit Users", permissions.modify_permissions)}
                 {this.renderLink("/login", "Login", !user)}
@@ -107,18 +128,17 @@ class Header extends Component {
 
 
 const mapStateToProps = state => {
-    if (state.users.loggedInID === null || state.rotations.latestID === null) {
-        return {
-            user: null,
-            rotation: null
-        }
-    }
     return {
         user: state.users.users[state.users.loggedInID].data,
-        rotation: state.rotations.rotations[state.rotations.latestID].data
+        rotation: state.rotations.rotations[state.rotations.latestID].data,
+        rotationYears: state.rotations.yearList
     }
 };  
-const mapDispatchToProps = dispatch => {return {}};
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchRotationYears: () => dispatch(fetchRotationYears())
+    }
+};
 
 export default withRouter(connect(
     mapStateToProps,

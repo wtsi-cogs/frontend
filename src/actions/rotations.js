@@ -31,6 +31,7 @@ export const RECEIVE_ROTATION = 'RECEIVE_ROTATION';
 export const FETCH_LATEST_ROTATION = 'FETCH_LATEST_ROTATION';
 export const REQUEST_LATEST_ROTATION = 'REQUEST_LATEST_ROTATION';
 export const RECEIVE_LATEST_ROTATION = 'RECEIVE_LATEST_ROTATION';
+export const RECEIVE_ROTATION_YEARS = 'RECEIVE_ROTATION_YEARS';
 
 export function requestRotations(noRotations) {
     return {
@@ -56,6 +57,13 @@ function receiveLatestRotation(rotationID) {
     return {
         type: RECEIVE_LATEST_ROTATION,
         rotationID
+    }
+}
+
+function receiveRotationYears(rotationYears) {
+    return {
+        type: RECEIVE_ROTATION_YEARS,
+        rotationYears
     }
 }
 
@@ -123,6 +131,16 @@ export function createRotation(rotation) {
     return function (dispatch) {
         axios.post(`${api_url}/api/series`, rotation).then(response => {
             dispatch(fetchLatestRotation());
+        });
+    };
+}
+
+
+export function fetchRotationYears() {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/series`).then(response => {
+            const years = Object.keys(response.data.links).map(year => parseInt(year, 10));
+            dispatch(receiveRotationYears(years));
         });
     };
 }

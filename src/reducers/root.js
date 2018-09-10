@@ -24,7 +24,7 @@ import update from 'immutability-helper';
 import {REQUEST_PROJECTS, RECEIVE_PROJECT, RECEIVE_PROJECT_STATUS, DELETE_PROJECT} from '../actions/projects';
 import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
-import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION } from '../actions/rotations';
+import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION, RECEIVE_ROTATION_YEARS } from '../actions/rotations';
 
 function projects(state={
     fetching: 0,
@@ -81,6 +81,7 @@ function users(state={
 function rotations(state={
     fetching: 0,
     rotations: {},
+    yearList: [],
     latestID: null
 }, action) {
     switch (action.type) {
@@ -96,6 +97,10 @@ function rotations(state={
         case RECEIVE_LATEST_ROTATION:
             return update(state, {
                 latestID: {$set: action.rotationID}
+            });
+        case RECEIVE_ROTATION_YEARS:
+            return update(state, {
+                yearList: {$set: action.rotationYears}
             });
         default:
             return state;

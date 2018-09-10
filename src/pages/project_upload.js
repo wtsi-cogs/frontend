@@ -41,6 +41,7 @@ class ProjectUpload extends Component {
             canUpload: ""
         }
     }
+    
     async componentDidMount() {
         document.title = "Upload Final Project";
         this.props.getCurrentStudentProject(this.props.user);
