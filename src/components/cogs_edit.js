@@ -49,6 +49,10 @@ class CogsEditor extends Component {
         });
     }
 
+    getSurname(name) {
+        return name.substr(name.indexOf(" ") + 1);
+    }
+
     renderCogs(project) {
         return (
             <DropdownButton
@@ -98,9 +102,18 @@ class CogsEditor extends Component {
         }
         return user.data.name;
     }
+
+    sortProjects(a, b) {
+        const aUser = this.props.users[a[1].data.student_id];
+        const bUser = this.props.users[b[1].data.student_id];
+        if (!aUser || !bUser) {
+            return false;
+        }
+        return this.getSurname(aUser.data.name) > this.getSurname(bUser.data.name);
+    }
   
     renderProjects() {
-        return Object.entries(this.props.projects).map((kv) => {
+        return Object.entries(this.props.projects).sort((a,b) => this.sortProjects(a,b)).map((kv) => {
             const [id, projectAll] = kv;
             const project = projectAll.data;
             return (
@@ -108,8 +121,9 @@ class CogsEditor extends Component {
                     <div className="col-xs-2">{project.title}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_wetlab)}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_computational)}</div>
-                    <div className="col-xs-2">{this.renderUser(project.student_id)}</div>
-                    <div className="col-xs-2">{this.renderUser(project.supervisor_id)}</div>
+                    <div className="col-xs-1">{this.renderUser(project.student_id)}</div>
+                    <div className="col-xs-1">{this.renderUser(project.supervisor_id)}</div>
+                    <div className="col-xs-2">{project.small_info}</div>
                     <div className="col-xs-2">{this.renderProgrammes(project)}</div>
                     <div className="col-xs-2">{this.renderCogs(project)}</div>
                 </div>
@@ -127,8 +141,9 @@ class CogsEditor extends Component {
                     <div className="col-xs-2">Project Title</div>
                     <div className="col-xs-1">Wetlab</div>
                     <div className="col-xs-1">Computational</div>
-                    <div className="col-xs-2">Student</div>
-                    <div className="col-xs-2">Supervisor</div>
+                    <div className="col-xs-1">Student</div>
+                    <div className="col-xs-1">Supervisor</div>
+                    <div className="col-xs-2">Others</div>
                     <div className="col-xs-2">Programmes</div>
                     <div className="col-xs-2">CoGS Member</div>
                 </div>
