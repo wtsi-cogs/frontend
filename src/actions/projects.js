@@ -133,6 +133,13 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
     }
 }
 
+export function markProject(projectID, feedback) {
+    return function (dispatch) {
+        axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
+        });
+    }
+}
+
 export function saveCogsMarkers(project_user_map, callback=()=>{}) {
     return function (dispatch, getState) {
         function getCogsURL(userID) {

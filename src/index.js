@@ -56,6 +56,7 @@ import RotationChoiceViewer from './pages/rotation_choices_view.js'
 import RotationChoiceChooser from './pages/rotation_choices_finalise.js'
 import RotationCogsFinalise from './pages/rotation_choices_cogs.js'
 import ProjectUpload from './pages/project_upload'
+import ProjectMark from './pages/project_feedback'
 
 
 const loggerMiddleware = createLogger()
@@ -91,6 +92,7 @@ class App extends Component {
                             <Route exact path="/projects/upload" component={ProjectUpload}/>
                             <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                             <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
+                            <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
                             <Route exact path="/rotations/choices/cogs" component={RotationCogsFinalise}/>
                             <Route exact path="/rotations/choices/view" component={RotationChoiceViewer}/>
                             <Route exact path="/rotations/choices/finalise" component={RotationChoiceChooser}/>

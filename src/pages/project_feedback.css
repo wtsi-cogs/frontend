@@ -1,0 +1,11 @@
+.editor-div {
+    margin-top: 16px;
+}
+
+input[type=radio].grade-radio {
+    margin-right: 8px;
+}
+
+.public-DraftEditor-content {
+    min-height: 10em !important;
+}

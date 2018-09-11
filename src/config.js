@@ -20,3 +20,10 @@ export const userPermissions = [modifyPermissions, createProjectGroups, setReado
 export const programmes = ["Cancer, Ageing and Somatic Mutation", "Cellular Genetics", "Human Genetics", "Infection Genomics", "Malaria"]
 
 export const submissionGraceTime = "3 days"
+
+export const grades = {
+    A: "Excellent",
+    B: "Good",
+    C: "Satisfactory",
+    D: "Fail"
+}
