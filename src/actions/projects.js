@@ -28,6 +28,7 @@ export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS';
 export const RECEIVE_PROJECT = 'RECEIVE_PROJECT';
 export const RECEIVE_PROJECT_STATUS = 'RECEIVE_PROJECT_STATUS';
+export const RECEIVE_PROJECT_MARKS = 'RECEIVE_PROJECT_MARKS';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 
 export function requestProjects(noProjects) {
@@ -49,6 +50,14 @@ export function receiveProjectStatus(projectID, projectStatus) {
         type: RECEIVE_PROJECT_STATUS,
         projectID,
         projectStatus
+    }
+}
+
+export function receiveProjectMarks(projectID, projectMarks) {
+    return {
+        type: RECEIVE_PROJECT_MARKS,
+        projectID,
+        projectMarks
     }
 }
 
@@ -77,6 +86,14 @@ export function fetchProject(projectID) {
     return function (dispatch) {
         axios.get(`${api_url}/api/projects/${projectID}`).then(response => {
             dispatch(receiveProject(response.data));
+        });
+    }
+}
+
+export function fetchProjectMarks(projectID) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/projects/${projectID}/mark`).then(response => {
+            dispatch(receiveProjectMarks(projectID, response.data.data));
         });
     }
 }
