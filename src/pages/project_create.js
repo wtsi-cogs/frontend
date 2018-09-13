@@ -48,6 +48,7 @@ class ProjectCreate extends Component {
                 wetlab = {false}
                 computational = {false}
                 submitLabel="Create Project"
+                extraLabel="You can edit the project later"
                 onSubmit={project => {
                     this.props.createProject(project);
                     Alert.info(`${project.title} created`);

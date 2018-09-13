@@ -177,7 +177,7 @@ class ProjectEditor extends Component {
                                     editorClassName="abstract_inner"
                                 />
                             </div>
-                            <div className="col-xs-2">
+                            <div className="col-xs-3">
                                 <button
                                     type="button"
                                     className="btn btn-primary btn-lg"
@@ -185,6 +185,8 @@ class ProjectEditor extends Component {
                                 >
                                     {this.props.submitLabel}
                                 </button>
+                                <br/>
+                                {this.props.extraLabel}
                             </div>
                             {this.props.onDelete && this.renderDelete()}
                         </div>
