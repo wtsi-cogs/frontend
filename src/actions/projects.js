@@ -133,9 +133,10 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
     }
 }
 
-export function markProject(projectID, feedback) {
+export function markProject(projectID, feedback, callback) {
     return function (dispatch) {
         axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
+            callback();
         });
     }
 }

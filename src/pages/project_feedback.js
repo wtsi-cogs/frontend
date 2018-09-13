@@ -84,7 +84,11 @@ class ProjectFeedback extends Component {
             Alert.error("You must write some negative feedback on the project");
         }
         if (success) {
-            this.props.markProject(this.props.match.params.projectID, feedback);
+            const projectID = this.props.match.params.projectID;
+            this.props.markProject(projectID, feedback, () => {
+                Alert.info(`Feedback for ${this.props.projects[projectID].data.title} sent.`);
+                this.props.history.push("/");
+            });
         }
     }
 
@@ -180,7 +184,7 @@ class ProjectFeedback extends Component {
                                     className="btn btn-primary btn-lg"
                                     onClick={() => this.submitCheck()}
                                 >
-                                    Upload Feedback
+                                    Send Feedback
                                 </button>
                             </div>
                         </div>
@@ -202,7 +206,7 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchUser: (userID) => dispatch(fetchUser(userID)),
         fetchProject: (projectID) => dispatch(fetchProject(projectID)),
-        markProject: (projectID, feedback) => dispatch(markProject(projectID, feedback))
+        markProject: (projectID, feedback, callback) => dispatch(markProject(projectID, feedback, callback))
     }
 };
 
