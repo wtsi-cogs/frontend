@@ -60,7 +60,7 @@ class ProjectUpload extends Component {
                 this.props.fetchRotationFromURL(projectAll.links.group);
             }
             const status = this.props.projectStatus[projectAll.data.id];
-            if (!status) {
+            if (!status && projectAll.data.uploaded) {
                 this.props.getProjectFileStatus(projectAll.data.id);
             }
             if (this.state.canUpload === "") {
