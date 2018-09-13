@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import {fetchLatestSeries, saveRotation} from '../actions/rotations';
-import {getSupervisorProjects, getCogsProjects} from '../actions/users';
+import {getSupervisorProjects, getCogsProjects, getStudentProjects} from '../actions/users';
 import GroupEditor from './group_editor';
 import ProjectList from '../components/project_list.js';
 
@@ -33,6 +33,7 @@ class MainPage extends Component {
         this.props.fetchLatestSeries();
         this.props.getSupervisorProjects(this.props.user);
         this.props.getCogsProjects(this.props.user);
+        this.props.getStudentProjects(this.props.user);
     }
 
     renderRotations() {
@@ -48,36 +49,36 @@ class MainPage extends Component {
         );
     }
 
-    renderSupervisorProjects() {
+    renderProjects(header, lambda, displaySupervisorName) {
         const allProjects = this.props.projects;
         const projects = Object.keys(allProjects).reduce((filtered, id) => {
-            if (allProjects[id].data.supervisor_id === this.props.user.data.id) {
+            if (lambda(allProjects[id].data) === this.props.user.data.id) {
                 filtered[id] = allProjects[id];
             }
             return filtered;
         }, {});
-        return <div>
-            <h4>Projects I own</h4>
-            <ProjectList 
-                projects={projects}
-                showVote={false}
-                displaySupervisorName={false}
-            />
-        </div>
+        return ( 
+            <div>
+                <h4>{header}</h4>
+                <ProjectList 
+                    projects={projects}
+                    showVote={false}
+                    displaySupervisorName={displaySupervisorName}
+                />
+            </div>
+        );
+    }
+
+    renderSupervisorProjects() {
+        return this.renderProjects("Projects I own", (project => project.supervisor_id), false);
     }
 
     renderCogsProjects() {
-        const allProjects = this.props.projects;
-        const projects = Object.keys(allProjects).reduce((filtered, id) => {
-            if (allProjects[id].data.cogs_marker_id === this.props.user.data.id) {
-                filtered[id] = allProjects[id];
-            }
-            return filtered;
-        }, {});
-        return <div>
-            <h4>Projects I'm a CoGS marker for</h4>
-            <ProjectList projects={projects} showVote={false}/>
-        </div>
+        return this.renderProjects("Projects I'm a CoGS marker for", (project => project.cogs_marker_id), false);
+    }
+
+    renderStudentProjects() {
+        return this.renderProjects("My Projects", (project => project.student_id), true);
     }
 
     render() {
@@ -86,6 +87,7 @@ class MainPage extends Component {
                 <h4>Welcome, {this.props.user.data.name}</h4>
                 <div className="clearfix"></div>
                 {this.props.user.data.permissions.create_project_groups && this.renderRotations()}
+                {this.props.user.data.permissions.join_projects && this.renderStudentProjects()}
                 {this.props.user.data.permissions.create_projects && this.renderSupervisorProjects()}
                 {this.props.user.data.permissions.review_other_projects && this.renderCogsProjects()}
             </div>
@@ -115,7 +117,8 @@ const mapDispatchToProps = dispatch => {
         saveRotation: rotation => dispatch(saveRotation(rotation)),
         fetchLatestSeries: () => dispatch(fetchLatestSeries()),
         getSupervisorProjects: (user) => dispatch(getSupervisorProjects(user)),
-        getCogsProjects: (user) => dispatch(getCogsProjects(user))
+        getCogsProjects: (user) => dispatch(getCogsProjects(user)),
+        getStudentProjects: (user) => dispatch(getStudentProjects(user))
     }
 };
 

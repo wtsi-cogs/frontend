@@ -244,6 +244,18 @@ export function getCogsProjects(user) {
     }
 }
 
+export function getStudentProjects(user) {
+    return function (dispatch) {
+        const projects = user.links.student_projects;
+        dispatch(requestProjects(projects.length));
+        projects.forEach(link => {
+            axios.get(`${api_url}${link}`).then(response => {
+                dispatch(receiveProject(response.data));
+            });
+        })
+    }
+}
+
 export function getCurrentStudentProject(user) {
     return function (dispatch) {
         const projectID = user.data.current_student_project;
