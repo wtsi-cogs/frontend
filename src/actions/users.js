@@ -127,6 +127,15 @@ export function saveUser(userID, user) {
     }
 }
 
+export function createUser(user) {
+    return function (dispatch) {
+        dispatch(requestUsers(1));
+        axios.post(`${api_url}/api/users`, user).then(response => {
+            dispatch(receiveUser(response.data));
+        });
+    }
+}
+
 export function voteProject(projectID, option) {
     function getLinkKey(option) {return `choice_${option}`}
     function getDataKey(option) {return [null, "first", "second", "third"][option] + "_option_id"}
