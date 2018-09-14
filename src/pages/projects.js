@@ -34,6 +34,9 @@ class Projects extends Component {
         this.state = {
             showWetlab: true,
             showComputational: true,
+            forceWetlab: false,
+            forceComputational: false,
+            checkedProjects: false,
             programmes: programmes.reduce((map, programme) => {map[programme] = false; return map}, {})
         }
     }
@@ -42,6 +45,27 @@ class Projects extends Component {
         document.title = "All Projects";
         const rotation = this.props.rotation;
         this.props.fetchProjects(rotation.data.series, rotation.data.part);
+        if (rotation.data.part === 3) {
+            this.props.getStudentProjects(this.props.user);
+        }
+    }
+
+    async componentDidUpdate() {
+        if (this.props.rotation.data.part === 3 && !this.state.checkedProjects) {
+            const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
+                if (this.props.projects[id].data.student_id === this.props.user.data.id) {
+                    filtered.push(this.props.projects[id].data);
+                }
+                return filtered;
+            }, []);
+            const forceWetlab = !studentProjects.some(project => project.is_wetlab);
+            const forceComputational = !studentProjects.some(project => project.is_computational);
+            this.setState(update(this.state, {
+                forceWetlab: {$set: forceWetlab},
+                forceComputational: {$set: forceComputational},
+                checkedProjects: {$set: true}
+            }));
+        }
     }
 
     shouldShowProject(project) {
@@ -67,6 +91,7 @@ class Projects extends Component {
                             type="checkbox"
                             checked={this.state.showComputational}
                             readOnly={true}
+                            disabled={this.state.forceComputational}
                             onClick={() => {
                                 this.setState(update(this.state, {showComputational: {$set: !this.state.showComputational}}));
                             }}
@@ -80,6 +105,7 @@ class Projects extends Component {
                             type="checkbox"
                             checked={this.state.showWetlab}
                             readOnly={true}
+                            disabled={this.state.forceWetlab}
                             onClick={() => {
                                 this.setState(update(this.state, {showWetlab: {$set: !this.state.showWetlab}}));
                             }}
