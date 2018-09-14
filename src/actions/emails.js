@@ -54,7 +54,7 @@ export function fetchEmails() {
     }
 }
 
-export function setEmail(emailID, subject, content) {
+export function setEmail(emailID, subject, content, onError) {
     return function (dispatch, getState) {
         const state = getState();
         const email = state.emails.emails[emailID];
@@ -64,6 +64,8 @@ export function setEmail(emailID, subject, content) {
             );
             dispatch(requestEmails(1));
             dispatch(receiveEmail(updatedEmail));
+        }).catch(response => {
+            onError(response.response.data.status_message);
         });
     }
 }

@@ -21,7 +21,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { confirmAlert } from 'react-confirm-alert';
 import Alert from 'react-s-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css' 
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
 import {fetchEmails, setEmail} from '../actions/emails.js';
@@ -47,7 +49,15 @@ class EmailEditor extends Component {
     saveEmail() {
         const subject = this.refs.input.value;
         const content = this.state.content.toString("html");
-        this.props.setEmail(this.state.emailID, subject, content);
+        this.props.setEmail(this.state.emailID, subject, content, (status_message) => {
+            confirmAlert({
+                title: "Error saving email",
+                message: status_message,
+                buttons: [
+                    {label: "Back", onClick: () => {}},
+                ]
+            });
+        });
         Alert.info("Changes saved");
     }
 
@@ -118,7 +128,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchEmails: () => dispatch(fetchEmails()),
-        setEmail: (name, subject, content) => dispatch(setEmail(name, subject, content))
+        setEmail: (name, subject, content, onError) => dispatch(setEmail(name, subject, content, onError))
     }
 };
 
