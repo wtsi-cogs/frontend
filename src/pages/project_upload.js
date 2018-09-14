@@ -26,7 +26,7 @@ import Alert from 'react-s-alert';
 import {getCurrentStudentProject} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import {uploadProject, getProjectFileStatus} from '../actions/projects';
-import {submissionGraceTime} from '../config';
+import {submissionGraceTime, maxFilesize} from '../config';
 import update from 'immutability-helper';
 import JSZip from 'jszip';
 import {api_url} from '../config.js';
@@ -92,15 +92,20 @@ class ProjectUpload extends Component {
             zip.file(file.name, file);
         });
         zip.generateAsync({type:"blob"}).then(blob => {
-            this.props.uploadProject(projectID, blob, (status_message) => {
-                if (status_message === "success" || !status_message) {
-                    Alert.success(`Successfully uploaded your files for ${this.props.projects[projectID].data.title}.`);
-                    this.onSuccessfulUpload();
-                }
-                else {
-                    Alert.error(`Error when uploading ${this.props.projects[projectID].data.title}: ${status_message}`);
-                }
-            });
+            if (blob.size > maxFilesize) {
+                Alert.error("Selected file(s) too large");
+            }
+            else {
+                this.props.uploadProject(projectID, blob, (status_message) => {
+                    if (status_message === "success" || !status_message) {
+                        Alert.success(`Successfully uploaded your files for ${this.props.projects[projectID].data.title}.`);
+                        this.onSuccessfulUpload();
+                    }
+                    else {
+                        Alert.error(`Error when uploading ${this.props.projects[projectID].data.title}: ${status_message}`);
+                    }
+                });
+            }
         });
     }
 

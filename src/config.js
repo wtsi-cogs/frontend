@@ -27,3 +27,5 @@ export const grades = {
     C: "Satisfactory",
     D: "Fail"
 }
+
+export const maxFilesize = 31457280
