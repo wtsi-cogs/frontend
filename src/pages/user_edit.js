@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import shallowEqualObjects from 'shallow-equal/objects';
-import {userRoles, archive, student} from '../config.js';
+import {userRoles, archive} from '../config.js';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import {fetchAllUsers, saveUser, createUser} from '../actions/users';

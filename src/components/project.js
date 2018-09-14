@@ -79,10 +79,10 @@ class Project extends Component {
                 links.push(<div key="upload_project"><h3><Link to={`/projects/upload`}>Upload final project report</Link></h3><br/></div>);
             }
             if (project.cogs_marked) {
-                links.push(<div key="feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3><br/></div>);
+                links.push(<div key="cogs_feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3><br/></div>);
             }
             if (project.supervisor_marked) {
-                links.push(<div key="feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3><br/></div>);
+                links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3><br/></div>);
             }
         }
         if (canMark(this.props.user, this.props.project)) {

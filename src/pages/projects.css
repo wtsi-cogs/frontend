@@ -1,0 +1,7 @@
+.filter-label {
+    max-width: initial;
+}
+
+.filter-label > input {
+    margin-right: 8px;
+}
