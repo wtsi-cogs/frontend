@@ -44,8 +44,8 @@ class UserEditor extends Component {
             users: {},
             newUsers: {},
             dropdownOpen: null,
-            showNoRoles: false,
-            showArchived: false
+            filter: userRoles.reduce((map, role) => {map[role] = true; return map}, {}),
+            showNoRoles: false
         }
     }
 
@@ -58,13 +58,7 @@ class UserEditor extends Component {
         Object.values(this.props.users).forEach(user => {
             if (!this.state.users.hasOwnProperty(user.data.id)) {
                 this.setState(update(this.state, {
-                    users: {$merge: {[user.data.id]: {
-                        name: user.data.name,
-                        email: user.data.email,
-                        email_personal: user.data.email_personal,
-                        priority: user.data.priority,
-                        user_type: user.data.user_type
-                    }}}
+                    users: {$merge: this.loadUserStruct(user)}
                 }));
             }
         });
@@ -76,6 +70,18 @@ class UserEditor extends Component {
                 }));
             }
         });
+    }
+
+    loadUserStruct(user) {
+        return {
+            [user.data.id]: {
+                name: user.data.name,
+                email: user.data.email,
+                email_personal: user.data.email_personal,
+                priority: user.data.priority,
+                user_type: user.data.user_type
+            }
+        }
     }
 
     save() {
@@ -94,22 +100,25 @@ class UserEditor extends Component {
         Alert.info("Changes saved");
     }
 
-    archiveStudentRole() {
+    cancel() {
+        this.setState(update(this.state, {
+            users: {$set: 
+                Object.keys(this.props.users).reduce((map, userID) => {
+                    map[userID] = this.loadUserStruct(this.props.users[userID])[userID];
+                    return map;
+                }, {})},
+            newUsers: {$set: {}}
+        }));
+    }
+
+    archiveUsers() {
         let state = this.state;
-        Object.entries(this.state.users).forEach((kv) => {
+        Object.entries(this.state.users).filter(kv => this.shouldUserBeShown(kv)).forEach((kv) => {
             const [id, user] = kv;
-            let user_type = user.user_type.slice();
-            const index = user.user_type.indexOf(student);
-            if (index !== -1) {
-                user_type.splice(index, 1);
-                if (user.user_type.indexOf(archive) === -1) {
-                    user_type.push(archive);
-                }
-                const newUser = update(user, {$merge: {user_type}});
-                state = update(state, {
-                    users: {$merge: {[id]: newUser}}
-                });
-            }
+            const newUser = update(user, {$merge: {user_type: [archive]}});
+            state = update(state, {
+                users: {$merge: {[id]: newUser}}
+            });
         });
         this.setState(state);
     }
@@ -118,14 +127,13 @@ class UserEditor extends Component {
         const id = kv[0];
         const propsUser = this.props.users[id];
         const propsRoles = propsUser.data.user_type;
-        let shown = true;
-        if (!this.state.showArchived) {
-            shown &= !propsRoles.includes(archive);
+        if (!this.state.showNoRoles && !propsRoles.length) {
+            return false;
         }
-        if (!this.state.showNoRoles) {
-            shown &= !!propsRoles.length;
-        }
-        return shown;
+        const rolesShown = Object.entries(this.state.filter).filter(kv => kv[1]).map(kv => kv[0]);
+        return rolesShown.some(role => {
+            return propsRoles.includes(role);
+        });
     }
 
     renderUser(id, user, stateVar) {
@@ -174,12 +182,35 @@ class UserEditor extends Component {
         return this.renderUser(i, userDefault, "newUsers");
     }
 
+    renderFilterOptions() {
+        return (
+            <div className="col-xs-12">
+                {userRoles.map(role => {
+                    return (
+                        <label key={role} className="btn">
+                            <input 
+                                type="checkbox"
+                                className="role-check"
+                                checked={this.state.filter[role]}
+                                readOnly={true}
+                                onClick={() => {
+                                    this.setState(update(this.state, {filter: {$toggle: [role]}}));
+                                }}
+                            />
+                            {role}
+                        </label>
+                    );
+                })}
+            </div>
+        );
+    }
+
     render() {
         const text = this.props.fetching !== 0? `Fetching ${this.props.fetching} users`: "";
         const noRoleText = this.state.showNoRoles? "Hide users with no roles": "Show users with no roles";
-        const archivedText = this.state.showArchived? "Hide archived users": "Show archived users";
         return (
             <div className="container">
+                {this.renderFilterOptions()}
                 <div className="row">
                     <div className="col-xs-3">Name</div>
                     <div className="col-xs-2">Email Address</div>
@@ -197,20 +228,16 @@ class UserEditor extends Component {
                 <div className="row">
                     <div className="col-sm-4 spacing">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
+                        <button className="btn btn-primary btn-lg btn-block" onClick={() => this.cancel()}>Cancel Changes</button>
                     </div>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4 spacing">
-                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveStudentRole()}>Archive all students</button>
+                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveUsers()}>Archive Selected Users</button>
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => {
                             this.setState(update(this.state,
                                 {$merge: {showNoRoles: !this.state.showNoRoles}}
                             ));
                         }}>{noRoleText}</button>
-                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
-                            this.setState(update(this.state,
-                                {$merge: {showArchived: !this.state.showArchived}}
-                            ));
-                        }}>{archivedText}</button>
                     </div>
                 </div>
                 <div className="row spacing">

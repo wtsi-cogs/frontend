@@ -1,3 +1,7 @@
 .spacing {
     padding-top: 32px;
 }
+
+input[type=checkbox].role-check {
+    margin-right: 8px;
+}
