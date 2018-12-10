@@ -21,10 +21,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { combineReducers } from 'redux'
 import update from 'immutability-helper';
+
 import {REQUEST_PROJECTS, RECEIVE_PROJECT, RECEIVE_PROJECT_STATUS, RECEIVE_PROJECT_MARKS, DELETE_PROJECT} from '../actions/projects';
 import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
 import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION, RECEIVE_ROTATION_YEARS } from '../actions/rotations';
+
+import {SET_AUTHENTICATE, NONE} from '../actions/authenticate';
 
 function projects(state={
     fetching: 0,
@@ -131,11 +134,25 @@ function emails(state={
     }
 }
 
+function authenticate(state={
+    stage: NONE
+}, action) {
+    switch (action.type) {
+        case SET_AUTHENTICATE:
+            return update(state, {
+                stage: {$set: action.stage}
+            });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
   projects,
   users,
   rotations,
-  emails
+  emails,
+  authenticate
 });
 
 export default rootReducer

@@ -20,8 +20,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
+
 import {
-    BrowserRouter as Router,
     Route,
     Switch
   } from 'react-router-dom';
@@ -36,6 +36,9 @@ import DefaultPage from './pages/default_page.js';
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import { connect } from 'react-redux';
+import {withCookies} from 'react-cookie';
+import { createBrowserHistory } from 'history';
+import { routerMiddleware, connectRouter, ConnectedRouter } from 'connected-react-router'
 
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -57,29 +60,44 @@ import RotationChoiceChooser from './pages/rotation_choices_finalise.js'
 import RotationCogsFinalise from './pages/rotation_choices_cogs.js'
 import ProjectUpload from './pages/project_upload'
 import ProjectMark from './pages/project_mark'
-import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback'
+import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback';
+
+import { authenticate, AUTHENTICATED } from './actions/authenticate';
 
 
-const loggerMiddleware = createLogger()
+const loggerMiddleware = createLogger();
+const history = createBrowserHistory();
 const store = createStore(
-    rootReducer,
+    connectRouter(history)(rootReducer),
     applyMiddleware(
-      thunkMiddleware // lets us dispatch() functions
+      thunkMiddleware, // lets us dispatch() functions
+      routerMiddleware(history) // for dispatching history actions
       //,loggerMiddleware // neat middleware that logs actions
     )
   )
 
 class App extends Component {
-    async componentDidMount() {
-        store.dispatch(fetchMe());
-        store.dispatch(fetchLatestRotation());
+    async componentWillMount() {
+        store.dispatch(authenticate(this.props.cookies));
+    }
+    async componentDidUpdate() {
+        if (this.props.authenticate.stage !== AUTHENTICATED) {
+            store.dispatch(authenticate(this.props.cookies));
+            return
+        }
+        if (!this.props.loggedInID) {
+            store.dispatch(fetchMe());
+        }
+        if (!this.props.latestRotationID) {
+            store.dispatch(fetchLatestRotation());
+        }
     }
 
     render() {
         if (!(this.props.loggedInID && this.props.latestRotationID)) {return ""}
         return (
             <Provider store={store}>
-                <Router>
+                <ConnectedRouter history={history}>
                     <div>
                         <Header/>
                         <Switch>
@@ -104,7 +122,7 @@ class App extends Component {
                         </Switch>
                         <Alert stack={{limit: 3}} effect="stackslide"/>
                     </div>
-                </Router>
+                </ConnectedRouter>
             </Provider>
         );
     }
@@ -113,15 +131,16 @@ class App extends Component {
 const mapStateToProps = state => {
     return {
         loggedInID: state.users.loggedInID,
-        latestRotationID: state.rotations.latestID
+        latestRotationID: state.rotations.latestID,
+        authenticate: state.authenticate
     }
 };  
 
 const mapDispatchToProps = dispatch => {return {}};
 
-const ConnectedApp = connect(
+const ConnectedApp = withCookies(connect(
     mapStateToProps,
     mapDispatchToProps
-)(App)
+)(App));
 
 ReactDOM.render(<ConnectedApp store={store}/>, document.getElementById('root'));
