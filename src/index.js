@@ -84,7 +84,7 @@ class App extends Component {
         axios.interceptors.response.use(undefined, (error) => {
             const resp = error.response;
             const errText = (<p>{`${resp.status}: ${resp.statusText}`}<br/>{resp.data}</p>)
-            Alert.info(errText);
+            Alert.error(errText);
             return Promise.reject(error);
           });
     }
