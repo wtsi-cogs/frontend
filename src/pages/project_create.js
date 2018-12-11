@@ -50,9 +50,15 @@ class ProjectCreate extends Component {
                 submitLabel="Create Project"
                 extraLabel="You can edit the project later"
                 onSubmit={project => {
-                    this.props.createProject(project);
-                    Alert.info(`${project.title} created`);
-                    this.props.history.push("/");
+                    this.props.createProject(
+                        project,
+                        () => {
+                            Alert.info(`${project.title} created`);
+                            this.props.history.push("/");
+                        },
+                        (err) => {
+                            Alert.info(`Failed to create ${project.title}`);
+                        });
                 }}
             />
         );
@@ -65,7 +71,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createProject: project => dispatch(createProject(project))
+        createProject: (project, onDone, onFail) => dispatch(createProject(project, onDone, onFail))
     }
 };
 

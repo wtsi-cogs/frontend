@@ -98,11 +98,12 @@ export function fetchProjectMarks(projectID) {
     }
 }
 
-export function createProject(project) {
+export function createProject(project, onDone, onFail) {
     return function (dispatch) {
         axios.post(`${api_url}/api/projects`, project).then(response => {
             dispatch(receiveProject(response.data));
-        });
+            onDone();
+        }).catch(onFail);
     }
 }
 

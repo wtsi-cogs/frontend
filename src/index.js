@@ -39,6 +39,7 @@ import { connect } from 'react-redux';
 import {withCookies} from 'react-cookie';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware, connectRouter, ConnectedRouter } from 'connected-react-router'
+import axios from 'axios';
 
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -79,6 +80,13 @@ const store = createStore(
 class App extends Component {
     async componentWillMount() {
         store.dispatch(authenticate(this.props.cookies));
+        // Add an alert whenever a request fails.
+        axios.interceptors.response.use(undefined, (error) => {
+            const resp = error.response;
+            const errText = (<p>{`${resp.status}: ${resp.statusText}`}<br/>{resp.data}</p>)
+            Alert.info(errText);
+            return Promise.reject(error);
+          });
     }
     async componentDidUpdate() {
         if (this.props.authenticate.stage !== AUTHENTICATED) {
