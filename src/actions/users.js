@@ -113,16 +113,10 @@ export function fetchUsersWithPermissions(permissions) {
 }
 
 export function saveUser(userID, user) {
-    return function (dispatch, getState) {
+    return function (dispatch) {
         dispatch(requestUsers(1));
         axios.put(`${api_url}/api/users/${userID}`, user).then(response => {
-            const state = getState();
-            const userState = update(state.users.users[userID], {
-                $merge: {data: update(state.users.users[userID].data, {
-                    $merge: user
-                })}
-            });
-            dispatch(receiveUser(userState));
+            dispatch(receiveUser(response.data));
         });
     }
 }
