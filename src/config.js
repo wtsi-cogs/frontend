@@ -1,4 +1,4 @@
-export const api_url = "http://student-portal.sanger.ac.uk";
+export const api_url = "https://student-portal.sanger.ac.uk";
 
 export const cogsMember = "cogs_member"
 export const gradOffice = "grad_office"
