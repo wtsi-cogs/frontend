@@ -36,7 +36,6 @@ import DefaultPage from './pages/default_page.js';
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import { connect } from 'react-redux';
-import {withCookies} from 'react-cookie';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware, connectRouter, ConnectedRouter } from 'connected-react-router'
 import axios from 'axios';
@@ -79,7 +78,7 @@ const store = createStore(
 
 class App extends Component {
     async componentWillMount() {
-        store.dispatch(authenticate(this.props.cookies));
+        store.dispatch(authenticate());
         // Add an alert whenever a request fails.
         axios.interceptors.response.use(undefined, (error) => {
             const resp = error.response;
@@ -90,7 +89,7 @@ class App extends Component {
     }
     async componentDidUpdate() {
         if (this.props.authenticate.stage !== AUTHENTICATED) {
-            store.dispatch(authenticate(this.props.cookies));
+            store.dispatch(authenticate());
             return
         }
         if (!this.props.loggedInID) {
@@ -146,9 +145,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {return {}};
 
-const ConnectedApp = withCookies(connect(
+const ConnectedApp = connect(
     mapStateToProps,
     mapDispatchToProps
-)(App));
+)(App);
 
 ReactDOM.render(<ConnectedApp store={store}/>, document.getElementById('root'));

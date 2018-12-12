@@ -21,6 +21,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { push } from 'connected-react-router'
 import axios from 'axios';
 
+import {api_url} from '../config.js';
+
 export const SET_AUTHENTICATE = "SET_AUTHENTICATE";
 export const SET_TOKEN = "SET_TOKEN";
 
@@ -38,9 +40,22 @@ function setStage(stage) {
     }
 }
 
-function pagesmithAuth(dispatch, cookies) {
-    const pagesmith_cookie = cookies.get("Pagesmith_User");
+function setToken(stage) {
+    return {
+        type: SET_TOKEN,
+        stage
+    }
+}
+
+function pagesmithAuth(dispatch, state) {
+    const pagesmith_cookie = state.authenticate.token;
     if (pagesmith_cookie === undefined) {
+        axios.get(`${api_url}/api/cookie_thief`, {params: {"cookie": "Pagesmith_User"}}).then(response => {
+            dispatch(setToken(response.data));
+        });
+        return;
+    }
+    if (pagesmith_cookie === "") {
         dispatch(push("/login"));
         return
     }
@@ -48,11 +63,12 @@ function pagesmithAuth(dispatch, cookies) {
     return dispatch(setStage(AUTHENTICATED));
 }
 
-export function authenticate(cookies) {
-    return function (dispatch) {
+export function authenticate() {
+    return function (dispatch, getState) {
+        const state = getState();
         switch (authenticator) {
             case authenticators.PAGESMITH:
-                return pagesmithAuth(dispatch, cookies);
+                return pagesmithAuth(dispatch, state);
             default:
                 return dispatch(setStage(AUTHENTICATED));
         }
