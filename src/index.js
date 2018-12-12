@@ -61,7 +61,6 @@ import RotationCogsFinalise from './pages/rotation_choices_cogs.js'
 import ProjectUpload from './pages/project_upload'
 import ProjectMark from './pages/project_mark'
 import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback';
-import LoginReloader from './pages/login_reloader'
 
 import { authenticate, AUTHENTICATED } from './actions/authenticate';
 
@@ -110,7 +109,6 @@ class App extends Component {
                         <Header/>
                         <Switch>
                             <Route exact path="/" component={MainPage}/>
-                            <Route exact path="/login" component={LoginReloader}/>
                             <Route exact path="/projects" component={Projects}/>
                             <Route exact path="/projects/markable" component={MarkableProjects}/>
                             <Route exact path="/emails/edit" component={EmailEditor}/>

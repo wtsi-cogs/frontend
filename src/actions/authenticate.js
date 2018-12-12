@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { push } from 'connected-react-router'
 import axios from 'axios';
 
 import {api_url} from '../config.js';
@@ -56,7 +55,7 @@ function pagesmithAuth(dispatch, state) {
         return;
     }
     if (pagesmith_cookie === "") {
-        dispatch(push("/login"));
+        window.location.replace("/login");
         return
     }
     axios.defaults.headers.common["Authorization"] = "Pagesmith "+pagesmith_cookie.replace(/\s/g, "");
