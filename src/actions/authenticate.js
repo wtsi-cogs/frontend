@@ -40,10 +40,10 @@ function setStage(stage) {
     }
 }
 
-function setToken(stage) {
+function setToken(token) {
     return {
         type: SET_TOKEN,
-        stage
+        token
     }
 }
 
