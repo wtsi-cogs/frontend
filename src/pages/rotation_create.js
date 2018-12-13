@@ -25,22 +25,33 @@ import GroupForm from '../components/group_form';
 import update from 'immutability-helper';
 import {createRotation} from '../actions/rotations';
 
+import './rotation_create.css'
+
 class RotationCreate extends Component {
     constructor(props) {
         super(props);
-        this.state = {deadlines: {}};
+        this.state = {
+            deadlines: {},
+            series: 0,
+            part: 0
+        };
     }
 
     async componentDidMount() {
         document.title = "Create Rotation";
         const deadlines = this.props.latestRotation.data.deadlines
-        this.setState({deadlines: Object.keys(deadlines).reduce((obj, x) => {
-            obj[x] = {
-                id: deadlines[x].id,
-                name: deadlines[x].name
-            };
-            return obj;
-        }, {})});
+        const latest = this.props.latestRotation.data;
+        this.setState({
+            deadlines: Object.keys(deadlines).reduce((obj, x) => {
+                obj[x] = {
+                    id: deadlines[x].id,
+                    name: deadlines[x].name
+                };
+                return obj;
+            }, {}),
+            series: latest.series + (latest.part === 3),
+            part: (latest.part % 3) + 1
+        });
     }
 
     onSubmit() {
@@ -48,15 +59,47 @@ class RotationCreate extends Component {
             obj[x] = this.state.deadlines[x].value.format("YYYY-MM-DD");
             return obj;
         }, {});
-        const latest = this.props.latestRotation.data;
-        deadlines.series = latest.series + (latest.part === 3);
-        deadlines.part = (latest.part % 3) + 1;
+        deadlines.series = this.state.series;
+        deadlines.part = this.state.part;
         this.props.createRotation(deadlines);
         this.props.history.push("/");
     }
 
+    renderRotationHeader() {
+        return (
+            <span>
+                <input
+                    type="number"
+                    placeholder="Year"
+                    required="required"
+                    className="form-control year"
+                    value={this.state.series}
+                    onChange = {(event) => {
+                        this.setState(update(this.state, {$merge: {
+                            series: parseInt(event.target.value, 10)
+                        }}));
+                    }}
+                />
+                <div className="dash">-</div>
+                <input
+                    type="number"
+                    placeholder="Part"
+                    required="required"
+                    className="form-control part"
+                    value={this.state.part}
+                    min={1}
+                    max={3}
+                    onChange = {(event) => {
+                        this.setState(update(this.state, {$merge: {
+                            part: parseInt(event.target.value, 10)
+                        }}));
+                    }}
+                />
+            </span>
+        );
+    }
+
     render() {
-        const rotationNumber = (this.props.latestRotation.data.part % 3) + 1;
         let enableSubmit = true;
         Object.values(this.state.deadlines).forEach(deadline => {
             enableSubmit &= deadline.hasOwnProperty("value");
@@ -65,7 +108,7 @@ class RotationCreate extends Component {
             <div className="container">
                 <GroupForm 
                     deadlines = {this.state.deadlines}
-                    rotationName = {`Rotation ${rotationNumber}`}
+                    rotationHeader = {this.renderRotationHeader()}
                     submitName = "Create Group"
                     updateDeadline = {(deadlineName, date) => {
                         const newDeadline = update(this.state.deadlines[deadlineName], {$merge: {value: date}});

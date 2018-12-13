@@ -31,8 +31,10 @@ class GroupForm extends Component {
         return (
             <div key={deadline.id}>
                 <b>{deadline.name}</b>
+                <br/>
                 <DatePicker
                     selected={deadline.value}
+                    className="form-control"
                     filterDate={date => date.isAfter(moment(new Date()).subtract(1, "days"))}
                     dateFormat="DD/MM/YYYY"
                     onChange={(date) => {this.props.updateDeadline(deadlineName, date)}}
@@ -50,10 +52,10 @@ class GroupForm extends Component {
                             <div className="col-sm-6 col-sm-push-5">
                                 <div>
                                     <div className="pull-right visible-sm-block visible-md-block visible-lg-block">
-                                        <h2>{ this.props.rotationName }</h2>
+                                        { this.props.rotationHeader }
                                     </div>
                                     <div className="visible-xs-block">
-                                        <h2>{ this.props.rotationName }</h2>
+                                        { this.props.rotationHeader }
                                     </div>
                                 </div>
                             </div>

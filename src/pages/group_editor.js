@@ -66,7 +66,7 @@ class GroupEditor extends Component {
         return (
             <GroupForm 
                 deadlines = {deadlines}
-                rotationName = {"Rotation " + this.props.group.data.part}
+                rotationHeader = {<h2>Rotation {this.props.group.data.part}</h2>}
                 submitName = "Edit Group"
                 enableSubmit = {true}
                 updateDeadline = {(deadlineName, date) => {
