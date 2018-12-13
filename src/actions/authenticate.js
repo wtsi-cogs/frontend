@@ -20,17 +20,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 
-import {api_url} from '../config.js';
+import {api_url, authenticator, authenticators} from '../config.js';
 
 export const SET_AUTHENTICATE = "SET_AUTHENTICATE";
 export const SET_TOKEN = "SET_TOKEN";
 
 export const NONE = "NONE"; 
 export const AUTHENTICATED = "AUTHENTICATED";
-
-export const authenticators = {"NONE": "NONE", "PAGESMITH": "PAGESMITH"};
-export const authenticator = authenticators.PAGESMITH;
-
 
 function setStage(stage) {
     return {

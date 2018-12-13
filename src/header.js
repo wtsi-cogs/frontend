@@ -102,6 +102,7 @@ class Header extends Component {
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
                 {this.renderLink("/users/edit", "Edit Users", permissions.modify_permissions)}
                 {this.renderLink("/login", "Login", !user)}
+                {this.renderLink("/logout", "Logout", user)}
             </Nav>
         );
     }
@@ -109,8 +110,13 @@ class Header extends Component {
     render() {
         return (
             <Navbar staticTop={true} fluid={true} collapseOnSelect={true} onSelect={(eventKey, event) => {
+                if (["/login", "/logout"].includes(eventKey)) {
+                    this.props.history.go(eventKey);
+                }
+                else {
                     this.props.history.push(eventKey);
-                }}>
+                }
+            }}>
                 <Navbar.Header>
                     <Navbar.Brand>
                         PhD Student Portal
