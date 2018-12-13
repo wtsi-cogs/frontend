@@ -111,7 +111,7 @@ class Header extends Component {
         return (
             <Navbar staticTop={true} fluid={true} collapseOnSelect={true} onSelect={(eventKey, event) => {
                 if (["/login", "/logout"].includes(eventKey)) {
-                    this.props.history.go(eventKey);
+                    window.location = eventKey;
                 }
                 else {
                     this.props.history.push(eventKey);
