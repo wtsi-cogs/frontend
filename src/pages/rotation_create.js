@@ -68,6 +68,7 @@ class RotationCreate extends Component {
     renderRotationHeader() {
         return (
             <span>
+                <div className="dash">Rotation </div>
                 <input
                     type="number"
                     placeholder="Year"
@@ -109,7 +110,7 @@ class RotationCreate extends Component {
                 <GroupForm 
                     deadlines = {this.state.deadlines}
                     rotationHeader = {this.renderRotationHeader()}
-                    submitName = "Create Group"
+                    submitName = "Create Rotation"
                     updateDeadline = {(deadlineName, date) => {
                         const newDeadline = update(this.state.deadlines[deadlineName], {$merge: {value: date}});
                         this.setState(update(this.state, {deadlines: {$merge: {[deadlineName]: newDeadline}}}));
