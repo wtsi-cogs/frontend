@@ -27,3 +27,5 @@ export const grades = {
 }
 
 export const maxFilesize = 31457280
+
+export const authenticators = {"NONE": "NONE", "PAGESMITH": "PAGESMITH"};
