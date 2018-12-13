@@ -21,7 +21,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {api_url, grades} from '../config.js';
+import {api_url} from '../config.js'
+import {grades} from '../constants.js';
 import update from 'immutability-helper';
 import RichTextEditor from 'react-rte';
 import Alert from 'react-s-alert';

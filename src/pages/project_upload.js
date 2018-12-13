@@ -26,7 +26,7 @@ import Alert from 'react-s-alert';
 import {getCurrentStudentProject} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import {uploadProject, getProjectFileStatus} from '../actions/projects';
-import {submissionGraceTime, maxFilesize} from '../config';
+import {submissionGraceTime, maxFilesize} from '../constants';
 import update from 'immutability-helper';
 import JSZip from 'jszip';
 import {api_url} from '../config.js';

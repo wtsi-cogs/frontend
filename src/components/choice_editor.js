@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
-import {createProjects} from '../config';
+import {createProjects} from '../constants';
 import "./choice_editor.css";
 
 class ChoiceEditor extends Component {

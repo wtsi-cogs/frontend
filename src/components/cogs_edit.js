@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import {fetchUser, fetchUsersWithPermissions} from '../actions/users';
-import {reviewOtherProjects} from '../config';
+import {reviewOtherProjects} from '../constants';
 import "./cogs_edit.css";
 
 

@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import ProjectEditor from '../components/project_editor';
-import {programmes} from '../config';
+import {programmes} from '../constants';
 import {createProject, fetchProject} from '../actions/projects';
 
 class ProjectResubmit extends Component {

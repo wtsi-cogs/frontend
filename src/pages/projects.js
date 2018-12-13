@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProjects} from '../actions/projects';
 import ProjectList from '../components/project_list.js';
-import {programmes} from '../config';
+import {programmes} from '../constants';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import './projects.css';

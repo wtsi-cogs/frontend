@@ -26,7 +26,7 @@ import update from 'immutability-helper';
 import {fetchProjects} from '../actions/projects';
 import {saveStudentProjects} from '../actions/users';
 import {fetchUsersWithPermissions} from '../actions/users';
-import {joinProjects, createProjects} from '../config';
+import {joinProjects, createProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
 class RotationChoiceChooser extends Component {

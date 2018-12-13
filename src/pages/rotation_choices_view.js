@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProjects} from '../actions/projects';
 import {fetchUsersWithPermissions} from '../actions/users';
-import {joinProjects} from '../config';
+import {joinProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
 class RotationChoiceViewer extends Component {
