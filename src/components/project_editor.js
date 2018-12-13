@@ -47,7 +47,7 @@ class ProjectEditor extends Component {
             Alert.error("Projects must have a title");
             success = false;
         }
-        if (!this.state.programmes) {
+        if (!Object.values(this.state.programmes).some(i=>i)) {
             Alert.error("Projects must have at least one programme");
             success = false;
         }
