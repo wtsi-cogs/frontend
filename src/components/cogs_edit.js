@@ -60,9 +60,19 @@ class CogsEditor extends Component {
                 id={`cogs_dropdown`}
             >
                 {Object.keys(this.props.users).filter(userID => this.props.users[userID].data.permissions[reviewOtherProjects]).map(userID => {
-                    return <MenuItem eventKey={userID} key={userID} onSelect={() => this.props.setCogsMarker(project.id, parseInt(userID, 10))}>{this.renderCogsText(userID)}</MenuItem>;
+                    return (
+                        <MenuItem 
+                            eventKey={userID}
+                            key={userID} 
+                            onSelect={() => 
+                                this.props.setCogsMarker(project.id, parseInt(userID, 10))
+                            }
+                        >
+                            {this.renderCogsText(userID)}
+                        </MenuItem>
+                    );
                 })}
-                <MenuItem divider />
+                <MenuItem divider/>
                 <MenuItem eventKey="null" onSelect={() => this.props.setCogsMarker(project.id, null)}>None</MenuItem>
             </DropdownButton>
         );
