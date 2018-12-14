@@ -82,8 +82,7 @@ class App extends Component {
         // Add an alert whenever a request fails.
         axios.interceptors.response.use(undefined, (error) => {
             const resp = error.response;
-            const errText = (<p>{`${resp.status}: ${resp.statusText}`}<br/>{resp.data}</p>)
-            Alert.error(errText);
+            Alert.error(<p>{resp.status}: {resp.statusText}<br/>{JSON.stringify(resp.data)}</p>);
             return Promise.reject(error);
           });
     }

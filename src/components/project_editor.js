@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import MultiselectDropDown from './multiselect_dropdown';
 import RichTextEditor from 'react-rte';
 import update from 'immutability-helper';
-import { confirmAlert } from 'react-confirm-alert';
+import styledAlert from '../components/styledAlert';
 import Alert from 'react-s-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css' 
 import './project_editor.css';
@@ -74,7 +74,7 @@ class ProjectEditor extends Component {
                 <button
                     type="button"
                     className="btn btn-danger btn-lg"
-                    onClick={() => {confirmAlert({
+                    onClick={() => {styledAlert({
                         title: "Delete Project",
                         message: `You are about to delete "${this.state.title}". Do you wish to continue?`,
                         buttons: [

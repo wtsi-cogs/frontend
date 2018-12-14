@@ -81,6 +81,7 @@ class GroupForm extends Component {
                                 >
                                     {this.props.submitName}
                                 </button>
+                                { this.props.afterSubmit() }
                             </div>
                         </div>
                     </div>

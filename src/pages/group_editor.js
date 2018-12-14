@@ -22,7 +22,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import GroupForm from '../components/group_form';
 import moment from 'moment';
+import styledAlert from '../components/styledAlert';
 import update from 'immutability-helper';
+
+import './group_editor.css';
 
 class GroupEditor extends Component {
     constructor(props) {
@@ -72,6 +75,37 @@ class GroupEditor extends Component {
                     this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}
                 onSubmit = {() => {this.onSubmit()}}
+                afterSubmit = {() => {
+                    return ( !this.props.group.data.student_viewable &&
+                        <button
+                            type="submit"
+                            className="btn btn-warning btn-lg"
+                            id="remind-button"
+                            onClick={() => {
+                                styledAlert({
+                                    title: "Email Supervisors",
+                                    message: (
+                                        <p>
+                                            You're about to send an email to supervisors reminding them to submit projects.
+                                            <br/>
+                                            { this.props.group.data.manual_supervisor_reminders && (
+                                                `The last time a manual reminder was sent to all supervisors was on ${this.props.group.data.manual_supervisor_reminders}`
+                                            )}
+                                        </p>
+                                    ),
+                                    buttons: [
+                                        {label: "Yes", onClick: () => {
+                                            this.props.sendReminder();
+                                        }},
+                                        {label: "No", onClick: () => {}},
+                                    ]
+                                })
+                            }}
+                        >
+                            Remind Supervisors
+                        </button>
+                    );
+                }}
             />
         );
     }

@@ -144,3 +144,11 @@ export function fetchRotationYears() {
         });
     };
 }
+
+export function sendReminder(rotation) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/series/${rotation.data.series}/${rotation.data.part}/remind`).then(response => {
+            dispatch(receiveRotation(response.data));
+        });
+    };
+}

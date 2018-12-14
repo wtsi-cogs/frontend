@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
-import {fetchLatestSeries, saveRotation} from '../actions/rotations';
+import {fetchLatestSeries, saveRotation, sendReminder} from '../actions/rotations';
 import {getSupervisorProjects, getCogsProjects, getStudentProjects} from '../actions/users';
 import GroupEditor from './group_editor';
 import ProjectList from '../components/project_list.js';
@@ -44,6 +44,9 @@ class MainPage extends Component {
                 onSave = {(rotation) => {
                     this.props.saveRotation(rotation);
                     Alert.info("Rotation saved");
+                }}
+                sendReminder = {() => {
+                    this.props.sendReminder(rotation);
                 }}
             />
         );
@@ -115,6 +118,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         saveRotation: rotation => dispatch(saveRotation(rotation)),
+        sendReminder: rotation => dispatch(sendReminder(rotation)),
         fetchLatestSeries: () => dispatch(fetchLatestSeries()),
         getSupervisorProjects: (user) => dispatch(getSupervisorProjects(user)),
         getCogsProjects: (user) => dispatch(getCogsProjects(user)),

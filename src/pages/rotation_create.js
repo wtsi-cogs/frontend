@@ -112,6 +112,7 @@ class RotationCreate extends Component {
                         this.setState(update(this.state, {deadlines: {$merge: {[deadlineName]: newDeadline}}}));
                     }}
                     onSubmit = {() => {this.onSubmit()}}
+                    afterSubmit = {() => {}}
                 />
             </div>
         );
