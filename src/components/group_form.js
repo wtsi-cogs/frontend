@@ -21,20 +21,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
+import ClassNames from 'classnames';
 import 'react-datepicker/dist/react-datepicker.css';
 import './datepicker.css';
 import moment from 'moment';
 
 
 class GroupForm extends Component {
-    DateBox(deadlineName, deadline) {
+    renderDateBox(deadlineName, deadline, valid) {
         return (
             <div key={deadline.id}>
                 <b>{deadline.name}</b>
                 <br/>
                 <DatePicker
                     selected={deadline.value}
-                    className="form-control"
+                    className={ClassNames("form-control", {"invalid-date": !valid})}
                     filterDate={date => date.isAfter(moment(new Date()).subtract(1, "days"))}
                     dateFormat="DD/MM/YYYY"
                     onChange={(date) => {this.props.updateDeadline(deadlineName, date)}}
@@ -43,6 +44,16 @@ class GroupForm extends Component {
     }
 
     render() {
+        const validity = Object.values(this.props.deadlines).map((deadline, i) => {
+            const date = deadline.value;
+            // Unfilled entries are invalid
+            if (date === undefined) {return false}
+            const deadlines = Object.values(this.props.deadlines).slice(i+1).map(deadline=>deadline.value).filter(deadline=>deadline!==undefined);
+            // The last valid deadline has no constraints
+            if (deadlines.length === 0) {return true}
+            // Otherwise, deadlines are only valid if the input is before every deadline after 
+            return deadlines.every(deadline=>date.isBefore(deadline));
+        });
         return (
             <div>
                 <div className="col-md-2"></div>
@@ -60,13 +71,13 @@ class GroupForm extends Component {
                                 </div>
                             </div>
                             <div className="col-sm-6 col-sm-pull-5">
-                                {Object.keys(this.props.deadlines).map(deadline => this.DateBox(deadline, this.props.deadlines[deadline]))}
+                                {Object.keys(this.props.deadlines).map((deadline, i) => this.renderDateBox(deadline, this.props.deadlines[deadline], validity[i]))}
                                 <br/>
                                 <button
                                     type="submit"
                                     className="btn btn-primary btn-lg"
                                     onClick={this.props.onSubmit}
-                                    disabled={!this.props.enableSubmit}
+                                    disabled={!validity.every(i=>i)}
                                 >
                                     {this.props.submitName}
                                 </button>

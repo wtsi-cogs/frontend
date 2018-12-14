@@ -101,10 +101,6 @@ class RotationCreate extends Component {
     }
 
     render() {
-        let enableSubmit = true;
-        Object.values(this.state.deadlines).forEach(deadline => {
-            enableSubmit &= deadline.hasOwnProperty("value");
-        });
         return (
             <div className="container">
                 <GroupForm 
@@ -115,7 +111,6 @@ class RotationCreate extends Component {
                         const newDeadline = update(this.state.deadlines[deadlineName], {$merge: {value: date}});
                         this.setState(update(this.state, {deadlines: {$merge: {[deadlineName]: newDeadline}}}));
                     }}
-                    enableSubmit = {enableSubmit}
                     onSubmit = {() => {this.onSubmit()}}
                 />
             </div>

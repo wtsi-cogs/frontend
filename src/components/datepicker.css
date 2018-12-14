@@ -25,3 +25,7 @@ https://github.com/Hacker0x01/react-datepicker/issues/624#issuecomment-261696513
   width: 1.5em !important;
   line-height: 1.5em !important;
 }
+
+.invalid-date {
+  background-color: #ffe1e1;
+}
