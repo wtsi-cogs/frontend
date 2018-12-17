@@ -105,7 +105,6 @@ class Projects extends Component {
 
         const rotations = Object.values(this.props.rotations).map(rotationValue);
         const currentRotation = this.props.rotations[this.state.rotationID];
-        if (currentRotation === undefined) return;
         return (
             <Select
                 value={rotationValue(currentRotation)}
@@ -170,6 +169,7 @@ class Projects extends Component {
 
     render() {
         const rotation = this.props.rotations[this.state.rotationID];
+        if (rotation === undefined) return null;
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
             if (this.props.projects[id].data.group_id === rotation.data.id) {
                 filtered[id] = this.props.projects[id];
