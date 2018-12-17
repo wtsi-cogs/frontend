@@ -60,20 +60,29 @@ class Projects extends Component {
 
     async componentDidUpdate() {
         const rotation = this.props.rotations[this.state.rotationID];
-        if (rotation.data.part === 3 && !this.state.checkedProjects) {
-            const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
-                if (this.props.projects[id].data.student_id === this.props.user.data.id) {
-                    filtered.push(this.props.projects[id].data);
-                }
-                return filtered;
-            }, []);
-            const forceWetlab = !studentProjects.some(project => project.is_wetlab);
-            const forceComputational = !studentProjects.some(project => project.is_computational);
-            this.setState(update(this.state, {
-                forceWetlab: {$set: forceWetlab},
-                forceComputational: {$set: forceComputational},
-                checkedProjects: {$set: true}
-            }));
+        if (this.props.user.data.permissions.join_projects) {
+            if (rotation.data.part === 3 && !this.state.checkedProjects) {
+                const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
+                    if (this.props.projects[id].data.student_id === this.props.user.data.id) {
+                        filtered.push(this.props.projects[id].data);
+                    }
+                    return filtered;
+                }, []);
+                const forceWetlab = !studentProjects.some(project => project.is_wetlab);
+                const forceComputational = !studentProjects.some(project => project.is_computational);
+                this.setState(update(this.state, {
+                    forceWetlab: {$set: forceWetlab},
+                    forceComputational: {$set: forceComputational},
+                    checkedProjects: {$set: true}
+                }));
+            }
+            else if (rotation.data.part !== 3 && this.state.checkedProjects) {
+                this.setState(update(this.state, {
+                    forceWetlab: {$set: false},
+                    forceComputational: {$set: false},
+                    checkedProjects: {$set: false}
+                }));
+            }
         }
     }
 
@@ -110,7 +119,6 @@ class Projects extends Component {
                 value={rotationValue(currentRotation)}
                 id="previous-rotations-split-button"
                 onChange={value => {
-                    console.log(value);
                     this.setState(update(this.state, {rotationID: {$set: value.value}}), () => {
                         this.fetchRotation();
                     });
