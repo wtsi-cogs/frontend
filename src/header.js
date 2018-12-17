@@ -49,7 +49,7 @@ class Header extends Component {
 
     renderLeftNav() {
         const user = this.props.user;
-        const rotation = this.props.rotation;
+        const rotation = this.props.rotations[this.props.rotationID].data;
         if (user === null || rotation === null) {
             return "";
         }
@@ -78,7 +78,7 @@ class Header extends Component {
 
     renderRightNav() {
         const user = this.props.user;
-        const rotation = this.props.rotation;
+        const rotation = this.props.rotations[this.props.rotationID].data;
         if (user === null || rotation === null) {
             return "";
         }
@@ -89,6 +89,7 @@ class Header extends Component {
                 {this.renderLink("/rotations/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
                 {this.renderLink("/rotations/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
                 {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
+
                 {permissions.view_all_submitted_projects && 
                     <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
                         {this.renderCogsEdit(rotation.part)}
@@ -136,7 +137,8 @@ class Header extends Component {
 const mapStateToProps = state => {
     return {
         user: state.users.users[state.users.loggedInID].data,
-        rotation: state.rotations.rotations[state.rotations.latestID].data,
+        rotationID: state.rotations.latestID,
+        rotations: state.rotations.rotations,
         rotationYears: state.rotations.yearList
     }
 };  

@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 
-import React, {Component} from 'react';
+import React from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 
 import "./styledAlert.css";

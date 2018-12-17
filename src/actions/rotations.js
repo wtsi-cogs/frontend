@@ -111,6 +111,17 @@ export function fetchLatestRotation() {
     }
 }
 
+
+export function fetchAllRotations() {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/series/rotations`).then(response => {
+            Object.values(response.data.links).forEach(url => {
+                dispatch(fetchRotationFromURL(url));
+            })
+        });
+    }
+}
+
 export function saveRotation(rotation) {
     return function (dispatch, getState) {
         const state = getState();

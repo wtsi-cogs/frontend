@@ -22,8 +22,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProjects} from '../actions/projects';
+import {fetchAllRotations} from '../actions/rotations';
 import ProjectList from '../components/project_list.js';
 import {programmes} from '../constants';
+import Select from 'react-select';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import './projects.css';
@@ -37,21 +39,28 @@ class Projects extends Component {
             forceWetlab: false,
             forceComputational: false,
             checkedProjects: false,
-            programmes: programmes.reduce((map, programme) => {map[programme] = false; return map}, {})
+            programmes: programmes.reduce((map, programme) => {map[programme] = false; return map}, {}),
+            rotationID: 0
         }
     }
 
     async componentDidMount() {
         document.title = "All Projects";
-        const rotation = this.props.rotation;
-        this.props.fetchProjects(rotation.data.series, rotation.data.part);
-        if (rotation.data.part === 3) {
+        this.setState(update(this.state, {rotationID: {$set: this.props.rotationID}}), () => {
+            this.fetchRotation();
+        });
+        // Get student projects to enforce wetlab/computational constraints
+        if (this.props.rotations[this.props.rotationID].data.part === 3) {
             this.props.getStudentProjects(this.props.user);
+        }
+        if (this.props.user.data.permissions.view_projects_predeadline) {
+            this.props.fetchAllRotations();
         }
     }
 
     async componentDidUpdate() {
-        if (this.props.rotation.data.part === 3 && !this.state.checkedProjects) {
+        const rotation = this.props.rotations[this.state.rotationID];
+        if (rotation.data.part === 3 && !this.state.checkedProjects) {
             const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
                 if (this.props.projects[id].data.student_id === this.props.user.data.id) {
                     filtered.push(this.props.projects[id].data);
@@ -68,6 +77,11 @@ class Projects extends Component {
         }
     }
 
+    fetchRotation() {
+        const rotation = this.props.rotations[this.state.rotationID];
+        this.props.fetchProjects(rotation.data.series, rotation.data.part);
+    }
+
     shouldShowProject(project) {
         const programmeFilter = Object.entries(this.state.programmes).filter(kv => kv[1]).map(kv => kv[0]);
         var show = false;
@@ -80,6 +94,31 @@ class Projects extends Component {
             });
         }
         return show;
+    }
+
+    renderPreviousRotations() {
+        const rotationValue = (rotation) => {
+            const series = rotation.data.series;
+            const part = rotation.data.part;
+            return {value: rotation.data.id, label: `${series} rotation ${part}`};
+        }
+
+        const rotations = Object.values(this.props.rotations).map(rotationValue);
+        const currentRotation = this.props.rotations[this.state.rotationID];
+        if (currentRotation === undefined) return;
+        return (
+            <Select
+                value={rotationValue(currentRotation)}
+                id="previous-rotations-split-button"
+                onChange={value => {
+                    console.log(value);
+                    this.setState(update(this.state, {rotationID: {$set: value.value}}), () => {
+                        this.fetchRotation();
+                    });
+                }}
+                options={rotations}
+            />
+        );
     }
 
     renderFilterOptions() {
@@ -98,8 +137,6 @@ class Projects extends Component {
                         />
                         Show Computational Projects
                     </label>
-                </div>
-                <div className="col-xs-4">
                     <label className="btn filter-label">
                         <input 
                             type="checkbox"
@@ -112,6 +149,9 @@ class Projects extends Component {
                         />
                         Show Wetlab Projects
                     </label>
+                </div>
+                <div className="col-xs-4">
+                    {this.props.user.data.permissions.view_projects_predeadline && this.renderPreviousRotations()}
                 </div>
                 <div className="col-xs-4">
                     <MultiselectDropDown
@@ -129,8 +169,9 @@ class Projects extends Component {
     }
 
     render() {
+        const rotation = this.props.rotations[this.state.rotationID];
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
-            if (this.props.projects[id].data.group_id === this.props.rotation.data.id) {
+            if (this.props.projects[id].data.group_id === rotation.data.id) {
                 filtered[id] = this.props.projects[id];
             }
             return filtered;
@@ -153,7 +194,7 @@ class Projects extends Component {
                             return filtered;
                         }, {})
                     }
-                    showVote={this.props.user.data.permissions.join_projects && this.props.rotation.data.student_choosable}
+                    showVote={this.props.user.data.permissions.join_projects && rotation.data.student_choosable}
                     displaySupervisorName={true}
                 />
             </div>
@@ -164,7 +205,8 @@ class Projects extends Component {
 const mapStateToProps = state => {
     return {
         user: state.users.users[state.users.loggedInID],
-        rotation: state.rotations.rotations[state.rotations.latestID],
+        rotations: state.rotations.rotations,
+        rotationID: state.rotations.latestID,
         fetching: state.projects.fetching,
         projects: state.projects.projects
     }
@@ -172,7 +214,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchProjects: (series, part) => dispatch(fetchProjects(series, part))
+        fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
+        fetchAllRotations: () => dispatch(fetchAllRotations())
     }
 };
 
