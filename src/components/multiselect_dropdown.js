@@ -58,7 +58,7 @@ class MultiselectDropDown extends Component {
                         .map(([k,v])=>k)
                         .join(", ") || this.props.noneSelectedText}
                 </div>
-                <div className="caret pull-right"></div>
+                <div className="caret dropdown-caret pull-right"></div>
             </div>
         );
     }

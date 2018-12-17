@@ -10,7 +10,7 @@ input[type=checkbox].dropdown_checkbox_padding {
     overflow: hidden;
 }
 
-.caret {
+.dropdown-caret {
     position: relative;
     bottom: 10px;
 }
