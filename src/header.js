@@ -101,7 +101,7 @@ class Header extends Component {
                     </NavDropdown>
                 }
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
-                {this.renderLink("/users/edit", "Edit Users", permissions.modify_permissions)}
+                {this.renderLink("/people/edit", "Edit Users", permissions.modify_permissions)}
                 {this.renderLink("/login", "Login", !user)}
                 {this.renderLink("/logout", "Logout", user)}
             </Nav>

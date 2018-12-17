@@ -127,7 +127,7 @@ class App extends Component {
                             <Route exact path="/projects" component={Projects}/>
                             <Route exact path="/projects/markable" component={MarkableProjects}/>
                             <Route exact path="/emails/edit" component={EmailEditor}/>
-                            <Route exact path="/users/edit" component={UserEditor}/>
+                            <Route exact path="/people/edit" component={UserEditor}/>
                             <Route exact path="/rotations/create" component={RotationCreate}/>
                             <Route exact path="/projects/create" component={ProjectCreate}/>
                             <Route exact path="/projects/upload" component={ProjectUpload}/>
