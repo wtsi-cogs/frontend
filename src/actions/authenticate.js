@@ -59,12 +59,19 @@ function pagesmithAuth(dispatch, state) {
     return dispatch(setStage(AUTHENTICATED));
 }
 
+function pagesmithTestAuth(dispatch, state) {
+    axios.defaults.headers.common["Authorization"] = "Pagesmith TESTAUTH";
+    return dispatch(setStage(AUTHENTICATED));
+}
+
 export function authenticate() {
     return function (dispatch, getState) {
         const state = getState();
         switch (authenticator) {
             case authenticators.PAGESMITH:
                 return pagesmithAuth(dispatch, state);
+                case authenticators.PAGESMITH_TEST:
+                    return pagesmithTestAuth(dispatch, state);
             default:
                 return dispatch(setStage(AUTHENTICATED));
         }

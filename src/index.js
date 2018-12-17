@@ -65,7 +65,7 @@ import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_fe
 import { authenticate, AUTHENTICATED } from './actions/authenticate';
 
 
-const loggerMiddleware = createLogger();
+//const loggerMiddleware = createLogger();
 const history = createBrowserHistory();
 const store = createStore(
     connectRouter(history)(rootReducer),
@@ -82,7 +82,19 @@ class App extends Component {
         // Add an alert whenever a request fails.
         axios.interceptors.response.use(undefined, (error) => {
             const resp = error.response;
-            Alert.error(<p>{resp.status}: {resp.statusText}<br/>{JSON.stringify(resp.data)}</p>);
+            let msg = "";
+            if (typeof resp.data === 'string') {
+                msg = <p>{resp.status}: {resp.statusText}<br/>{resp.data.split("\n").map((line, i) => <span key={i}>{line}<br/></span>)}</p>;
+            }
+            else {
+                msg = <p>{resp.status}: {resp.statusText}<br/>{JSON.stringify(resp.data)}</p>;
+            }
+            Alert.error(msg, {onClose: () => {
+                if (resp.status === 401) {
+                    // Should only ever happen with authentication based issues
+                    window.location.replace("/login");
+                }
+            }});
             return Promise.reject(error);
           });
     }
@@ -100,7 +112,11 @@ class App extends Component {
     }
 
     render() {
-        if (!(this.props.loggedInID && this.props.latestRotationID)) {return ""}
+        if (!(this.props.loggedInID && this.props.latestRotationID)) {
+            return (
+                <Alert stack={{limit: 3}} effect="stackslide"/>
+            );
+        }
         return (
             <Provider store={store}>
                 <ConnectedRouter history={history}>
