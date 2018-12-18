@@ -212,7 +212,7 @@ class UserEditor extends Component {
                         items = {this.state.roleFilter}
                         noneSelectedText = "Nothing selected"
                         onSelect = {role => {
-                            this.setState(update(this.state, {filter: {$toggle: [role]}}));
+                            this.setState(update(this.state, {roleFilter: {$toggle: [role]}}));
                         }}
                     />
                 </div>
