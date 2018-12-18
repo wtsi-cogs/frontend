@@ -101,6 +101,7 @@ export function fetchProjectMarks(projectID) {
 export function createProject(project, onDone, onFail) {
     return function (dispatch) {
         axios.post(`${api_url}/api/projects`, project).then(response => {
+            dispatch(requestProjects(1));
             dispatch(receiveProject(response.data));
             onDone();
         }).catch(onFail);
@@ -110,6 +111,7 @@ export function createProject(project, onDone, onFail) {
 export function editProject(projectID, project) {
     return function (dispatch) {
         axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
+            dispatch(requestProjects(1));
             dispatch(receiveProject(response.data));
         });
     }
