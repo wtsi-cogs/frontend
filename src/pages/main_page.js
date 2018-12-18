@@ -42,8 +42,9 @@ class MainPage extends Component {
                 key = {rotation.data.part}
                 group = {rotation}
                 onSave = {(rotation) => {
-                    this.props.saveRotation(rotation);
-                    Alert.info("Rotation saved");
+                    this.props.saveRotation(rotation, ()=> {
+                        Alert.info("Rotation saved");
+                    });
                 }}
                 sendReminder = {() => {
                     this.props.sendReminder(rotation);
@@ -117,7 +118,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        saveRotation: rotation => dispatch(saveRotation(rotation)),
+        saveRotation: (rotation, onDone) => dispatch(saveRotation(rotation, onDone)),
         sendReminder: rotation => dispatch(sendReminder(rotation)),
         fetchLatestSeries: () => dispatch(fetchLatestSeries()),
         getSupervisorProjects: (user) => dispatch(getSupervisorProjects(user)),

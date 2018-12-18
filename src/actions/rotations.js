@@ -74,6 +74,7 @@ export function fetchLatestSeries() {
             const latestSeries = Math.max(...Object.keys(yearData.links));
             axios.get(`${api_url}/api/series/${latestSeries}`).then(response => {
                 const seriesParts = Object.keys(response.data.links);
+                dispatch(requestRotations(seriesParts.length));
                 seriesParts.forEach(part => {
                     dispatch(fetchRotation(latestSeries, part));
                 });
@@ -122,18 +123,14 @@ export function fetchAllRotations() {
     }
 }
 
-export function saveRotation(rotation) {
+export function saveRotation(rotation, onDone) {
     return function (dispatch, getState) {
         const state = getState();
-        const stateRotation = state.rotations.rotations[rotation.id];
-        const updatedState = update(stateRotation, {
-            data: {deadlines: deadlines => Object.keys(deadlines).reduce((prev, name) => {
-                prev[name] = update(deadlines[name], {$merge: {value: rotation.deadlines[name]}});
-                return prev;
-            }, {})}
-        });
-        axios.put(`${api_url}/api/series/${updatedState.data.series}/${updatedState.data.part}`, rotation["deadlines"]).then(response => {
-            dispatch(receiveRotation(updatedState));
+        const updatedState = update(rotation, {$unset: ["id"]});
+        axios.put(`${api_url}/api/series/${state.rotations.rotations[rotation.id].data.series}/${state.rotations.rotations[rotation.id].data.part}`, updatedState).then(response => {
+            dispatch(requestRotations(1));
+            dispatch(receiveRotation(response.data));
+            onDone();
         });
     }
 }

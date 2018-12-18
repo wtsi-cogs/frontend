@@ -1,3 +1,18 @@
 #remind-button {
     float: right;
 }
+
+.rotation-edit-advanced {
+    font-weight: 400;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.rotation-edit-advanced > input {
+    margin-right: 8px;
+}
+
+.rotation-edit-caret-rotate {
+    transform: rotate(90deg);
+}

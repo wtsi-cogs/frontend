@@ -20,17 +20,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
+import ClassNames from 'classnames';
 import GroupForm from '../components/group_form';
 import moment from 'moment';
 import styledAlert from '../components/styledAlert';
 import update from 'immutability-helper';
+import {groupAttrs} from '../constants';
 
 import './group_editor.css';
 
 class GroupEditor extends Component {
     constructor(props) {
         super(props);
-        this.state = {deltaDeadlines: {}}
+        this.state = {
+            deltaDeadlines: {},
+            deltaAttrs: {},
+            showAdvance: false
+        }
     }
 
     updateDeadline(deadline, dateString) {
@@ -45,6 +51,18 @@ class GroupEditor extends Component {
         }, {});
     }
 
+    getAttrs() {
+        return Object.keys(this.state.deltaAttrs).reduce((obj, attr) => {
+            obj[attr] = this.state.deltaAttrs[attr];
+            return obj;
+        }, Object.keys(this.props.group.data).reduce((obj, key) => {
+            if (groupAttrs.includes(key)) {
+                obj[key] = this.props.group.data[key];
+            }
+            return obj;
+        }, {}));
+    }
+
     async onSubmit() {
         const origDeadlines = this.deadlinesFromProps();
         let finalDeadlines = {}
@@ -56,7 +74,8 @@ class GroupEditor extends Component {
         });
         this.props.onSave({
             id: this.props.group.data.id,
-            deadlines: finalDeadlines
+            deadlines: finalDeadlines,
+            attrs: this.getAttrs()
         });
     }
 
@@ -65,11 +84,48 @@ class GroupEditor extends Component {
         Object.keys(this.state.deltaDeadlines).forEach(key => {
             deadlines[key].value = this.state.deltaDeadlines[key];
         });
-
+        const attrs = this.getAttrs();
         return (
             <GroupForm 
                 deadlines = {deadlines}
-                rotationHeader = {<h2>Rotation {this.props.group.data.part}</h2>}
+                rotationHeader = {
+                    <div>
+                        <h2>Rotation {this.props.group.data.part}</h2>
+                        <h5 
+                            className="rotation-edit-advanced"
+                            onClick={() => {
+                                this.setState(update(this.state, {$set: {showAdvance: !this.state.showAdvance}}));
+                            }}
+                        >
+                            Advanced
+                            <div className={ClassNames("caret", {"rotation-edit-caret-rotate": !this.state.showAdvance})}></div>
+                        </h5>
+                        {this.state.showAdvance && (
+                                <div>
+                                    {groupAttrs.map(attr => {
+                                        return (
+                                            <div key={attr}>
+                                                <label className="rotation-edit-advanced">
+                                                    <input 
+                                                        type="checkbox"
+                                                        name={attr} 
+                                                        checked={attrs[attr]}
+                                                        readOnly={true}
+                                                        onClick={() => {
+                                                            this.setState(update(this.state, {deltaAttrs: (obj) => {
+                                                                return Object.assign(obj, {[attr]: !(obj[attr] === undefined? this.props.group.data[attr]: obj[attr])});
+                                                            }}));
+                                                        }}
+                                                    />
+                                                    {attr}
+                                                </label>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                    </div>
+                }
                 submitName = "Edit Group"
                 updateDeadline = {(deadlineName, date) => {
                     this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));

@@ -15,9 +15,23 @@ export const viewProjectsPredeadline = "view_projects_predeadline"
 export const viewAllSubmittedProjects = "view_all_submitted_projects"
 export const userPermissions = [modifyPermissions, createProjectGroups, setReadonly, createProjects, reviewOtherProjects, joinProjects, viewProjectsPredeadline, viewAllSubmittedProjects]
 
-export const programmes = ["Cancer, Ageing and Somatic Mutation", "Cellular Genetics", "Human Genetics", "Infection Genomics", "Malaria"]
+export const programmes = [
+    "Cancer, Ageing and Somatic Mutation",
+    "Cellular Genetics", 
+    "Human Genetics", 
+    "Infection Genomics", 
+    "Malaria"
+]
 
 export const submissionGraceTime = "3 days"
+
+export const groupAttrs = [
+    "student_viewable",
+    "student_choosable",
+    "student_uploadable",
+    "can_finalise",
+    "read_only"
+]
 
 export const grades = {
     A: "Excellent",
@@ -28,4 +42,8 @@ export const grades = {
 
 export const maxFilesize = 31457280
 
-export const authenticators = {"NONE": "NONE", "PAGESMITH": "PAGESMITH", "PAGESMITH_TEST": "PAGESMITH_TEST"};
+export const authenticators = {
+    "NONE": "NONE", 
+    "PAGESMITH": "PAGESMITH", 
+    "PAGESMITH_TEST": "PAGESMITH_TEST"
+};
