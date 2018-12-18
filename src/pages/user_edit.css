@@ -5,3 +5,15 @@
 input[type=checkbox].role-check {
     margin-right: 8px;
 }
+
+.filter-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    line-height: 30px;
+}
+
+.filter-flex > * {
+    flex: 1;
+    margin-left: 8px;
+}

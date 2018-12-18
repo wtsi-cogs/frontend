@@ -44,8 +44,8 @@ class UserEditor extends Component {
             users: {},
             newUsers: {},
             dropdownOpen: null,
-            filter: userRoles.reduce((map, role) => {map[role] = true; return map}, {}),
-            showNoRoles: false
+            roleFilter: userRoles.reduce((map, role) => {map[role] = role !== archive; return map}, {no_roles: false}),
+            textFilter: ""
         }
     }
 
@@ -126,11 +126,20 @@ class UserEditor extends Component {
     shouldUserBeShown(kv) {
         const id = kv[0];
         const propsUser = this.props.users[id];
-        const propsRoles = propsUser.data.user_type;
-        if (!this.state.showNoRoles && !propsRoles.length) {
-            return false;
+        const textFilter = this.state.textFilter;
+
+        if (textFilter !== "") {
+            const fields = [propsUser.data.email, propsUser.data.email_personal, propsUser.data.name];
+            // Don't count .sanger.ac.uk or other domain names
+            // Also want to be case insensitive here
+            return fields.some(str => {return str.split("@")[0].toLowerCase().includes(textFilter)});
         }
-        const rolesShown = Object.entries(this.state.filter).filter(kv => kv[1]).map(kv => kv[0]);
+
+        const propsRoles = propsUser.data.user_type;
+        if (!propsRoles.length) {
+            return this.state.roleFilter.no_roles;
+        }
+        const rolesShown = Object.entries(this.state.roleFilter).filter(kv => kv[1]).map(kv => kv[0]);
         return rolesShown.some(role => {
             return propsRoles.includes(role);
         });
@@ -184,34 +193,39 @@ class UserEditor extends Component {
 
     renderFilterOptions() {
         return (
-            <div className="col-xs-12">
-                {userRoles.map(role => {
-                    return (
-                        <label key={role} className="btn">
-                            <input 
-                                type="checkbox"
-                                className="role-check"
-                                checked={this.state.filter[role]}
-                                readOnly={true}
-                                onClick={() => {
-                                    this.setState(update(this.state, {filter: {$toggle: [role]}}));
-                                }}
-                            />
-                            {role}
-                        </label>
-                    );
-                })}
+            <div className="row">
+                <div className="col-xs-6 filter-flex">
+                    User filter:
+                    <input 
+                        value={this.state.textFilter} 
+                        onChange={(event) => {
+                            this.setState(update(this.state, {
+                                textFilter: {$set: event.target.value}}
+                            ));
+                        }} 
+                        className="form-control"
+                    />
+                </div>
+                <div className="col-xs-6 filter-flex">
+                    Role filter:
+                    <MultiselectDropDown
+                        items = {this.state.roleFilter}
+                        noneSelectedText = "Nothing selected"
+                        onSelect = {role => {
+                            this.setState(update(this.state, {filter: {$toggle: [role]}}));
+                        }}
+                    />
+                </div>
             </div>
         );
     }
 
     render() {
         const text = this.props.fetching !== 0? `Fetching ${this.props.fetching} users`: "";
-        const noRoleText = this.state.showNoRoles? "Hide users with no roles": "Show users with no roles";
         return (
             <div className="container">
                 {this.renderFilterOptions()}
-                <div className="row">
+                <div className="row spacing">
                     <div className="col-xs-3">Name</div>
                     <div className="col-xs-2">Email Address</div>
                     <div className="col-xs-2">Personal Email</div>
@@ -233,11 +247,6 @@ class UserEditor extends Component {
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4 spacing">
                         <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveUsers()}>Archive Selected Users</button>
-                        <button className="btn btn-primary btn-lg btn-block" onClick={() => {
-                            this.setState(update(this.state,
-                                {$merge: {showNoRoles: !this.state.showNoRoles}}
-                            ));
-                        }}>{noRoleText}</button>
                     </div>
                 </div>
                 <div className="row spacing">
