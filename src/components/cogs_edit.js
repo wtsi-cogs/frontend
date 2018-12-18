@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import ClassNames from 'classnames';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import {fetchUser, fetchUsersWithPermissions} from '../actions/users';
 import {reviewOtherProjects} from '../constants';
@@ -123,11 +124,11 @@ class CogsEditor extends Component {
     }
   
     renderProjects() {
-        return Object.entries(this.props.projects).sort((a,b) => this.sortProjects(a,b)).map((kv) => {
+        return Object.entries(this.props.projects).sort((a,b) => this.sortProjects(a,b)).map((kv, i) => {
             const [id, projectAll] = kv;
             const project = projectAll.data;
             return (
-                <div className="row" key={id}>
+                <div className={ClassNames("row", {"shaded": i%2 === 1})} key={id}>
                     <div className="col-xs-2">{project.title}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_wetlab)}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_computational)}</div>
