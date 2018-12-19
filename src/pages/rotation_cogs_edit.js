@@ -86,7 +86,7 @@ class RotationCogsEditor extends Component {
         }, {});
         let text = this.props.fetching? `Fetching ${this.props.fetching} more projects.`: "";
         if (this.props.fetching === 0 && Object.keys(projects).length === 0) {
-            text = "There are no projects in this rotation";
+            text = "There are no projects with students assigned in this rotation.";
         }
         return (
             <div className="container-fluid">
