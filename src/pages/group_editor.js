@@ -26,6 +26,7 @@ import moment from 'moment';
 import styledAlert from '../components/styledAlert';
 import update from 'immutability-helper';
 import {groupAttrs} from '../constants';
+import {developer} from '../config';
 
 import './group_editor.css';
 
@@ -91,15 +92,17 @@ class GroupEditor extends Component {
                 rotationHeader = {
                     <div>
                         <h2>Rotation {this.props.group.data.part}</h2>
-                        <h5 
-                            className="rotation-edit-advanced"
-                            onClick={() => {
-                                this.setState(update(this.state, {$set: {showAdvance: !this.state.showAdvance}}));
-                            }}
-                        >
-                            Advanced
-                            <div className={ClassNames("caret", {"rotation-edit-caret-rotate": !this.state.showAdvance})}></div>
-                        </h5>
+                        {developer && (
+                            <h5 
+                                className="rotation-edit-advanced"
+                                onClick={() => {
+                                    this.setState(update(this.state, {$set: {showAdvance: !this.state.showAdvance}}));
+                                }}
+                            >
+                                Developer
+                                <div className={ClassNames("caret", {"rotation-edit-caret-rotate": !this.state.showAdvance})}></div>
+                            </h5>
+                        )}
                         {this.state.showAdvance && (
                                 <div>
                                     {groupAttrs.map(attr => {
