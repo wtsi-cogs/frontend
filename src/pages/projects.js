@@ -95,10 +95,10 @@ class Projects extends Component {
     shouldShowProject(project) {
         const programmeFilter = Object.entries(this.state.programmes).filter(kv => kv[1]).map(kv => kv[0]);
         var show = true;
-        // This doesn't show dummy projects but that's fine because they should be assigned a type before they're 'complete'
-        
+        // Only show wetlab projects if show wetlab is selected        
         show &= this.state.showWetlab || !project.is_wetlab;
         show &= this.state.showComputational || !project.is_computational;
+        // If we're forcing wetlab projects to show, always show them
         show &= !this.state.forceWetlab || project.is_wetlab;
         show &= !this.state.forceComputational || project.is_computational;
         if (programmeFilter.length) {
