@@ -22,7 +22,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import {fetchRotationYears} from './actions/rotations'
 import {api_url} from './config.js';
