@@ -132,7 +132,9 @@ class UserEditor extends Component {
             const fields = [propsUser.data.email, propsUser.data.email_personal, propsUser.data.name];
             // Don't count .sanger.ac.uk or other domain names
             // Also want to be case insensitive here
-            return fields.some(str => {return str.split("@")[0].toLowerCase().includes(textFilter)});
+            if (!fields.some(str => {return str.split("@")[0].toLowerCase().includes(textFilter)})) {
+                return false;
+            }
         }
 
         const propsRoles = propsUser.data.user_type;
