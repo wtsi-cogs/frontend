@@ -64,7 +64,7 @@ class RotationChoiceViewer extends Component {
                 {studentText}
                 {projectText}
                 <ChoiceEditor
-                    users={users}
+                    students={users}
                     projects={projects}
                     showPriority={false}
                 />
