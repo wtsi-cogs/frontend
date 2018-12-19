@@ -124,7 +124,7 @@ class ChoiceEditor extends Component {
                 <div className="one-line">
                     <input type="checkbox" checked={selected === 3} readOnly={true}/>
                     <DropdownButton
-                        title={selected === 3? this.props.projects[this.props.choices[userID].id].data.title: "Other Project"}
+                        title={selected === 3 && projects.hasOwnProperty(this.props.choices[userID].id)? this.props.projects[this.props.choices[userID].id].data.title: "Other Project"}
                         id={`project_dropdown_${userID}`}
                     >
                         {Object.keys(this.props.projects).filter(projectID => !this.getUserChoices(this.props.students[userID].data).includes(parseInt(projectID, 10))).map(projectID => {
@@ -192,7 +192,7 @@ class ChoiceEditor extends Component {
                                                 onClick={() => {this.onSelect(id, "project", projectID)}}
                                             />
                                             <label htmlFor={`checkbox_${id}_${projectID}`}>
-                                                {this.getProjectTitle(projectID)}
+                                                {this.getProjectTitle(projectID) || "(No choice)"}
                                             </label>
                                         </li>
                                     );
