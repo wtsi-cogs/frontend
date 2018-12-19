@@ -105,7 +105,8 @@ class RotationChoiceChooser extends Component {
                 {studentText}
                 {projectText}
                 <ChoiceEditor
-                    users={users}
+                    users={this.props.users}
+                    students={users}
                     projects={projects}
                     onClick={(studentID, newState) => {
                         this.setChoice(studentID, newState);

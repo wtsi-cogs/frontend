@@ -48,7 +48,7 @@ class ChoiceEditor extends Component {
             return null;
         }
         if (userOption.type === "project") {
-            const userChoices = this.getUserChoices(this.props.users[userID].data);
+            const userChoices = this.getUserChoices(this.props.students[userID].data);
             const index = userChoices.indexOf(userOption.id);
             if (index === -1) {
                 return 3
@@ -66,7 +66,7 @@ class ChoiceEditor extends Component {
 
 
     invalidChoices() {
-        return Object.keys(this.props.users).filter(userID => {
+        return Object.keys(this.props.students).filter(userID => {
             const userOption = this.props.choices[userID];
             if (!userOption) {
                 return false;
@@ -74,7 +74,7 @@ class ChoiceEditor extends Component {
             if (userOption.type === "user") {
                 return false;
             }
-            return Object.keys(this.props.users).some(otherUserID => {
+            return Object.keys(this.props.students).some(otherUserID => {
                 if (otherUserID === userID) {
                     return false;
                 }
@@ -127,7 +127,7 @@ class ChoiceEditor extends Component {
                         title={selected === 3? this.props.projects[this.props.choices[userID].id].data.title: "Other Project"}
                         id={`project_dropdown_${userID}`}
                     >
-                        {Object.keys(this.props.projects).filter(projectID => !this.getUserChoices(this.props.users[userID].data).includes(parseInt(projectID, 10))).map(projectID => {
+                        {Object.keys(this.props.projects).filter(projectID => !this.getUserChoices(this.props.students[userID].data).includes(parseInt(projectID, 10))).map(projectID => {
                             return (
                                 <MenuItem
                                     eventKey={projectID}
@@ -166,7 +166,7 @@ class ChoiceEditor extends Component {
 
     renderStudentChoices(invalidUsers) {
         const showButtons = Boolean(this.props.choices);
-        return Object.entries(this.props.users).sort((a,b) => a[1].data.priority < b[1].data.priority).map((kv) => {
+        return Object.entries(this.props.students).sort((a,b) => a[1].data.priority < b[1].data.priority).map((kv) => {
             const [id, userAll] = kv;
             const user = userAll.data;
             const projectIDs = this.getUserChoices(user);
@@ -222,7 +222,7 @@ class ChoiceEditor extends Component {
                 {this.renderStudentChoices(invalidUsers)}
 
                 {showButtons && this.renderSaveButtons(
-                    invalidUsers.length || Object.keys(this.props.choices).length < Object.keys(this.props.users).length,
+                    invalidUsers.length || Object.keys(this.props.choices).length < Object.keys(this.props.students).length,
                     Boolean(invalidUsers.length)
                 )}
             </div>

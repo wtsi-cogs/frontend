@@ -163,10 +163,12 @@ export function saveStudentProjects(choices, callback=()=>{}) {
             choices: choices
         }).then(response => {
             const projects = response.data.data.projects;
+            dispatch(requestProjects(projects.length));
             projects.forEach(project => {
                 dispatch(receiveProject(project));
             });
             const users = response.data.data.users;
+            dispatch(requestUsers(users.length));
             users.forEach(user => {
                 dispatch(receiveUser(user));
             });
@@ -262,6 +264,7 @@ export function getStudentProjects(user) {
 export function getCurrentStudentProject(user) {
     return function (dispatch) {
         const projectID = user.data.current_student_project;
+        dispatch(requestProjects(1));
         dispatch(fetchProject(projectID));
     }
 }
