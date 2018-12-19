@@ -22,6 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProjects} from '../actions/projects';
+import {getStudentProjects} from '../actions/users'
 import {fetchAllRotations} from '../actions/rotations';
 import ProjectList from '../components/project_list.js';
 import {programmes} from '../constants';
@@ -61,13 +62,13 @@ class Projects extends Component {
     async componentDidUpdate() {
         const rotation = this.props.rotations[this.state.rotationID];
         if (this.props.user.data.permissions.join_projects) {
-            if (rotation.data.part === 3 && !this.state.checkedProjects) {
-                const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
-                    if (this.props.projects[id].data.student_id === this.props.user.data.id) {
-                        filtered.push(this.props.projects[id].data);
-                    }
-                    return filtered;
-                }, []);
+            const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
+                if (this.props.projects[id].data.student_id === this.props.user.data.id) {
+                    filtered.push(this.props.projects[id].data);
+                }
+                return filtered;
+            }, []);
+            if (rotation.data.part === 3 && studentProjects.length !== 0 && !this.state.checkedProjects) {
                 const forceWetlab = !studentProjects.some(project => project.is_wetlab);
                 const forceComputational = !studentProjects.some(project => project.is_computational);
                 this.setState(update(this.state, {
@@ -93,10 +94,13 @@ class Projects extends Component {
 
     shouldShowProject(project) {
         const programmeFilter = Object.entries(this.state.programmes).filter(kv => kv[1]).map(kv => kv[0]);
-        var show = false;
+        var show = true;
         // This doesn't show dummy projects but that's fine because they should be assigned a type before they're 'complete'
-        show |= this.state.showWetlab && project.is_wetlab;
-        show |= this.state.showComputational && project.is_computational;
+        
+        show &= this.state.showWetlab || !project.is_wetlab;
+        show &= this.state.showComputational || !project.is_computational;
+        show &= !this.state.forceWetlab || project.is_wetlab;
+        show &= !this.state.forceComputational || project.is_computational;
         if (programmeFilter.length) {
             show &= programmeFilter.some(programme => {
                 return project.programmes.includes(programme);
@@ -188,11 +192,18 @@ class Projects extends Component {
         if (this.props.fetching === 0 && Object.keys(projects).length === 0) {
             text = "There are no projects in this rotation";
         }
+        const showVote = this.props.user.data.permissions.join_projects && rotation.data.student_choosable
         return (
             <div className="container">
                 {this.renderFilterOptions()}
                 <hr/>
                 {text}
+                {text && showVote && <br/>}
+                {showVote && (
+                    "You may now vote for which projects you would like to do for this rotation. " +
+                    "Please select a first, second and third choice that you would be happy doing. " +
+                    `The choices you have selected by the choice selection deadline (${rotation.data.deadlines.student_choice.value} 23:59) will be used to inform the Graduate Office in project allocation.`
+                    )}
                 <ProjectList
                     projects={
                         Object.keys(projects).reduce((filtered, id) => {
@@ -202,7 +213,7 @@ class Projects extends Component {
                             return filtered;
                         }, {})
                     }
-                    showVote={this.props.user.data.permissions.join_projects && rotation.data.student_choosable}
+                    showVote={showVote}
                     displaySupervisorName={true}
                 />
             </div>
@@ -223,7 +234,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        fetchAllRotations: () => dispatch(fetchAllRotations())
+        fetchAllRotations: () => dispatch(fetchAllRotations()),
+        getStudentProjects: (user) => dispatch(getStudentProjects(user))
     }
 };
 

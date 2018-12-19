@@ -83,12 +83,11 @@ class Header extends Component {
             return "";
         }
         const permissions = user.permissions;
-        const studentChoicePassed = moment.utc(rotation.deadlines.student_choice.value).add(1, 'days').valueOf() - moment.utc() < 0;
         return (
             <Nav pullRight={true} activeKey={this.getActiveKey()}>
                 {this.renderLink("/rotations/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
                 {this.renderLink("/rotations/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
-                {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && studentChoicePassed)}
+                {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && rotation.student_uploadable)}
 
                 {permissions.view_all_submitted_projects && 
                     <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">

@@ -78,10 +78,10 @@ class Project extends Component {
             if (rotation && rotation.data.student_uploadable && !project.grace_passed) {
                 links.push(<div key="upload_project"><h3><Link to={`/projects/upload`}>Upload final project report</Link></h3><br/></div>);
             }
-            if (project.cogs_marked) {
+            if (project.cogs_feedback_id !== null) {
                 links.push(<div key="cogs_feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3><br/></div>);
             }
-            if (project.supervisor_marked) {
+            if (project.supervisor_feedback_id !== null) {
                 links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3><br/></div>);
             }
         }
