@@ -43,7 +43,7 @@ class RotationChoiceChooser extends Component {
     }
 
     async componentDidUpdate() {
-        Object.values(this.props.projects).forEach(project => {
+        Object.values(this.getProjects()).forEach(project => {
             const studentID = project.data.student_id;
             if (studentID !== null) {
                 if (!this.state.choices.hasOwnProperty(studentID)) {
@@ -51,6 +51,15 @@ class RotationChoiceChooser extends Component {
                 }
             }
         });
+    }
+
+    getProjects() {
+        return Object.keys(this.props.projects).reduce((filtered, id) => {
+            if (this.props.projects[id].data.group_id === this.props.rotation.data.id) {
+                filtered[id] = this.props.projects[id];
+            }
+            return filtered;
+        }, {});
     }
 
     setChoice(studentID, newState) {
@@ -88,13 +97,7 @@ class RotationChoiceChooser extends Component {
             studentText = "There are no students.";
         }
 
-
-        const projects = Object.keys(this.props.projects).reduce((filtered, id) => {
-            if (this.props.projects[id].data.group_id === this.props.rotation.data.id) {
-                filtered[id] = this.props.projects[id];
-            }
-            return filtered;
-        }, {});
+        const projects = this.getProjects();
         let projectText = this.props.fetching? `Fetching ${this.props.fetching} more projects.`: "";
         if (this.props.projectsFetching === 0 && Object.keys(projects).length === 0) {
             projectText = "There are no projects in this rotation.";
