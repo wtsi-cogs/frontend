@@ -81,6 +81,8 @@ class App extends Component {
         store.dispatch(authenticate());
         // Add an alert whenever a request fails.
         axios.interceptors.response.use(undefined, (error) => {
+            // If the method does it's own error handling, don't report here
+            if (error.config.headers.hasOwnProperty("_axios")) return Promise.reject(error);
             const resp = error.response;
             let msg = "";
             if (typeof resp.data === 'string') {

@@ -141,6 +141,7 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
             {
                 headers: {
                     'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                    '_axios': true
                 }
             }
         ).then(response => {

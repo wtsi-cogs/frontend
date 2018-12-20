@@ -58,7 +58,15 @@ export function setEmail(emailID, subject, content, onError) {
     return function (dispatch, getState) {
         const state = getState();
         const email = state.emails.emails[emailID];
-        axios.put(`${api_url}/api/emails/${email.name}`, {subject, content}).then(response => {
+        axios.put(
+            `${api_url}/api/emails/${email.name}`, 
+            {subject, content},
+            {
+                headers: {
+                    '_axios': true
+                }
+            }
+        ).then(response => {
             const updatedEmail = update(email, 
                 {$merge: {subject, content}}
             );
