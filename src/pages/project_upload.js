@@ -77,8 +77,6 @@ class ProjectUpload extends Component {
     }
 
     onSuccessfulUpload() {
-        this.props.getProjectFileStatus(this.props.user.data.current_student_project);
-
         this.setState(update(this.state, {$merge: {
             canUpload: false,
             uploads: []

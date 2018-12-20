@@ -132,8 +132,6 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
                 uploaded: true
             }}
         });
-        dispatch(requestProjects(1));
-        dispatch(receiveProject(project));
 
         const data = new FormData();
         data.append('file', blob, `${projectID}.zip`);
@@ -146,6 +144,8 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
                 }
             }
         ).then(response => {
+            dispatch(requestProjects(1));
+            dispatch(receiveProject(project));
             callback(response.data.status_message);
         }).catch(response => {
             callback(response.response.data.status_message);
