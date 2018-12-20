@@ -44,17 +44,17 @@ class ProjectList extends Component {
     }
 
     getLastName(project) {
-        const supervisor = this.props.users[project.data.supervisor_id];
-        if (!supervisor) {return project.data.id}
-        const name = supervisor.data.name;
+        const user = this.props.users[this.props.displaySupervisorName? project.data.supervisor_id: project.data.student_id];
+        if (!user) {return project.data.id}
+        const name = user.data.name;
         return name.substr(name.indexOf(' ')+1)
     }
 
     render() {
         const noProjects = Object.keys(this.props.projects).length;
         return Object.values(this.props.projects).sort((a, b) => {
-            const x = [a.student_id !== this.props.user.data.id, !canMark(this.props.user, a), b.data.group_id, this.getLastName(a), a.data.title];
-            const y = [b.student_id !== this.props.user.data.id, !canMark(this.props.user, b), a.data.group_id, this.getLastName(b), b.data.title];
+            const x = [a.student_id !== this.props.user.data.id, !canMark(this.props.user, a), a.data.group_id, this.getLastName(a), a.data.title];
+            const y = [b.student_id !== this.props.user.data.id, !canMark(this.props.user, b), b.data.group_id, this.getLastName(b), b.data.title];
             return (x > y) - (x < y);
         }).map((project, curProject) =>
             <div key={project.data.id}>
