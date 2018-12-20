@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ProjectFeedbackForm from '../components/project_feedback_form'
-import {fetchProject, fetchProjectMarks} from '../actions/projects';
+import {fetchProject, fetchProjectMarks, requestProjects} from '../actions/projects';
 import {fetchUser} from '../actions/users';
 import './project_mark.css';
 
@@ -30,6 +30,7 @@ class ProjectFeedback extends Component {
     async componentDidMount() {
         document.title = this.props.title;
         const projectID = this.props.match.params.projectID;
+        this.props.requestProjects(1);
         this.props.fetchProject(projectID);
         this.props.fetchProjectMarks(projectID);
     }
@@ -63,7 +64,8 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchUser: (userID) => dispatch(fetchUser(userID)),
         fetchProject: (projectID) => dispatch(fetchProject(projectID)),
-        fetchProjectMarks: (projectID) => dispatch(fetchProjectMarks(projectID))
+        fetchProjectMarks: (projectID) => dispatch(fetchProjectMarks(projectID)),
+        requestProjects: number => dispatch(requestProjects(number))
     }
 };
 
