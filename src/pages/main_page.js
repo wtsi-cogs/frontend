@@ -27,6 +27,8 @@ import {getSupervisorProjects, getCogsProjects, getStudentProjects} from '../act
 import GroupEditor from './group_editor';
 import ProjectList from '../components/project_list.js';
 
+import './main_page.css';
+
 class MainPage extends Component {
     async componentDidMount() {
         document.title = "Dashboard";
@@ -85,15 +87,22 @@ class MainPage extends Component {
         return this.renderProjects("My Projects", (project => project.student_id), true);
     }
 
+    renderSeparator() {
+        return <hr className="main-sep"/>
+    }
+
     render() {
+        const perms = this.props.user.data.permissions
         return (
             <div className="container">
                 <h4>Welcome, {this.props.user.data.name}</h4>
                 <div className="clearfix"></div>
-                {this.props.user.data.permissions.create_project_groups && this.renderRotations()}
-                {this.props.user.data.permissions.join_projects && this.renderStudentProjects()}
-                {this.props.user.data.permissions.create_projects && this.renderSupervisorProjects()}
-                {this.props.user.data.permissions.review_other_projects && this.renderCogsProjects()}
+                {perms.create_project_groups && this.renderRotations()}
+                {perms.join_projects && this.renderStudentProjects()}
+                {perms.join_projects && perms.create_projects && this.renderSeparator()}
+                {perms.create_projects && this.renderSupervisorProjects()}
+                {perms.create_projects && perms.review_other_projects && this.renderSeparator()}
+                {perms.review_other_projects && this.renderCogsProjects()}
             </div>
         );
     }
