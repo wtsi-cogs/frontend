@@ -55,7 +55,12 @@ class ProjectList extends Component {
         return Object.values(this.props.projects).sort((a, b) => {
             const x = [a.student_id !== this.props.user.data.id, !canMark(this.props.user, a), a.data.group_id, this.getLastName(a), a.data.title];
             const y = [b.student_id !== this.props.user.data.id, !canMark(this.props.user, b), b.data.group_id, this.getLastName(b), b.data.title];
-            return (x > y) - (x < y);
+            let res = 0;
+            for (let i=0; i < x.length; i++) {
+                res = (x[i] < y[i]) - (x[i] > y[i])
+                if (res !== 0) return res;
+            }
+            return 0;
         }).map((project, curProject) =>
             <div key={project.data.id}>
                 <div className="media">
