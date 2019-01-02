@@ -128,7 +128,7 @@ class CogsEditor extends Component {
             const [id, projectAll] = kv;
             const project = projectAll.data;
             return (
-                <div className={ClassNames("row", {"shaded": i%2 === 1})} key={id}>
+                <div className={ClassNames("row", {"shaded": i%2 === 0})} key={id}>
                     <div className="col-xs-2">{project.title}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_wetlab)}</div>
                     <div className="col-xs-1">{this.renderBoolean(project.is_computational)}</div>
@@ -149,14 +149,14 @@ class CogsEditor extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-xs-2">Project Title</div>
-                    <div className="col-xs-1">Wetlab</div>
-                    <div className="col-xs-1">Computational</div>
-                    <div className="col-xs-1">Student</div>
-                    <div className="col-xs-1">Supervisor</div>
-                    <div className="col-xs-2">Others</div>
-                    <div className="col-xs-2">Programmes</div>
-                    <div className="col-xs-2">CoGS Member</div>
+                    <div className="col-xs-2"><h5>Project Title</h5></div>
+                    <div className="col-xs-1"><h5>Wetlab</h5></div>
+                    <div className="col-xs-1"><h5>Computational</h5></div>
+                    <div className="col-xs-1"><h5>Student</h5></div>
+                    <div className="col-xs-1"><h5>Supervisor</h5></div>
+                    <div className="col-xs-2"><h5>Others</h5></div>
+                    <div className="col-xs-2"><h5>Programmes</h5></div>
+                    <div className="col-xs-2"><h5>CoGS Member</h5></div>
                 </div>
                 {this.renderProjects()}
             </div>
