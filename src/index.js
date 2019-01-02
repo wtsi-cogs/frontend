@@ -38,7 +38,6 @@ import Header from './header.js';
 import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware, connectRouter, ConnectedRouter } from 'connected-react-router'
-import axios from 'axios';
 
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -62,6 +61,9 @@ import ProjectUpload from './pages/project_upload'
 import ProjectMark from './pages/project_mark'
 import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback';
 
+import catchErrors from './interceptors/errors';
+import cacheRequests from './interceptors/cache';
+
 import { authenticate, AUTHENTICATED } from './actions/authenticate';
 
 
@@ -78,27 +80,9 @@ const store = createStore(
 
 class App extends Component {
     async componentWillMount() {
+        catchErrors();
+        cacheRequests();
         store.dispatch(authenticate());
-        // Add an alert whenever a request fails.
-        axios.interceptors.response.use(undefined, (error) => {
-            // If the method does it's own error handling, don't report here
-            if (error.config.headers.hasOwnProperty("_axios")) return Promise.reject(error);
-            const resp = error.response;
-            let msg = "";
-            if (typeof resp.data === 'string') {
-                msg = <p>{resp.status}: {resp.statusText}<br/>{resp.data.split("\n").map((line, i) => <span key={i}>{line}<br/></span>)}</p>;
-            }
-            else {
-                msg = <p>{resp.status}: {resp.statusText}<br/>{JSON.stringify(resp.data)}</p>;
-            }
-            Alert.error(msg, {onClose: () => {
-                if (resp.status === 401) {
-                    // Should only ever happen with authentication based issues
-                    window.location.replace("/login");
-                }
-            }});
-            return Promise.reject(error);
-          });
     }
     async componentDidUpdate() {
         if (this.props.authenticate.stage !== AUTHENTICATED) {
