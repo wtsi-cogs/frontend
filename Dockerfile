@@ -8,6 +8,7 @@ apt-get install -y nodejs build-essential && \
 npm install -g create-react-app
 
 COPY . /app/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN \
 npm --prefix /app install && \
