@@ -7,10 +7,11 @@ curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
 apt-get install -y nodejs build-essential && \
 npm install -g create-react-app
 
-COPY . /app/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY package.json package-lock.json /app/
+RUN npm --prefix /app install
 
+COPY . /app/
 RUN \
-npm --prefix /app install && \
-npm --prefix /app run build && \
-cp -r /app/build/* /usr/share/nginx/html
+npm --prefix /app run build
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
