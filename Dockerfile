@@ -1,5 +1,9 @@
 FROM nginx
 
+ARG API_URL
+ARG AUTHENTICATOR
+ARG DEVELOPER
+
 RUN \
 apt-get update && \
 apt-get install -y curl gnupg && \
@@ -9,6 +13,10 @@ npm install -g create-react-app
 
 COPY package.json package-lock.json /app/
 RUN npm --prefix /app install
+
+ENV REACT_APP_API_URL=$API_URL
+ENV REACT_APP_AUTHENTICATOR=$AUTHENTICATOR
+ENV REACT_APP_DEVELOPER=$DEVELOPER
 
 COPY . /app/
 RUN \
