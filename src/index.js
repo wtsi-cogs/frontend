@@ -26,7 +26,7 @@ import {
     Switch
   } from 'react-router-dom';
 import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
+//import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom';
