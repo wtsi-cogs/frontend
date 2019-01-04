@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {fetchRotationYears} from './actions/rotations'
+import {fetchRotationYears, excelExport} from './actions/rotations'
 import {api_url} from './config.js';
 import "./header.css"
 
@@ -69,9 +69,16 @@ class Header extends Component {
         });
     }
 
-    excelExport() {
+    renderExcelExport() {
         return this.props.rotationYears.map(year => {
-            return <MenuItem href={`${api_url}/api/series/${year}/export.xlsx`} key={year}>{year}</MenuItem>;
+            return <MenuItem 
+                onSelect={() => {
+                    this.props.excelExport(year);
+                }} 
+                key={year}
+            >
+                {year}
+            </MenuItem>;
         });
     }
 
@@ -95,7 +102,7 @@ class Header extends Component {
                 }
                 {permissions.view_all_submitted_projects && 
                     <NavDropdown title="Export to Excel" id="navbar_excel_dropdown" eventKey="excel_dropdown">
-                        {this.excelExport()}
+                        {this.renderExcelExport()}
                     </NavDropdown>
                 }
                 {this.renderLink("/emails/edit", "Edit Email Templates", permissions.modify_permissions)}
@@ -142,7 +149,8 @@ const mapStateToProps = state => {
 };  
 const mapDispatchToProps = dispatch => {
     return {
-        fetchRotationYears: () => dispatch(fetchRotationYears())
+        fetchRotationYears: () => dispatch(fetchRotationYears()),
+        excelExport: (url) => dispatch(excelExport(url))
     }
 };
 

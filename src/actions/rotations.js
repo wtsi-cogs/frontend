@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 import {api_url} from '../config.js';
+import {saveAs} from 'file-saver';
 import update from 'immutability-helper';
 
 
@@ -159,4 +160,12 @@ export function sendReminder(rotation) {
             dispatch(receiveRotation(response.data));
         });
     };
+}
+
+export function excelExport(year) {
+    return function (dispatch) {
+        axios.get(`${api_url}/api/series/${year}/export.xlsx`, {responseType: 'blob'}).then(response => {
+            saveAs(response.data, `export_${year}.xlsx`);
+        });
+    }
 }
