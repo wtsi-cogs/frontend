@@ -83,7 +83,7 @@ class RotationCogsFinalise extends Component {
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => {
                             this.save();
                             this.props.history.push("/rotations/choices/finalise");
-                        }}>Back</button>
+                        }}>Save and Return</button>
                     </div>
                     <div className="col-xs-4 col-md-1"></div>
                     <div className="col-xs-4 col-md-2">
