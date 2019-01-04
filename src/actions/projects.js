@@ -171,7 +171,11 @@ export function downloadProject(project, callback) {
             callback("Project not yet uploaded", true);
         } 
         else {
-            callback(`Download failed: ${response.response.data.status_message}`, true);
+            var reader = new FileReader();
+            reader.onload = function() {
+                callback(JSON.parse(reader.result).status_message, true);
+            }
+            reader.readAsText(response.response.data);
         }
     });
 }
