@@ -13,6 +13,9 @@ export default function catchErrors() {
         if (typeof resp.data === 'string') {
             msg = <p>{resp.status}: {resp.statusText}<br/>{resp.data.split("\n").map((line, i) => <span key={i}>{line}<br/></span>)}</p>;
         }
+        else if (resp.data.status_message) {
+            msg = <p>{resp.data.status_message}</p>;
+        }
         else {
             msg = <p>{resp.status}: {resp.statusText}<br/>{JSON.stringify(resp.data)}</p>;
         }
