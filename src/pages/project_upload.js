@@ -29,7 +29,7 @@ import {uploadProject, getProjectFileStatus} from '../actions/projects';
 import {submissionGraceTime, maxFilesize} from '../constants';
 import update from 'immutability-helper';
 import JSZip from 'jszip';
-import {api_url} from '../config.js';
+import {renderDownload} from '../pages/project_download';
 import './project_upload.css';
 
 class ProjectUpload extends Component {
@@ -198,7 +198,7 @@ class ProjectUpload extends Component {
                     <p>
                         You have already uploaded your final document for this rotation.
                         You may reupload the project until <b>{projectGrace}</b>.<br/>
-                        You may download what you have currently submitted <a href={`${api_url}/api/projects/${project.id}/file`}>here</a>.
+                        You may download what you have currently submitted {renderDownload(projectAll, "here")}.
                         You do not need to take any more action unless you wish to resubmit.
                     </p>
                 }

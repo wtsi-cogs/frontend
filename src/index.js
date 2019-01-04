@@ -59,6 +59,7 @@ import RotationChoiceChooser from './pages/rotation_choices_finalise.js'
 import RotationCogsFinalise from './pages/rotation_choices_cogs.js'
 import ProjectUpload from './pages/project_upload'
 import ProjectMark from './pages/project_mark'
+import ProjectDownload from './pages/project_download'
 import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback';
 
 import catchErrors from './interceptors/errors';
@@ -119,6 +120,7 @@ class App extends Component {
                             <Route exact path="/projects/upload" component={ProjectUpload}/>
                             <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                             <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
+                            <Route exact path="/projects/:projectID/download" component={ProjectDownload}/>
                             <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
                             <Route exact path="/projects/:projectID/supervisor_feedback" component={ProjectFeedbackSupervisor}/>
                             <Route exact path="/projects/:projectID/cogs_feedback" component={ProjectFeedbackCogs}/>

@@ -21,18 +21,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {api_url} from '../config.js';
 import {grades} from '../constants.js';
 import RichTextEditor from 'react-rte';
 import {fetchUser} from '../actions/users';
+import {renderDownload} from '../pages/project_download';
+
 import './project_feedback_form.css';
 
 class ProjectFeedbackForm extends Component {
     async componentDidMount() {
         const project = this.props.project;
-        const studentID = project.student_id;
-        const supervisorID = project.supervisor_id;
-        const cogsID = project.cogs_marker_id;
+        const studentID = project.data.student_id;
+        const supervisorID = project.data.supervisor_id;
+        const cogsID = project.data.cogs_marker_id;
         if (!this.props.users[studentID]) this.props.fetchUser(studentID);
         if (!this.props.users[supervisorID]) this.props.fetchUser(supervisorID);
         if (cogsID && !this.props.users[cogsID]) this.props.fetchUser(cogsID);
@@ -41,13 +42,13 @@ class ProjectFeedbackForm extends Component {
     render() {
         const project = this.props.project;
 
-        const studentAll = this.props.users[project.student_id];
-        const supervisorAll = this.props.users[project.supervisor_id];
-        const cogsAll = this.props.users[project.cogs_marker_id];
+        const studentAll = this.props.users[project.data.student_id];
+        const supervisorAll = this.props.users[project.data.supervisor_id];
+        const cogsAll = this.props.users[project.data.cogs_marker_id];
 
         const student = studentAll? studentAll.data: {name: "Loading"};
         const supervisor = supervisorAll? supervisorAll.data: {name: "Loading"};
-        const cogsMarker = project.cogs_marker_id? (cogsAll? cogsAll.data: {name: "Loading"}): {name: "Nobody"};
+        const cogsMarker = project.data.cogs_marker_id? (cogsAll? cogsAll.data: {name: "Loading"}): {name: "Nobody"};
 
         return (
             <div className="container">
@@ -57,11 +58,11 @@ class ProjectFeedbackForm extends Component {
                         <div className="row">
                             <div className="col-xs-1"/>
                             <div className="col-xs-10">
-                                <h3>{project.title}</h3>
+                                <h3>{project.data.title}</h3>
                                 <h5>Student name: {student.name}</h5>
                                 <h5>Supervisor name: {supervisor.name}</h5>
                                 <h5>CoGS member: {cogsMarker.name}</h5>
-                                <a href={`${api_url}/api/projects/${project.id}/file`}>Download project</a>
+                                {renderDownload(project, "Download Project")}
                             </div>
                             <div className="clearfix"/>
                             <div className="col-xs-12">

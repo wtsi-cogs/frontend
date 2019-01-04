@@ -21,13 +21,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {api_url} from '../config.js'
 import {grades} from '../constants.js';
 import update from 'immutability-helper';
 import RichTextEditor from 'react-rte';
 import Alert from 'react-s-alert';
 import {fetchProject, markProject, requestProjects} from '../actions/projects';
 import {fetchUser} from '../actions/users';
+import {renderDownload} from './project_download';
 import './project_mark.css';
 
 class ProjectFeedback extends Component {
@@ -122,7 +122,7 @@ class ProjectFeedback extends Component {
                                 <h5>Student name: {student.name}</h5>
                                 <h5>Supervisor name: {supervisor.name}</h5>
                                 <h5>CoGS member: {cogsMarker.name}</h5>
-                                <a href={`${api_url}/api/projects/${projectID}/file`}>Download project</a>
+                                {renderDownload(projectAll, "Download Project")}
                             </div>
                             <div className="clearfix"/>
                             <div className="col-xs-12">

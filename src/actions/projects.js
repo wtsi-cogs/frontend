@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import axios from 'axios';
 import {api_url} from '../config.js';
+import {saveAs} from 'file-saver';
 import update from '../../node_modules/immutability-helper';
 
 
@@ -154,6 +155,27 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
     }
 }
 
+export function downloadProject(project, callback) {
+    axios.get(`${api_url}/api/projects/${project.data.id}/file`, {
+        responseType: 'blob',
+        headers: {
+            '_axios': true
+        }
+    }).then(response => {
+        const rotation_parts = getSeriesPart(project);
+        const filename = `${rotation_parts[0]}_${rotation_parts[1]}_${project.data.title}`;
+        saveAs(response.data, `${filename}.zip`);
+        callback("Download complete", false);
+    }).catch(response => {
+        if (response.response.status === 404) {
+            callback("Project not yet uploaded", true);
+        } 
+        else {
+            callback(`Download failed: ${response.response.data.status_message}`, true);
+        }
+    });
+}
+
 export function markProject(projectID, feedback, callback) {
     return function (dispatch) {
         axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
@@ -190,4 +212,8 @@ export function getProjectFileStatus(projectID) {
             dispatch(receiveProjectStatus(projectID, response.data));
         });
     }
+}
+
+export function getSeriesPart(project) {
+    return project.links.group.match(/\d+/g).map(s => parseInt(s, 10));
 }

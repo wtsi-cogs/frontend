@@ -45,7 +45,7 @@ class ProjectFeedback extends Component {
 
         return (
             <ProjectFeedbackForm
-                project={projectAll.data}
+                project={projectAll}
                 feedback={this.props.getMarker(marks)}
             />
         );

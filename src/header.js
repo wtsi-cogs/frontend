@@ -24,7 +24,6 @@ import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {fetchRotationYears, excelExport} from './actions/rotations'
-import {api_url} from './config.js';
 import "./header.css"
 
 
