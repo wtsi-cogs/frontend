@@ -175,6 +175,17 @@ class ProjectUpload extends Component {
         }
         const project = projectAll.data;
 
+        if (project.grace_passed) {
+            return (
+                <div className="container">
+                    <p>
+                        The grace time to upload this project has expired.
+                        You may no longer edit your submission
+                    </p>
+                </div>
+            );
+        }
+
         const projectStatus = this.props.projectStatus[project.id];
         const projectGrace = projectStatus? projectStatus.data.grace_time: "Loading deadline";
 
