@@ -75,7 +75,6 @@ export function fetchLatestSeries() {
             const latestSeries = Math.max(...Object.keys(yearData.links));
             axios.get(`${api_url}/api/series/${latestSeries}`).then(response => {
                 const seriesParts = Object.keys(response.data.links);
-                dispatch(requestRotations(seriesParts.length));
                 seriesParts.forEach(part => {
                     dispatch(fetchRotation(latestSeries, part));
                 });
