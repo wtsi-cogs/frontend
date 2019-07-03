@@ -81,7 +81,7 @@ const store = createStore(
   )
 
 class App extends Component {
-    async componentWillMount() {
+    async componentDidMount() {
         catchErrors();
         cacheRequests();
         store.dispatch(authenticate());
