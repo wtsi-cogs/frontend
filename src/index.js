@@ -27,7 +27,7 @@ import {
   } from 'react-router-dom';
 import thunkMiddleware from 'redux-thunk';
 //import { createLogger } from 'redux-logger';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom';
 import rootReducer from './reducers/root.js';
@@ -70,13 +70,14 @@ import { authenticate, AUTHENTICATED } from './actions/authenticate';
 
 //const loggerMiddleware = createLogger();
 const history = createBrowserHistory();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true}) : compose;
 const store = createStore(
     connectRouter(history)(rootReducer),
-    applyMiddleware(
+    composeEnhancers(applyMiddleware(
       thunkMiddleware, // lets us dispatch() functions
       routerMiddleware(history) // for dispatching history actions
       //,loggerMiddleware // neat middleware that logs actions
-    )
+    ))
   )
 
 class App extends Component {
