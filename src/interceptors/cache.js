@@ -39,14 +39,27 @@ export default function cacheRequests() {
     axios.interceptors.response.use(response => {
         if (methods.includes(response.config.method)) {
             const uri = getUri(response.config);
-            cache.get(uri).resolve({
-                data: response.data,
-                status: response.status,
-                statusText: response.statusText,
-                config: response.config,
-                headers: response.headers
-            });
-            cache.del(uri);
+            const cached = cache.get(uri);
+            if (cached !== undefined) {
+                cached.resolve({
+                    data: response.data,
+                    status: response.status,
+                    statusText: response.statusText,
+                    config: response.config,
+                    headers: response.headers
+                });
+                cache.del(uri);
+            } else {
+                // can't happen
+                // TODO: there is a strange bug where multiple responses are
+                // sometimes received for the same URI, even though the request
+                // adapters have supposedly been replaced with ones that return
+                // the cached promise instead of actually making a request. The
+                // server is only getting the requests once, so it seems most
+                // likely that Axios is running the response interceptor
+                // multiple times for some reason.
+                console.log("extraneous response for", uri);
+            }
         };
         return response;
     },
