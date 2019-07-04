@@ -126,7 +126,7 @@ class UserEditor extends Component {
     shouldUserBeShown(kv) {
         const id = kv[0];
         const propsUser = this.props.users[id];
-        const textFilter = this.state.textFilter;
+        const textFilter = this.state.textFilter.toLowerCase();
 
         if (textFilter !== "") {
             const fields = [propsUser.data.email, propsUser.data.email_personal, propsUser.data.name];
