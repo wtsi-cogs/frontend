@@ -81,6 +81,8 @@ class App extends Component {
     async componentDidMount() {
         catchErrors();
         cacheRequests();
+        this.props.fetchMe();
+        this.props.fetchLatestRotation();
     }
     async componentDidUpdate() {
         if (!this.props.loggedInID) {
