@@ -65,9 +65,6 @@ import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_fe
 import catchErrors from './interceptors/errors';
 import cacheRequests from './interceptors/cache';
 
-import { authenticate, AUTHENTICATED } from './actions/authenticate';
-
-
 //const loggerMiddleware = createLogger();
 const history = createBrowserHistory();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true}) : compose;
@@ -84,13 +81,8 @@ class App extends Component {
     async componentDidMount() {
         catchErrors();
         cacheRequests();
-        this.props.doAuthenticate();
     }
     async componentDidUpdate() {
-        if (this.props.authenticate.stage !== AUTHENTICATED) {
-            this.props.doAuthenticate();
-            return
-        }
         if (!this.props.loggedInID) {
             this.props.fetchMe();
         }
@@ -141,13 +133,11 @@ const mapStateToProps = state => {
     return {
         loggedInID: state.users.loggedInID,
         latestRotationID: state.rotations.latestID,
-        authenticate: state.authenticate
     }
 };  
 
 const mapDispatchToProps = dispatch => {
     return {
-        doAuthenticate: () => dispatch(authenticate()),
         fetchMe: () => dispatch(fetchMe()),
         fetchLatestRotation: () => dispatch(fetchLatestRotation()),
     }

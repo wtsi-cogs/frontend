@@ -27,8 +27,6 @@ import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
 import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION, RECEIVE_ROTATION_YEARS } from '../actions/rotations';
 
-import {SET_AUTHENTICATE, SET_TOKEN, NONE} from '../actions/authenticate';
-
 function projects(state={
     fetching: 0,
     projects: {},
@@ -134,30 +132,11 @@ function emails(state={
     }
 }
 
-function authenticate(state={
-    stage: NONE,
-    token: undefined
-}, action) {
-    switch (action.type) {
-        case SET_AUTHENTICATE:
-            return update(state, {
-                stage: {$set: action.stage}
-            });
-        case SET_TOKEN:
-            return update(state, {
-                token: {$set: action.token}
-            });
-        default:
-            return state;
-    }
-}
-
 const rootReducer = combineReducers({
   projects,
   users,
   rotations,
   emails,
-  authenticate
 });
 
 export default rootReducer
