@@ -84,18 +84,18 @@ class App extends Component {
     async componentDidMount() {
         catchErrors();
         cacheRequests();
-        store.dispatch(authenticate());
+        this.props.doAuthenticate();
     }
     async componentDidUpdate() {
         if (this.props.authenticate.stage !== AUTHENTICATED) {
-            store.dispatch(authenticate());
+            this.props.doAuthenticate();
             return
         }
         if (!this.props.loggedInID) {
-            store.dispatch(fetchMe());
+            this.props.fetchMe();
         }
         if (!this.props.latestRotationID) {
-            store.dispatch(fetchLatestRotation());
+            this.props.fetchLatestRotation();
         }
     }
 
@@ -106,35 +106,33 @@ class App extends Component {
             );
         }
         return (
-            <Provider store={store}>
-                <ConnectedRouter history={history}>
-                    <div>
-                        <Header/>
-                        <Switch>
-                            <Route exact path="/" component={MainPage}/>
-                            <Route exact path="/projects" component={Projects}/>
-                            <Route exact path="/projects/markable" component={MarkableProjects}/>
-                            <Route exact path="/emails/edit" component={EmailEditor}/>
-                            <Route exact path="/people/edit" component={UserEditor}/>
-                            <Route exact path="/rotations/create" component={RotationCreate}/>
-                            <Route exact path="/projects/create" component={ProjectCreate}/>
-                            <Route exact path="/projects/upload" component={ProjectUpload}/>
-                            <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
-                            <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
-                            <Route exact path="/projects/:projectID/download" component={ProjectDownload}/>
-                            <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
-                            <Route exact path="/projects/:projectID/supervisor_feedback" component={ProjectFeedbackSupervisor}/>
-                            <Route exact path="/projects/:projectID/cogs_feedback" component={ProjectFeedbackCogs}/>
-                            <Route exact path="/rotations/choices/cogs" component={RotationCogsFinalise}/>
-                            <Route exact path="/rotations/choices/view" component={RotationChoiceViewer}/>
-                            <Route exact path="/rotations/choices/finalise" component={RotationChoiceChooser}/>
-                            <Route exact path="/rotations/:partID/cogs" component={RotationCogsEditor}/>
-                            <Route component={DefaultPage} />
-                        </Switch>
-                        <Alert stack={{limit: 3}} effect="stackslide"/>
-                    </div>
-                </ConnectedRouter>
-            </Provider>
+            <ConnectedRouter history={history}>
+                <div>
+                    <Header/>
+                    <Switch>
+                        <Route exact path="/" component={MainPage}/>
+                        <Route exact path="/projects" component={Projects}/>
+                        <Route exact path="/projects/markable" component={MarkableProjects}/>
+                        <Route exact path="/emails/edit" component={EmailEditor}/>
+                        <Route exact path="/people/edit" component={UserEditor}/>
+                        <Route exact path="/rotations/create" component={RotationCreate}/>
+                        <Route exact path="/projects/create" component={ProjectCreate}/>
+                        <Route exact path="/projects/upload" component={ProjectUpload}/>
+                        <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
+                        <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
+                        <Route exact path="/projects/:projectID/download" component={ProjectDownload}/>
+                        <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
+                        <Route exact path="/projects/:projectID/supervisor_feedback" component={ProjectFeedbackSupervisor}/>
+                        <Route exact path="/projects/:projectID/cogs_feedback" component={ProjectFeedbackCogs}/>
+                        <Route exact path="/rotations/choices/cogs" component={RotationCogsFinalise}/>
+                        <Route exact path="/rotations/choices/view" component={RotationChoiceViewer}/>
+                        <Route exact path="/rotations/choices/finalise" component={RotationChoiceChooser}/>
+                        <Route exact path="/rotations/:partID/cogs" component={RotationCogsEditor}/>
+                        <Route component={DefaultPage} />
+                    </Switch>
+                    <Alert stack={{limit: 3}} effect="stackslide"/>
+                </div>
+            </ConnectedRouter>
         );
     }
 }
@@ -147,11 +145,17 @@ const mapStateToProps = state => {
     }
 };  
 
-const mapDispatchToProps = dispatch => {return {}};
+const mapDispatchToProps = dispatch => {
+    return {
+        doAuthenticate: () => dispatch(authenticate()),
+        fetchMe: () => dispatch(fetchMe()),
+        fetchLatestRotation: () => dispatch(fetchLatestRotation()),
+    }
+};
 
 const ConnectedApp = connect(
     mapStateToProps,
     mapDispatchToProps
 )(App);
 
-ReactDOM.render(<ConnectedApp store={store}/>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><ConnectedApp /></Provider>, document.getElementById('root'));
