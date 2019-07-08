@@ -44,7 +44,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 import './index.css';
-import {fetchLatestRotation} from './actions/rotations.js';
+import {fetchLatestSeries} from './actions/rotations.js';
 import Projects from './pages/projects.js';
 import MarkableProjects from './pages/markable_projects.js'
 import EmailEditor from './pages/email_edit.js';
@@ -82,14 +82,14 @@ class App extends Component {
         catchErrors();
         cacheRequests();
         this.props.fetchMe();
-        this.props.fetchLatestRotation();
+        this.props.fetchLatestSeries();
     }
     async componentDidUpdate() {
         if (!this.props.loggedInID) {
             this.props.fetchMe();
         }
         if (!this.props.latestRotationID) {
-            this.props.fetchLatestRotation();
+            this.props.fetchLatestSeries();
         }
     }
 
@@ -141,7 +141,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchMe: () => dispatch(fetchMe()),
-        fetchLatestRotation: () => dispatch(fetchLatestRotation()),
+        fetchLatestSeries: () => dispatch(fetchLatestSeries()),
     }
 };
 

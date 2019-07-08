@@ -78,6 +78,7 @@ export function fetchLatestSeries() {
                 seriesParts.forEach(part => {
                     dispatch(fetchRotation(latestSeries, part));
                 });
+                dispatch(fetchLatestRotation());
             });
         });
     }
