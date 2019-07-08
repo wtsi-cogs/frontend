@@ -70,22 +70,20 @@ class ProjectEditor extends Component {
 
     renderDelete() {
         return (
-            <div className="col-xs-2">
-                <button
-                    type="button"
-                    className="btn btn-danger btn-lg"
-                    onClick={() => {styledAlert({
-                        title: "Delete Project",
-                        message: `You are about to delete "${this.state.title}". Do you wish to continue?`,
-                        buttons: [
-                            {label: "Yes", onClick: () => {this.props.onDelete()}},
-                            {label: "No", onClick: () => {}},
-                        ]
-                    })}}
-                >
-                    Delete Project
-                </button>
-            </div>
+            <button
+                type="button"
+                className="btn btn-danger btn-lg"
+                onClick={() => {styledAlert({
+                    title: "Delete Project",
+                    message: `You are about to delete "${this.state.title}". Do you wish to continue?`,
+                    buttons: [
+                        {label: "Yes", onClick: () => {this.props.onDelete()}},
+                        {label: "No", onClick: () => {}},
+                    ]
+                })}}
+            >
+                Delete Project
+            </button>
         );
     }
 
@@ -130,6 +128,8 @@ class ProjectEditor extends Component {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-sm-5">
                                 <label className="btn"><input type="radio" checked={this.state.wetlab & !this.state.computational} readOnly={true} onClick={() => {
                                     this.setState(update(this.state, {$merge: {
@@ -164,6 +164,8 @@ class ProjectEditor extends Component {
                                     }}
                                 />
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-xs-12 form-group">
                                 <RichTextEditor
                                     value={this.state.abstract}
@@ -177,18 +179,25 @@ class ProjectEditor extends Component {
                                     editorClassName="abstract_inner"
                                 />
                             </div>
-                            <div className="col-xs-3">
-                                <button
-                                    type="button"
-                                    className="btn btn-primary btn-lg"
-                                    onClick={() => this.submitCheck()}
-                                >
-                                    {this.props.submitLabel}
-                                </button>
-                                <br/>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="btn-toolbar">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-lg"
+                                        onClick={() => this.submitCheck()}
+                                    >
+                                        {this.props.submitLabel}
+                                    </button>
+                                    {this.props.onDelete && this.renderDelete()}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12">
                                 {this.props.extraLabel}
                             </div>
-                            {this.props.onDelete && this.renderDelete()}
                         </div>
                     </div>
                 </div>
