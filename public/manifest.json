@@ -3,9 +3,29 @@
   "name": "Student Portal",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "https://sanger.ac.uk/new/gfx/wsi-icon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "https://sanger.ac.uk/new/gfx/wsi-icon-54.png",
+      "sizes": "54x54",
+      "type": "image/png"
+    },
+    {
+      "src": "https://sanger.ac.uk/new/gfx/wsi-icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "https://sanger.ac.uk/new/gfx/wsi-icon-114.png",
+      "sizes":" 114x114",
+      "type": "image/png"
+    },
+    {
+      "src": "https://sanger.ac.uk/new/gfx/wsi-icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
     }
   ],
   "start_url": "./index.html",
