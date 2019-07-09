@@ -152,6 +152,7 @@ export function voteProject(projectID, option) {
             me = update(me, {
                 links: {$merge: {[getLinkKey(option)]: `/api/projects/${projectID}`}},
                 data: {$merge: {[getDataKey(option)]: projectID}}});
+            dispatch(requestUsers(1));
             dispatch(receiveUser(me));
         });
     }
@@ -264,7 +265,6 @@ export function getStudentProjects(user) {
 export function getCurrentStudentProject(user) {
     return function (dispatch) {
         const projectID = user.data.current_student_project;
-        dispatch(requestProjects(1));
         dispatch(fetchProject(projectID));
     }
 }
