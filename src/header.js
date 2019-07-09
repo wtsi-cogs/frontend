@@ -92,7 +92,7 @@ class Header extends Component {
             <Nav pullRight={true} activeKey={this.getActiveKey()}>
                 {this.renderLink("/rotations/choices/view", "View Student Choices", permissions.set_readonly && rotation.student_choosable)}
                 {this.renderLink("/rotations/choices/finalise", "Finalise Student Choices", permissions.set_readonly && rotation.can_finalise)}
-                {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && rotation.student_uploadable)}
+                {this.renderLink("/rotations/create", "Create Rotation", permissions.create_project_groups && rotation.student_uploadable && !rotation.can_finalise)}
 
                 {permissions.view_all_submitted_projects && 
                     <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
