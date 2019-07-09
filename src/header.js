@@ -57,6 +57,7 @@ class Header extends Component {
                 {this.renderLink("/", "Home", true)}
                 {this.renderLink("/projects/create", "Create Project", permissions.create_projects && !rotation.read_only)}
                 {this.renderLink("/projects", "All Projects", permissions.view_projects_predeadline || rotation.student_viewable)}
+                {this.renderLink("/projects/markable", "Mark Projects", permissions.create_projects || permissions.review_other_projects)}
                 {this.renderLink("/projects/upload", "Upload final project", user.can_upload_project)}
             </Nav>
         );

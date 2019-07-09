@@ -41,7 +41,7 @@ class MarkableProjects extends Component {
         }, {});
         let text = this.props.fetching? `Fetching ${this.props.fetching} more projects.`: "";
         if (this.props.fetching === 0 && Object.keys(projects).length === 0) {
-            text = "There are no projects you can mark";
+            text = "There are no projects you can mark.";
         }
         return (
             <div className="container">
