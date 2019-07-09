@@ -50,15 +50,11 @@ export default function cacheRequests() {
                 });
                 cache.del(uri);
             } else {
-                // can't happen
-                // TODO: there is a strange bug where multiple responses are
-                // sometimes received for the same URI, even though the request
-                // adapters have supposedly been replaced with ones that return
-                // the cached promise instead of actually making a request. The
-                // server is only getting the requests once, so it seems most
-                // likely that Axios is running the response interceptor
-                // multiple times for some reason.
-                console.log("extraneous response for", uri);
+                // Although we substitute the request adapter to return one
+                // promise for many requests, Axios still calls response
+                // interceptors once for each request, so if the cache is any
+                // use at all, this response interceptor will be invoked
+                // multiple times for the same URI.
             }
         };
         return response;
@@ -71,8 +67,7 @@ export default function cacheRequests() {
                 cached.reject(error);
                 cache.del(uri);
             } else {
-                // can't happen (but see above)
-                console.log("extraneous error for", uri);
+                // See above.
             }
         };
         return Promise.reject(error);
