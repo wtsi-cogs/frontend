@@ -76,17 +76,17 @@ class Project extends Component {
         let links = [];
         if (this.props.user.data.id === project.student_id) {
             if (rotation && rotation.data.student_uploadable && !project.grace_passed) {
-                links.push(<div key="upload_project"><h3><Link to={`/projects/upload`}>Upload final project report</Link></h3><br/></div>);
+                links.push(<div key="upload_project"><h3><Link to={`/projects/upload`}>Upload final project report</Link></h3></div>);
             }
             if (project.cogs_feedback_id !== null) {
-                links.push(<div key="cogs_feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3><br/></div>);
+                links.push(<div key="cogs_feedback"><h3><Link to={`/projects/${project.id}/cogs_feedback`}>CoGS Feedback</Link></h3></div>);
             }
             if (project.supervisor_feedback_id !== null) {
-                links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3><br/></div>);
+                links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3></div>);
             }
         }
         if (canMark(this.props.user, this.props.project)) {
-            links.push(<div key="provide_feedback"><h3><Link to={`/projects/${project.id}/provide_feedback`}>Provide Feedback</Link></h3><br/></div>);
+            links.push(<div key="provide_feedback"><h3><Link to={`/projects/${project.id}/provide_feedback`}>Provide Feedback</Link></h3></div>);
         }
 
         const voteButtonClassName = this.props.showVote? "col-xs-10 col-md-11": "";
