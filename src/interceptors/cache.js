@@ -66,8 +66,14 @@ export default function cacheRequests() {
     error => {
         if (methods.includes(error.response.config.method)) {
             const uri = getUri(error.response.config);
-            cache.get(uri).reject(error);
-            cache.del(uri);
+            const cached = cache.get(uri);
+            if (cached !== undefined) {
+                cached.reject(error);
+                cache.del(uri);
+            } else {
+                // can't happen (but see above)
+                console.log("extraneous error for", uri);
+            }
         };
         return Promise.reject(error);
     });
