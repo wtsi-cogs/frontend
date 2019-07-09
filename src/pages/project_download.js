@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {fetchProject, requestProjects, downloadProject, getSeriesPart} from '../actions/projects';
+import {fetchProject, downloadProject, getSeriesPart} from '../actions/projects';
 import update from 'immutability-helper';
 import {Link} from 'react-router-dom';
 import Alert from 'react-s-alert';
@@ -33,7 +33,6 @@ class ProjectDownload extends Component {
             message: "Fetching project title...",
             startedDownload: false
         };
-        props.requestProjects(1);
         props.fetchProject(props.match.params.projectID);
     }
 
@@ -96,7 +95,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         fetchProject: projectID => dispatch(fetchProject(projectID)),
-        requestProjects: number => dispatch(requestProjects(number))
     }
 };
 

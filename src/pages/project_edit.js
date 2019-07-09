@@ -24,12 +24,11 @@ import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import ProjectEditor from '../components/project_editor';
 import {programmes} from '../constants';
-import {editProject, deleteProject, fetchProject, requestProjects} from '../actions/projects';
+import {editProject, deleteProject, fetchProject} from '../actions/projects';
 
 class ProjectEdit extends Component {
     constructor(props) {
         super(props);
-        props.requestProjects(1);
         props.fetchProject(props.match.params.projectID);
     }
 
@@ -82,7 +81,6 @@ const mapDispatchToProps = dispatch => {
         fetchProject: projectID => dispatch(fetchProject(projectID)),
         editProject: (projectID, project) => dispatch(editProject(projectID, project)),
         deleteProject: projectID => dispatch(deleteProject(projectID)),
-        requestProjects: number => dispatch(requestProjects(number))
     }
 };
 

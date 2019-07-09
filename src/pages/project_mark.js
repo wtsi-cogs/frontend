@@ -25,7 +25,7 @@ import {grades} from '../constants.js';
 import update from 'immutability-helper';
 import RichTextEditor from 'react-rte';
 import Alert from 'react-s-alert';
-import {fetchProject, markProject, requestProjects} from '../actions/projects';
+import {fetchProject, markProject} from '../actions/projects';
 import {fetchUser} from '../actions/users';
 import {renderDownload} from './project_download';
 import './project_mark.css';
@@ -43,7 +43,6 @@ class ProjectFeedback extends Component {
 
     async componentDidMount() {
         document.title = "Mark Project";
-        this.props.requestProjects(1);
         this.props.fetchProject(this.props.match.params.projectID);
     }
 
@@ -208,7 +207,6 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchUser: (userID) => dispatch(fetchUser(userID)),
         fetchProject: (projectID) => dispatch(fetchProject(projectID)),
-        requestProjects: number => dispatch(requestProjects(number)),
         markProject: (projectID, feedback, callback) => dispatch(markProject(projectID, feedback, callback))
     }
 };

@@ -149,6 +149,7 @@ export function fetchRotationYears() {
     return function (dispatch) {
         axios.get(`${api_url}/api/series`).then(response => {
             const years = Object.keys(response.data.links).map(year => parseInt(year, 10));
+	    // requestRotationYears not needed
             dispatch(receiveRotationYears(years));
         });
     };
@@ -156,6 +157,7 @@ export function fetchRotationYears() {
 
 export function sendReminder(rotation) {
     return function (dispatch) {
+	dispatch(requestRotations(1));
         axios.get(`${api_url}/api/series/${rotation.data.series}/${rotation.data.part}/remind`).then(response => {
             dispatch(receiveRotation(response.data));
         });
