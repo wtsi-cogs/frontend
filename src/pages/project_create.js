@@ -57,8 +57,9 @@ class ProjectCreate extends Component {
                             this.props.history.push("/");
                         },
                         (err) => {
-                            Alert.info(`Failed to create ${project.title}`);
-                        });
+                            Alert.error(`Failed to create ${project.title}`);
+                        }
+                    );
                 }}
             />
         );

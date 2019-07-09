@@ -57,9 +57,16 @@ class ProjectResubmit extends Component {
                 computational = {project.is_computational}
                 submitLabel="Create Project"
                 onSubmit={project => {
-                    this.props.createProject(project);
-                    Alert.info(`${project.title} created`);
-                    this.props.history.push("/");
+                    this.props.createProject(
+                        project,
+                        () => {
+                            Alert.info(`${project.title} created`);
+                            this.props.history.push("/");
+                        },
+                        (err) => {
+                            Alert.error(`Failed to create ${project.title}`);
+                        }
+                    );
                 }}
             />
         );
