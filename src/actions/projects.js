@@ -101,7 +101,7 @@ export function fetchProjectMarks(projectID) {
     }
 }
 
-export function createProject(project, onDone, onFail) {
+export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
         axios.post(`${api_url}/api/projects`, project).then(response => {
