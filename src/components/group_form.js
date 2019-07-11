@@ -23,8 +23,9 @@ import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import ClassNames from 'classnames';
 import 'react-datepicker/dist/react-datepicker.css';
-import './datepicker.css';
 import moment from 'moment';
+import {developer} from '../config';
+import './datepicker.css';
 
 
 class GroupForm extends Component {
@@ -36,7 +37,11 @@ class GroupForm extends Component {
                 <DatePicker
                     selected={deadline.value}
                     className={ClassNames("form-control", {"invalid-date": !valid})}
-                    filterDate={date => date.isAfter(moment(new Date()).subtract(1, "days"))}
+                    // Allow any date to be picked in developer mode, but
+                    // otherwise the date must not be before today.
+                    filterDate={date => (
+                        developer || date.isAfter(moment(new Date()).subtract(1, "days"))
+                    )}
                     dateFormat="DD/MM/YYYY"
                     onChange={(date) => {this.props.updateDeadline(deadlineName, date)}}
                 />
