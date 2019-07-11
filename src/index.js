@@ -94,7 +94,22 @@ class App extends Component {
     }
 
     render() {
-        if (!(this.props.loggedInID && this.props.latestRotationID)) {
+        if (!this.props.latestRotationID || !this.props.loggedInID) {
+            if (this.props.user && !this.props.user.data.permissions.view_projects_predeadline) {
+                return (
+                    <ConnectedRouter history={history}>
+                        <div>
+                            <Header/>
+                            <div className="container">
+                                <p>
+                                    The PhD Student Portal is currently not available for student access.
+                                </p>
+                            </div>
+                            <Alert stack={{limit: 3}} effect="stackslide"/>
+                        </div>
+                    </ConnectedRouter>
+                );
+            }
             return (
                 <Alert stack={{limit: 3}} effect="stackslide"/>
             );
@@ -134,6 +149,7 @@ class App extends Component {
 const mapStateToProps = state => {
     return {
         loggedInID: state.users.loggedInID,
+        user: state.users.users[state.users.loggedInID],
         latestRotationID: state.rotations.latestID,
     }
 };  

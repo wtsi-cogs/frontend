@@ -47,9 +47,13 @@ class Header extends Component {
 
     renderLeftNav() {
         const user = this.props.user;
-        const rotation = this.props.rotations[this.props.rotationID].data;
+        const rotation = this.props.rotation;
         if (user === null || rotation === null) {
-            return "";
+            return (
+                <Nav activeKey={this.getActiveKey()}>
+                    {this.renderLink("/", "Home", true)}
+                </Nav>
+            );
         }
         const permissions = user.permissions;
         return (
@@ -84,9 +88,14 @@ class Header extends Component {
 
     renderRightNav() {
         const user = this.props.user;
-        const rotation = this.props.rotations[this.props.rotationID].data;
+        const rotation = this.props.rotation;
         if (user === null || rotation === null) {
-            return "";
+            return (
+                <Nav pullRight={true} activeKey={this.getActiveKey()}>
+                    {this.renderLink("/login", "Login", !user)}
+                    {this.renderLink("/logout", "Logout", user)}
+                </Nav>
+            );
         }
         const permissions = user.permissions;
         return (
@@ -141,10 +150,9 @@ class Header extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.users.users[state.users.loggedInID].data,
-        rotationID: state.rotations.latestID,
-        rotations: state.rotations.rotations,
-        rotationYears: state.rotations.yearList
+        user: state.users.users[state.users.loggedInID] !== undefined ? state.users.users[state.users.loggedInID].data : null,
+        rotation: state.rotations.rotations[state.rotations.latestID] !== undefined ? state.rotations.rotations[state.rotations.latestID].data : null,
+        rotationYears: state.rotations.yearList,
     }
 };  
 const mapDispatchToProps = dispatch => {
