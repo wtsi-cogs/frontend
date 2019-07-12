@@ -10,6 +10,7 @@
     "eslint": "^3.19.0",
     "file-saver": "^2.0.0",
     "immutability-helper": "^2.7.1",
+    "is-equal": "^1.5.5",
     "js-cache": "^1.0.3",
     "jszip": "^3.1.5",
     "moment": "^2.22.2",
@@ -33,8 +34,7 @@
     "react-select": "^2.1.2",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "shallow-equal": "^1.0.0"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
-import shallowEqualObjects from 'shallow-equal/objects';
+import isEqual from 'is-equal';
 import {userRoles, archive} from '../constants.js';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
@@ -64,7 +64,7 @@ class UserEditor extends Component {
         });
         Object.entries(this.state.newUsers).forEach((kv) => {
             const [id, user] = kv;
-            if (shallowEqualObjects(user, userDefault)) {
+            if (isEqual(user, userDefault)) {
                 this.setState(update(this.state, {
                     newUsers: {$unset: [id]}
                 }));
