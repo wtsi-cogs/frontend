@@ -53,11 +53,12 @@ class ProjectList extends Component {
     render() {
         const noProjects = Object.keys(this.props.projects).length;
         return Object.values(this.props.projects).sort((a, b) => {
-            const x = [a.student_id !== this.props.user.data.id, !canMark(this.props.user, a), a.data.group_id, this.getLastName(a), a.data.title];
-            const y = [b.student_id !== this.props.user.data.id, !canMark(this.props.user, b), b.data.group_id, this.getLastName(b), b.data.title];
+            const x = [a.data.student_id !== this.props.user.data.id, !canMark(this.props.user, a), b.data.group_id, this.getLastName(a), a.data.title];
+            const y = [b.data.student_id !== this.props.user.data.id, !canMark(this.props.user, b), a.data.group_id, this.getLastName(b), b.data.title];
             let res = 0;
             for (let i=0; i < x.length; i++) {
-                res = (x[i] < y[i]) - (x[i] > y[i])
+                // sort ascending (but look carefully at the sort keys!)
+                res = (x[i] > y[i]) - (x[i] < y[i])
                 if (res !== 0) return res;
             }
             return 0;
