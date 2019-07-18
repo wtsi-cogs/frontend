@@ -181,7 +181,7 @@ class ProjectEditor extends Component {
                                             eventKey={userID}
                                             key={userID}
                                             onSelect={userID => {
-                                                this.setState({student: parseInt(userID, 10)})
+                                                this.setState({student: userID !== null ? parseInt(userID, 10) : null})
                                             }}
                                         >
                                             {userID !== null ? this.props.students[userID].data.name : "Any student"}
