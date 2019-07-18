@@ -47,17 +47,18 @@ class ProjectCreate extends Component {
                 programmes = {this.state.programmes}
                 wetlab = {false}
                 computational = {false}
+                student={null}
                 submitLabel="Create Project"
                 extraLabel="You can edit the project later"
                 onSubmit={project => {
                     this.props.createProject(
                         project,
                         () => {
-                            Alert.info(`${project.title} created`);
+                            Alert.info(`"${project.title}" created`);
                             this.props.history.push("/");
                         },
-                        (err) => {
-                            Alert.error(`Failed to create ${project.title}`);
+                        () => {
+                            Alert.error(`Failed to create "${project.title}"`);
                         }
                     );
                 }}

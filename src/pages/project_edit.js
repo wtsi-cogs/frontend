@@ -55,14 +55,19 @@ class ProjectEdit extends Component {
                 programmes = {programmes.reduce((map, programme) => {map[programme] = project.programmes.includes(programme); return map}, {})}
                 wetlab = {project.is_wetlab}
                 computational = {project.is_computational}
+                student={project.student_id}
                 submitLabel="Edit Project"
                 onSubmit={project => {
-                    this.props.editProject(projectID, project);
-                    Alert.info(`${project.title} saved.`);
+                    this.props.editProject(
+                        projectID,
+                        project,
+                        () => Alert.info(`"${project.title}" saved`),
+                        () => Alert.error(`Failed to edit "${project.title}"`),
+                    );
                 }}
                 onDelete={() => {
                     this.props.deleteProject(projectID);
-                    Alert.info(`${project.title} deleted.`);
+                    Alert.info(`"${project.title}" deleted.`);
                     this.props.history.push("/");
                 }}
             />
@@ -76,12 +81,10 @@ const mapStateToProps = state => {
     }
 };  
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchProject: projectID => dispatch(fetchProject(projectID)),
-        editProject: (projectID, project) => dispatch(editProject(projectID, project)),
-        deleteProject: projectID => dispatch(deleteProject(projectID)),
-    }
+const mapDispatchToProps = {
+    fetchProject,
+    editProject,
+    deleteProject,
 };
 
 export default connect(

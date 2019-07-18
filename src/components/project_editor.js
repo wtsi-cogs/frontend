@@ -20,8 +20,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import MultiselectDropDown from './multiselect_dropdown';
 import RichTextEditor from 'react-rte';
+import {DropdownButton, MenuItem} from 'react-bootstrap';
 import update from 'immutability-helper';
 import styledAlert from '../components/styledAlert';
 import Alert from 'react-s-alert';
@@ -37,7 +39,8 @@ class ProjectEditor extends Component {
             wetlab: this.props.wetlab,
             computational: this.props.computational,
             title: this.props.title,
-            authors: this.props.authors
+            authors: this.props.authors,
+            student: this.props.student,
         };
     }
 
@@ -93,7 +96,7 @@ class ProjectEditor extends Component {
                 <div className="col-md-1"></div>
                 <div className="col-md-10">
                     <div className="well well-sm">
-                        <div className="row">
+                        <div className="row form-group">
                             <div className="col-sm-5">
                                 <div>
                                     <label htmlFor="name">Project title</label>
@@ -113,23 +116,21 @@ class ProjectEditor extends Component {
                                 </div>
                             </div>
                             <div className="col-sm-7">
-                                <div className="form-group">
-                                    <label htmlFor="authors">Others involved</label>
-                                    <input
-                                        type="text"
-                                        id="authors"
-                                        className="form-control"
-                                        value={this.state.authors}
-                                        onChange = {(event) => {
-                                            this.setState(update(this.state, {$merge: {
-                                                authors: event.target.value
-                                            }}));
-                                        }}
-                                    />
-                                </div>
+                                <label htmlFor="authors">Others involved</label>
+                                <input
+                                    type="text"
+                                    id="authors"
+                                    className="form-control"
+                                    value={this.state.authors}
+                                    onChange = {(event) => {
+                                        this.setState(update(this.state, {$merge: {
+                                            authors: event.target.value
+                                        }}));
+                                    }}
+                                />
                             </div>
                         </div>
-                        <div className="row">
+                        <div className="row form-group">
                             <div className="col-sm-5">
                                 <label className="btn"><input type="radio" checked={this.state.wetlab & !this.state.computational} readOnly={true} onClick={() => {
                                     this.setState(update(this.state, {$merge: {
@@ -165,8 +166,32 @@ class ProjectEditor extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-xs-12 form-group">
+                        <div className="row form-group">
+                            <div className="col-xs-7">
+                                If this project is intended for a particular student, you can pre-assign it to them. This will prevent the project from being selected by other students.
+                            </div>
+                            <div className="col-xs-5">
+                                <DropdownButton
+                                    title={this.props.students.hasOwnProperty(this.state.student) ? this.props.students[this.state.student].data.name : "Any student"}
+                                    id="assign_student_dropdown"
+                                    className="form-control"
+                                >
+                                    {[null].concat(Object.keys(this.props.students)).map(userID => (
+                                        <MenuItem
+                                            eventKey={userID}
+                                            key={userID}
+                                            onSelect={userID => {
+                                                this.setState({student: parseInt(userID, 10)})
+                                            }}
+                                        >
+                                            {userID !== null ? this.props.students[userID].data.name : "Any student"}
+                                        </MenuItem>
+                                    ))}
+                                </DropdownButton>
+                            </div>
+                        </div>
+                        <div className="row form-group">
+                            <div className="col-xs-12">
                                 <RichTextEditor
                                     value={this.state.abstract}
                                     onChange={(value) => {
@@ -206,4 +231,12 @@ class ProjectEditor extends Component {
     }
 }
 
-export default ProjectEditor;
+const mapStateToProps = state => ({
+    students: Object.fromEntries(Object.entries(state.users.users)
+        .filter(([userID, user]) => user.data.user_type.includes("student"))
+    ),
+})
+
+export default connect(
+    mapStateToProps,
+)(ProjectEditor);
