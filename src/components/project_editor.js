@@ -232,9 +232,12 @@ class ProjectEditor extends Component {
 }
 
 const mapStateToProps = state => ({
-    students: Object.fromEntries(Object.entries(state.users.users)
-        .filter(([userID, user]) => user.data.user_type.includes("student"))
-    ),
+    students: Object.entries(state.users.users).reduce((users, [id, user]) => {
+        if (user.data.user_type.includes("student")) {
+            users[id] = user;
+        }
+        return users;
+    }, {}),
 })
 
 export default connect(
