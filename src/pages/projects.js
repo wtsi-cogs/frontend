@@ -108,6 +108,13 @@ class Projects extends Component {
                 return project.programmes.includes(programme);
             });
         }
+        // Filter out assigned projects unless they are assigned to us or we
+        // are allowed to look at projects early
+        const assigned = [project.student_id, project.supervisor_id, project.cogs_marker_id];
+        if (project.student_id !== null) {
+            show &= (assigned.includes(this.props.user.data.id)
+                || this.props.user.data.permissions.view_projects_predeadline);
+        }
         return show;
     }
 
