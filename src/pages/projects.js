@@ -63,9 +63,9 @@ class Projects extends Component {
         const rotation = this.props.rotations[this.state.rotationID];
         if (this.props.user.data.permissions.join_projects) {
             const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
-                // This will have issues if students use the system across multiple years
-                // because it won't be able to calculate if rotation 3 should be forced properly.
-                if (this.props.projects[id].data.student_id === this.props.user.data.id) {
+                const project_rotation = this.props.rotations[this.props.projects[id].data.group_id];
+                if (this.props.projects[id].data.student_id === this.props.user.data.id
+                    && (project_rotation ? project_rotation.data.series === rotation.data.series : false)) {
                     filtered.push(this.props.projects[id].data);
                 }
                 return filtered;
