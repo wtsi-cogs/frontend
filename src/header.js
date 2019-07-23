@@ -67,9 +67,9 @@ class Header extends Component {
         );
     }
 
-    renderCogsEdit(max) {
-        return [...Array(max).keys()].map(i => {
-            return this.renderLink(`/rotations/${i+1}/cogs`, `Rotation ${i+1}`, true, i);
+    renderCogsEdit(series, maxPart) {
+        return [...Array(maxPart).keys()].map(i => {
+            return this.renderLink(`/rotations/${series}/${i+1}/cogs`, `Rotation ${i+1}`, true, i);
         });
     }
 
@@ -106,7 +106,7 @@ class Header extends Component {
 
                 {permissions.view_all_submitted_projects && 
                     <NavDropdown title="Edit CoGS Markers" id="navbar_cogs_marker_dropdown" eventKey="cogs_dropdown">
-                        {this.renderCogsEdit(rotation.part)}
+                        {this.renderCogsEdit(rotation.series, rotation.part)}
                     </NavDropdown>
                 }
                 {permissions.view_all_submitted_projects && 

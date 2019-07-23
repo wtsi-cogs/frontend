@@ -26,6 +26,7 @@ import Alert from 'react-s-alert';
 import {fetchProjects, saveCogsMarkers} from '../actions/projects';
 import {fetchRotation} from '../actions/rotations';
 import CogsEditor from '../components/cogs_edit.js';
+import FinaliseStudentProjectsButton from '../components/finalise_student_choices_button'
 
 class RotationCogsEditor extends Component {
     constructor(props) {
@@ -37,28 +38,29 @@ class RotationCogsEditor extends Component {
 
     async componentDidMount() {
         document.title = "Edit CoGS Markers";
-        const part = parseInt(this.props.match.params.partID, 10);
-        this.fetchRotation(part);
+        const series = parseInt(this.props.match.params.series, 10);
+        const part = parseInt(this.props.match.params.part, 10);
+        this.fetchRotation(series, part);
     }
 
     componentDidUpdate() {
-        const part = parseInt(this.props.match.params.partID, 10);
-        if (part !== this.state.part) {
-            this.fetchRotation(part);
+        const series = parseInt(this.props.match.params.series, 10);
+        const part = parseInt(this.props.match.params.part, 10);
+        if (series !== this.state.series || part !== this.state.part) {
+            this.fetchRotation(series, part);
         }
     }
 
-    fetchRotation(part) {
-        const latest = this.props.rotations[this.props.latest].data;
-        const series = latest.series;
-        this.setState(update(this.state, {part: {$set: part}}));
+    fetchRotation(series, part) {
+        this.setState({series, part});
         this.props.fetchProjects(series, part);
         this.props.fetchRotation(series, part);
     }
 
-    save() {
+    save(cb=()=>{}) {
         this.props.saveCogsMarkers(this.state.cogsMarkers, () => {
             Alert.info("Saved CoGS markers.");
+            cb();
         });
     }
 
@@ -69,10 +71,9 @@ class RotationCogsEditor extends Component {
     }
 
     render() {
-        const latest = this.props.rotations[this.props.latest].data;
-        const series = latest.series;
-        const part = parseInt(this.props.match.params.partID, 10);
-        const rotation = Object.values(this.props.rotations).find(r => r.data.series === series && r.data.part === part );
+        const series = this.state.series;
+        const part = this.state.part;
+        const rotation = Object.values(this.props.rotations).find(r => r.data.series === series && r.data.part === part);
         if (!rotation) {
             return null;
         }
@@ -95,12 +96,17 @@ class RotationCogsEditor extends Component {
                     projects={projects}
                     cogsMarkers={this.state.cogsMarkers}
                     setCogsMarker={(projectID, userID) => this.setCogsMarker(projectID, userID)}
-                    key={part}
                 />
                 <div className="row">
                     <div className="col-xs-6 col-sm-4">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
                     </div>
+                    <div className="col-sm-2"></div>
+                    {rotation.data.can_finalise &&
+                        <div className="col-xs-6 col-sm-4">
+                            <FinaliseStudentProjectsButton preClick={(cb) => this.save(cb)}/>
+                        </div>
+                    }
                 </div>
             </div>
         );
@@ -112,7 +118,6 @@ const mapStateToProps = state => {
         rotations: state.rotations.rotations,
         fetching: state.projects.fetching,
         projects: state.projects.projects,
-        latest: state.rotations.latestID
     }
 };  
 

@@ -118,7 +118,7 @@ class RotationChoiceChooser extends Component {
                     showPriority={true}
                     onSubmit={() => {
                         this.onSave(true);
-                        this.props.history.push("/rotations/choices/cogs");
+                        this.props.history.push(`/rotations/${this.props.rotation.data.series}/${this.props.rotation.data.part}/cogs`);
                     }}
                     onSave={() => this.onSave(false)}
                 />
