@@ -55,16 +55,17 @@ class ProjectResubmit extends Component {
                 programmes = {programmes.reduce((map, programme) => {map[programme] = project.programmes.includes(programme); return map}, {})}
                 wetlab = {project.is_wetlab}
                 computational = {project.is_computational}
+                student={null}
                 submitLabel="Create Project"
                 onSubmit={project => {
                     this.props.createProject(
                         project,
                         () => {
-                            Alert.info(`${project.title} created`);
+                            Alert.info(`"${project.title}" created`);
                             this.props.history.push("/");
                         },
-                        (err) => {
-                            Alert.error(`Failed to create ${project.title}`);
+                        () => {
+                            Alert.error(`Failed to create "${project.title}"`);
                         }
                     );
                 }}
@@ -79,11 +80,9 @@ const mapStateToProps = state => {
     }
 };  
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchProject: projectID => dispatch(fetchProject(projectID)),
-        createProject: project => dispatch(createProject(project)),
-    }
+const mapDispatchToProps = {
+    fetchProject,
+    createProject,
 };
 
 export default connect(

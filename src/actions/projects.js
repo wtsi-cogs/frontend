@@ -111,12 +111,13 @@ export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
     }
 }
 
-export function editProject(projectID, project) {
+export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
         axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
             dispatch(receiveProject(response.data));
-        });
+            onDone();
+        }).catch(onFail);
     }
 }
 
