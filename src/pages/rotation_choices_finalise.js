@@ -26,6 +26,7 @@ import update from 'immutability-helper';
 import {fetchProjects} from '../actions/projects';
 import {saveStudentProjects} from '../actions/users';
 import {fetchUsersWithPermissions} from '../actions/users';
+import {fetchRotation} from '../actions/rotations';
 import {joinProjects, createProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
@@ -36,9 +37,11 @@ class RotationChoiceChooser extends Component {
     }
 
     async componentDidMount() {
-        document.title = "Finalise Student Choices";
-        const rotation = this.props.rotation;
-        this.props.fetchProjects(rotation.data.series, rotation.data.part);
+        document.title = "Student Choices";
+        const series = parseInt(this.props.match.params.series, 10);
+        const part = parseInt(this.props.match.params.part, 10);
+        this.props.fetchProjects(series, part);
+        this.props.fetchRotation(series, part);
         this.props.fetchUsersWithPermissions([joinProjects, createProjects]);
     }
 
@@ -54,6 +57,9 @@ class RotationChoiceChooser extends Component {
     }
 
     getProjects() {
+        if (this.props.rotation === undefined) {
+            return {};
+        }
         return Object.keys(this.props.projects).reduce((filtered, id) => {
             if (this.props.projects[id].data.group_id === this.props.rotation.data.id) {
                 filtered[id] = this.props.projects[id];
@@ -85,7 +91,15 @@ class RotationChoiceChooser extends Component {
     }
 
     render() {
-        const users = Object.keys(this.props.users).reduce((filtered, id) => {
+        if (this.props.rotation === undefined) {
+            return (
+                <div className="container-fluid">
+                    {this.props.rotationsFetching > 0 ? "Fetching rotation..." : "Could not fetch rotation."}
+                </div>
+            );
+        }
+
+        const students = Object.keys(this.props.users).reduce((filtered, id) => {
             if (this.props.users[id].data.permissions[joinProjects]) {
                 filtered[id] = this.props.users[id];
             }
@@ -93,7 +107,7 @@ class RotationChoiceChooser extends Component {
         }, {});
 
         let studentText = this.props.fetching? `Fetching ${this.props.fetching} more users.`: "";
-        if (this.props.usersFetching === 0 && Object.keys(users).length === 0) {
+        if (this.props.usersFetching === 0 && Object.keys(students).length === 0) {
             studentText = "There are no students.";
         }
 
@@ -103,22 +117,24 @@ class RotationChoiceChooser extends Component {
             projectText = "There are no projects in this rotation.";
         }
 
+        const rotation = this.props.rotation.data;
+
         return (
             <div className="container-fluid">
                 {studentText}
                 {projectText}
                 <ChoiceEditor
                     users={this.props.users}
-                    students={users}
+                    students={students}
                     projects={projects}
                     onClick={(studentID, newState) => {
                         this.setChoice(studentID, newState);
                     }}
-                    choices={this.state.choices}
-                    showPriority={true}
+                    choices={rotation.can_finalise ? this.state.choices : undefined}
+                    showPriority={rotation.can_finalise}
                     onSubmit={() => {
                         this.onSave(true);
-                        this.props.history.push(`/rotations/${this.props.rotation.data.series}/${this.props.rotation.data.part}/cogs`);
+                        this.props.history.push(`/rotations/${rotation.series}/${rotation.part}/cogs`);
                     }}
                     onSave={() => this.onSave(false)}
                 />
@@ -127,22 +143,24 @@ class RotationChoiceChooser extends Component {
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+    const series = parseInt(ownProps.match.params.series, 10);
+    const part = parseInt(ownProps.match.params.part, 10);
     return {
-        rotation: state.rotations.rotations[state.rotations.latestID],
+        rotationsFetching: state.rotations.fetching,
+        rotation: Object.values(state.rotations.rotations).find(r => r.data.series === series && r.data.part === part),
         usersFetching: state.users.fetching,
         users: state.users.users,
         projectsFetching: state.projects.fetching,
         projects: state.projects.projects
     }
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        fetchUsersWithPermissions: (permissions) => dispatch(fetchUsersWithPermissions(permissions)),
-        saveStudentProjects: (choices, callback) => dispatch(saveStudentProjects(choices, callback))
-    }
+const mapDispatchToProps = {
+    fetchProjects,
+    fetchUsersWithPermissions,
+    saveStudentProjects,
+    fetchRotation,
 };
 
 export default connect(

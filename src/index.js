@@ -54,7 +54,6 @@ import ProjectCreate from './pages/project_create.js';
 import ProjectResubmit from './pages/project_resubmit.js';
 import ProjectEdit from './pages/project_edit.js';
 import RotationCogsEditor from './pages/rotation_cogs_edit.js';
-import RotationChoiceViewer from './pages/rotation_choices_view.js'
 import RotationChoiceChooser from './pages/rotation_choices_finalise.js'
 import ProjectUpload from './pages/project_upload'
 import ProjectMark from './pages/project_mark'
@@ -132,8 +131,7 @@ class App extends Component {
                         <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
                         <Route exact path="/projects/:projectID/supervisor_feedback" component={ProjectFeedbackSupervisor}/>
                         <Route exact path="/projects/:projectID/cogs_feedback" component={ProjectFeedbackCogs}/>
-                        <Route exact path="/rotations/choices/view" component={RotationChoiceViewer}/>
-                        <Route exact path="/rotations/choices/finalise" component={RotationChoiceChooser}/>
+                        <Route exact path="/rotations/:series/:part/choices" component={RotationChoiceChooser}/>
                         <Route exact path="/rotations/:series/:part/cogs" component={RotationCogsEditor}/>
                         <Route component={DefaultPage} />
                     </Switch>
