@@ -180,6 +180,7 @@ class ChoiceEditor extends Component {
                     <div className="col-xs-8">
                         <ol>
                             {projectIDs.map((projectID, i) => {
+                                const title = this.getProjectTitle(projectID) || "(No choice)";
                                 if (showButtons) {
                                     return (
                                         <li key={i}>
@@ -192,12 +193,13 @@ class ChoiceEditor extends Component {
                                                 onClick={() => {this.onSelect(id, "project", projectID)}}
                                             />
                                             <label htmlFor={`checkbox_${id}_${projectID}`}>
-                                                {this.getProjectTitle(projectID) || "(No choice)"}
+                                                {title}
                                             </label>
                                         </li>
                                     );
+                                } else {
+                                    return <li key={i}>{title}</li>
                                 }
-                                return <li key={i}>{this.getProjectTitle(projectID)}</li>
                             })}
                         </ol>
                        {showButtons && this.renderDropdowns(id)}
