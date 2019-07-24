@@ -63,11 +63,11 @@ class RotationChoiceChooser extends Component {
     }
 
     setChoice(studentID, newState) {
-        this.setState(update(this.state, {$merge: {
-            choices: update(this.state.choices, {$merge: {
-                [studentID]: newState
+        this.setState((state, props) => ({
+            choices: update(state.choices, {$merge: {
+                [studentID]: newState,
             }})
-        }}));
+        }));
     }
 
     onSave(unmounted=false) {
