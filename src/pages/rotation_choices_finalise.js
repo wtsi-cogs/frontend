@@ -30,7 +30,7 @@ import {fetchRotation} from '../actions/rotations';
 import {joinProjects, createProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
-class RotationChoiceChooser extends Component {
+class RotationChoiceEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {choices: {}};
@@ -166,4 +166,4 @@ const mapDispatchToProps = {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(RotationChoiceChooser);
+)(RotationChoiceEditor);
