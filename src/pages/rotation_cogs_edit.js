@@ -26,7 +26,6 @@ import Alert from 'react-s-alert';
 import {fetchProjects, saveCogsMarkers} from '../actions/projects';
 import {fetchRotation} from '../actions/rotations';
 import CogsEditor from '../components/cogs_edit.js';
-import FinaliseStudentProjectsButton from '../components/finalise_student_choices_button'
 
 class RotationCogsEditor extends Component {
     constructor(props) {
@@ -101,12 +100,6 @@ class RotationCogsEditor extends Component {
                     <div className="col-xs-6 col-sm-4">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
                     </div>
-                    <div className="col-sm-2"></div>
-                    {rotation.data.can_finalise &&
-                        <div className="col-xs-6 col-sm-4">
-                            <FinaliseStudentProjectsButton preClick={(cb) => this.save(cb)}/>
-                        </div>
-                    }
                 </div>
             </div>
         );
