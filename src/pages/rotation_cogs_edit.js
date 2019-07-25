@@ -97,11 +97,11 @@ class RotationCogsEditor extends Component {
                     setCogsMarker={(projectID, userID) => this.setCogsMarker(projectID, userID)}
                 />
                 <div className="row">
-                    <div className="col-xs-6 col-sm-4">
+                    <div className="col-xs-6 col-sm-4 spacing">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
                     </div>
                     <div className="col-sm-4"></div>
-                    <div className="col-xs-6 col-sm-4">
+                    <div className="col-xs-6 col-sm-4 spacing">
                         {rotation.data.can_finalise &&
                             <button
                                 className="btn btn-primary btn-lg btn-block"
