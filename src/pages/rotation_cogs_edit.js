@@ -100,6 +100,19 @@ class RotationCogsEditor extends Component {
                     <div className="col-xs-6 col-sm-4">
                         <button className="btn btn-primary btn-lg btn-block" onClick={() => this.save()}>Save Changes</button>
                     </div>
+                    <div className="col-sm-4"></div>
+                    <div className="col-xs-6 col-sm-4">
+                        {rotation.data.can_finalise &&
+                            <button
+                                className="btn btn-primary btn-lg btn-block"
+                                onClick={() => this.save(() => {
+                                    this.props.history.push(`/rotations/${series}/${part}/choices`);
+                                })}
+                            >
+                                Return to Assign Projects
+                            </button>
+                        }
+                    </div>
                 </div>
             </div>
         );
