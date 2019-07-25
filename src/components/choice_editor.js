@@ -23,8 +23,10 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import {createProjects} from '../constants';
+import FinaliseStudentProjectsButton from '../components/finalise_student_choices_button';
 import "./choice_editor.css";
 
+// FIXME: there is very tight coupling between this and the RotationChoiceEditor
 class ChoiceEditor extends Component {
     getProjectTitle(projectID) {
         const project = this.props.projects[projectID];
@@ -104,13 +106,13 @@ class ChoiceEditor extends Component {
                 </div>
                 <div className="col-sm-4"></div>
                 <div className="col-sm-4 spacing">
-                    <button
-                        className="btn btn-primary btn-lg btn-block"
-                        onClick={() => this.props.onSubmit()}
+                    <FinaliseStudentProjectsButton
+                        preClick={(cb) => this.props.onSave(cb)}
+                        postClick={() => this.props.onSubmit()}
                         disabled={submitDisabled}
                     >
-                        Assign CoGS Markers
-                    </button>
+                        Finalise Projects
+                    </FinaliseStudentProjectsButton>
                 </div>
             </div>
         );

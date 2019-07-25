@@ -30,6 +30,7 @@ import {fetchRotation} from '../actions/rotations';
 import {joinProjects, createProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
+// FIXME: there is very tight coupling between this and the ChoiceEditor
 class RotationChoiceEditor extends Component {
     constructor(props) {
         super(props);
@@ -76,7 +77,7 @@ class RotationChoiceEditor extends Component {
         }));
     }
 
-    onSave(unmounted=false) {
+    onSave(unmounted=false, cb=()=>{}) {
         this.props.saveStudentProjects(this.state.choices, () => {
             Alert.info("Saved choices.");
             if (!unmounted) {
@@ -87,6 +88,7 @@ class RotationChoiceEditor extends Component {
                     }
                 });
             }
+            cb();
         });
     }
 
@@ -136,7 +138,7 @@ class RotationChoiceEditor extends Component {
                         this.onSave(true);
                         this.props.history.push(`/rotations/${rotation.series}/${rotation.part}/cogs`);
                     }}
-                    onSave={() => this.onSave(false)}
+                    onSave={(cb) => this.onSave(false, cb)}
                 />
             </div>
         );

@@ -28,29 +28,36 @@ import {unsetVotes} from '../actions/users';
 class FinaliseStudentProjectsButton extends Component {
     static defaultProps = {
         preClick: (cb) => {cb()},
+        postClick: () => {},
+        disabled: false,
     };
 
     render() {
         return (
-            <button className="btn btn-primary btn-lg btn-block" onClick={() => {
-                confirmAlert({
-                    title: "Finalise Student Projects",
-                    message: "You are about to finalise all student choices. " +
-                             "After this point, you will not be able to reassign projects. " +
-                             "CoGS markers however will continue to be able to be set. " +
-                             "Do you wish to continue?",
-                    buttons: [
-                        {label: "Yes", onClick: () => {
-                            this.props.preClick(() => {
-                                this.props.unsetVotes(() => {
-                                    Alert.info("Finalised Student choices. Emails have been sent out. Students may now upload.");
+            <button
+                className="btn btn-primary btn-lg btn-block"
+                disabled={this.props.disabled}
+                onClick={() => {
+                    confirmAlert({
+                        title: "Finalise Student Projects",
+                        message: "You are about to finalise all student choices. " +
+                                 "After this point, you will not be able to reassign projects. " +
+                                 "CoGS markers however will continue to be able to be set. " +
+                                 "Do you wish to continue?",
+                        buttons: [
+                            {label: "Yes", onClick: () => {
+                                this.props.preClick(() => {
+                                    this.props.unsetVotes(() => {
+                                        Alert.info("Finalised Student choices. Emails have been sent out. Students may now upload.");
+                                        this.props.postClick();
+                                    });
                                 });
-                            });
-                        }},
-                        {label: "No", onClick: () => {}},
-                    ],
-                })
-            }}>Finish</button>
+                            }},
+                            {label: "No", onClick: () => {}},
+                        ],
+                    })
+                }}
+            >{this.props.children}</button>
         );
     }
 }
