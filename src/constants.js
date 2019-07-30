@@ -17,10 +17,10 @@ export const userPermissions = [modifyPermissions, createProjectGroups, setReado
 
 export const programmes = [
     "Cancer, Ageing and Somatic Mutation",
-    "Cellular Genetics", 
-    "Human Genetics", 
-    "Infection Genomics", 
-    "Malaria"
+    "Cellular Genetics",
+    "Human Genetics",
+    "Parasites and Microbes",
+    "Tree of Life",
 ]
 
 export const submissionGraceTime = "3 days"
