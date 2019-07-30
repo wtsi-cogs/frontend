@@ -64,23 +64,23 @@ class ProjectUpload extends Component {
                 this.props.getProjectFileStatus(projectAll.data.id);
             }
             if (this.state.canUpload === "") {
-                this.setState(update(this.state, {$merge: {
+                this.setState({
                     canUpload: !projectAll.data.uploaded
-                }}));
+                });
             }
             else if (rotation && this.state.required === 0) {
-                this.setState(update(this.state, {$merge: {
+                this.setState({
                     required: rotation.data.part === 2? 2: 1
-                }}));
+                });
             }
         }
     }
 
     onSuccessfulUpload() {
-        this.setState(update(this.state, {$merge: {
+        this.setState({
             canUpload: false,
             uploads: []
-        }}));
+        });
     }
 
     upload() {
@@ -109,14 +109,14 @@ class ProjectUpload extends Component {
 
     onDrop(accept, reject) {
         const noRequired = this.state.required;
-        this.setState(update(this.state, {$merge: {
-            uploads: this.state.uploads.concat(accept)
-        }}), () => {
+        this.setState((state, props) => ({
+            uploads: state.uploads.concat(accept)
+        }), () => {
             if (this.state.uploads.length > noRequired) {
                 Alert.error("Too many files.");
-                this.setState(update(this.state, {$merge: {
+                this.setState({
                     uploads: []
-                }}));
+                });
             }
             else if (this.state.uploads.length < noRequired) {
                 Alert.info(`Still need ${noRequired - this.state.uploads.length} file(s).`);
@@ -149,7 +149,9 @@ class ProjectUpload extends Component {
                 <input
                     type="checkbox" 
                     value={this.state.canUpload}
-                    onClick={() => {this.setState(update(this.state, {$toggle: ["canUpload"]}))}}
+                    onClick={() => {this.setState((state, props) => update(state, {
+                        $toggle: ["canUpload"]
+                    }))}}
                     readOnly={true}
                     id="upload-checkbox"
                 />
@@ -271,9 +273,9 @@ class ProjectUpload extends Component {
                     className="btn btn-primary btn-lg"
                     disabled={this.state.uploads.length === 0}
                     onClick={()=>{
-                        this.setState(update(this.state, {$merge: {
+                        this.setState({
                             uploads: []
-                        }}));
+                        });
                     }}
                 >
                     Clear

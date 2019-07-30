@@ -57,7 +57,7 @@ class UserEditor extends Component {
     async componentDidUpdate() {
         Object.values(this.props.users).forEach(user => {
             if (!this.state.users.hasOwnProperty(user.data.id)) {
-                this.setState(update(this.state, {
+                this.setState((state, props) => update(state, {
                     users: {$merge: this.loadUserStruct(user)}
                 }));
             }
@@ -65,7 +65,7 @@ class UserEditor extends Component {
         Object.entries(this.state.newUsers).forEach((kv) => {
             const [id, user] = kv;
             if (isEqual(user, userDefault)) {
-                this.setState(update(this.state, {
+                this.setState((state, props) => update(state, {
                     newUsers: {$unset: [id]}
                 }));
             }
@@ -94,24 +94,25 @@ class UserEditor extends Component {
             user.priority = parseInt(user.priority, 10);
             this.props.createUser(user);
         });
-        this.setState(update(this.state, {
-            newUsers: {$set: {}}
-        }));
+        this.setState({
+            newUsers: {}
+        });
         Alert.info("Changes saved");
     }
 
     cancel() {
-        this.setState(update(this.state, {
-            users: {$set: 
-                Object.keys(this.props.users).reduce((map, userID) => {
-                    map[userID] = this.loadUserStruct(this.props.users[userID])[userID];
+        this.setState((state, props) => ({
+            users: Object.keys(props.users).reduce((map, userID) => {
+                    map[userID] = this.loadUserStruct(props.users[userID])[userID];
                     return map;
-                }, {})},
-            newUsers: {$set: {}}
+                }, {}),
+            newUsers: {}
         }));
     }
 
     archiveUsers() {
+        // FIXME: passing this.state to setState is broken:
+        // https://reactjs.org/docs/react-component.html#setstate
         let state = this.state;
         Object.entries(this.state.users).filter(kv => this.shouldUserBeShown(kv)).forEach((kv) => {
             const [id, user] = kv;
@@ -201,9 +202,9 @@ class UserEditor extends Component {
                     <input 
                         value={this.state.textFilter} 
                         onChange={(event) => {
-                            this.setState(update(this.state, {
-                                textFilter: {$set: event.target.value}}
-                            ));
+                            this.setState({
+                                textFilter: event.target.value
+                            });
                         }} 
                         className="form-control"
                     />
@@ -214,7 +215,9 @@ class UserEditor extends Component {
                         items = {this.state.roleFilter}
                         noneSelectedText = "Nothing selected"
                         onSelect = {role => {
-                            this.setState(update(this.state, {roleFilter: {$toggle: [role]}}));
+                            this.setState((state, props) => update(state, {
+                                roleFilter: {$toggle: [role]}
+                            }));
                         }}
                     />
                 </div>

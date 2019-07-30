@@ -24,7 +24,6 @@ import React, {Component} from 'react';
 
 
 import {DropdownButton, MenuItem} from 'react-bootstrap';
-import update from 'immutability-helper';
 import './multiselect_dropdown.css';
 
 class MultiselectDropDown extends Component {
@@ -74,14 +73,10 @@ class MultiselectDropDown extends Component {
                 open={this.state.isOpen}
                 onToggle={(isOpen, evt, src) => {
                     if (isOpen) {
-                        this.setState(update(this.state,
-                            {$merge: {isOpen: true}}
-                        ));
+                        this.setState({isOpen: true});
                     }
                     else if (src.source === "rootClose") {
-                        this.setState(update(this.state,
-                            {$merge: {isOpen: false}}
-                        ));
+                        this.setState({isOpen: false});
                     }
                 }}
             >

@@ -96,7 +96,7 @@ class GroupEditor extends Component {
                             <h5 
                                 className="rotation-edit-advanced"
                                 onClick={() => {
-                                    this.setState(update(this.state, {$set: {showAdvance: !this.state.showAdvance}}));
+                                    this.setState((state, props) => ({showAdvance: !state.showAdvance}));
                                 }}
                             >
                                 Developer
@@ -115,8 +115,8 @@ class GroupEditor extends Component {
                                                         checked={attrs[attr]}
                                                         readOnly={true}
                                                         onClick={() => {
-                                                            this.setState(update(this.state, {deltaAttrs: (obj) => {
-                                                                return Object.assign(obj, {[attr]: !(obj[attr] === undefined? this.props.group.data[attr]: obj[attr])});
+                                                            this.setState((state, props) => update(state, {deltaAttrs: (obj) => {
+                                                                return Object.assign(obj, {[attr]: !(obj[attr] === undefined? props.group.data[attr]: obj[attr])});
                                                             }}));
                                                         }}
                                                     />
@@ -131,7 +131,7 @@ class GroupEditor extends Component {
                 }
                 submitName = "Save Rotation"
                 updateDeadline = {(deadlineName, date) => {
-                    this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
+                    this.setState((state, props) => update(state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}
                 onSubmit = {() => {this.onSubmit()}}
                 afterSubmit = {() => {

@@ -108,9 +108,9 @@ class ProjectEditor extends Component {
                                         className="form-control"
                                         value={this.state.title}
                                         onChange = {(event) => {
-                                            this.setState(update(this.state, {$merge: {
+                                            this.setState({
                                                 title: event.target.value
-                                            }}));
+                                            });
                                         }}
                                     />
                                 </div>
@@ -123,9 +123,9 @@ class ProjectEditor extends Component {
                                     className="form-control"
                                     value={this.state.authors}
                                     onChange = {(event) => {
-                                        this.setState(update(this.state, {$merge: {
+                                        this.setState({
                                             authors: event.target.value
-                                        }}));
+                                        });
                                     }}
                                 />
                             </div>
@@ -133,22 +133,22 @@ class ProjectEditor extends Component {
                         <div className="row form-group">
                             <div className="col-sm-5">
                                 <label className="btn"><input type="radio" checked={this.state.wetlab & !this.state.computational} readOnly={true} onClick={() => {
-                                    this.setState(update(this.state, {$merge: {
+                                    this.setState({
                                         wetlab: true,
                                         computational: false
-                                    }}));
+                                    });
                                 }}/> Wetlab</label>
                                 <label className="btn"><input type="radio" checked={!this.state.wetlab & this.state.computational} readOnly={true} onClick={() => {
-                                    this.setState(update(this.state, {$merge: {
+                                    this.setState({
                                         wetlab: false,
                                         computational: true
-                                    }}));
+                                    });
                                 }}/> Computational</label>
                                 <label className="btn"><input type="radio" checked={this.state.wetlab & this.state.computational} readOnly={true} onClick={() => {
-                                    this.setState(update(this.state, {$merge: {
+                                    this.setState({
                                         wetlab: true,
                                         computational: true
-                                    }}));
+                                    });
                                 }}/> Both</label>
                             </div>
                             <div className="col-sm-7">
@@ -156,12 +156,12 @@ class ProjectEditor extends Component {
                                     items = {this.state.programmes}
                                     noneSelectedText = "No programme"
                                     onSelect = {programme => {
-                                        const programmes = update(this.state.programmes, {$merge: {
-                                            [programme]: !this.state.programmes[programme]
-                                        }});
-                                        this.setState(update(this.state, {$merge: {
+                                        const programmes = update(this.state.programmes, {
+                                            $toggle: [programme]
+                                        });
+                                        this.setState({
                                             programmes
-                                        }}));
+                                        });
                                     }}
                                 />
                             </div>
@@ -195,9 +195,9 @@ class ProjectEditor extends Component {
                                 <RichTextEditor
                                     value={this.state.abstract}
                                     onChange={(value) => {
-                                        this.setState(update(this.state, {$merge: {
+                                        this.setState({
                                             abstract: value
-                                        }}));
+                                        });
                                     }}
                                     readOnly={false}
                                     className="abstract"

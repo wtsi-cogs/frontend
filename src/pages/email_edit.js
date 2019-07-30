@@ -27,7 +27,6 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
 import {fetchEmails, setEmail} from '../actions/emails.js';
-import update from 'immutability-helper';
 import './email_edit.css';
 
 class EmailEditor extends Component {
@@ -63,17 +62,17 @@ class EmailEditor extends Component {
 
     onContentChange(value) {
         if (this.state.emailID === null) {return}
-        this.setState(update(this.state, {$merge: {
+        this.setState({
             content: value
-        }}));
+        });
     }
 
     selectFocusedEmail(email) {
-        this.setState(update(this.state, {$merge: {
+        this.setState({
             dropdownTitle: email.name,
             emailID: email.id,
             content: RichTextEditor.createValueFromString(email.content, 'html')
-        }}));
+        });
         this.refs.input.value = email.subject;
     }
 

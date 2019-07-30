@@ -47,7 +47,7 @@ class Projects extends Component {
 
     async componentDidMount() {
         document.title = "All Projects";
-        this.setState(update(this.state, {rotationID: {$set: this.props.rotationID}}), () => {
+        this.setState((state, props) => ({rotationID: props.rotationID}), () => {
             this.fetchRotation();
         });
         // Get student projects to enforce wetlab/computational constraints
@@ -73,18 +73,18 @@ class Projects extends Component {
             if (rotation.data.part === 3 && studentProjects.length !== 0 && !this.state.checkedProjects) {
                 const forceWetlab = !studentProjects.some(project => project.is_wetlab);
                 const forceComputational = !studentProjects.some(project => project.is_computational);
-                this.setState(update(this.state, {
-                    forceWetlab: {$set: forceWetlab},
-                    forceComputational: {$set: forceComputational},
-                    checkedProjects: {$set: true}
-                }));
+                this.setState({
+                    forceWetlab: forceWetlab,
+                    forceComputational: forceComputational,
+                    checkedProjects: true
+                });
             }
             else if (rotation.data.part !== 3 && this.state.checkedProjects) {
-                this.setState(update(this.state, {
-                    forceWetlab: {$set: false},
-                    forceComputational: {$set: false},
-                    checkedProjects: {$set: false}
-                }));
+                this.setState({
+                    forceWetlab: false,
+                    forceComputational: false,
+                    checkedProjects: false
+                });
             }
         }
     }
@@ -132,7 +132,7 @@ class Projects extends Component {
                 value={rotationValue(currentRotation)}
                 id="previous-rotations-split-button"
                 onChange={value => {
-                    this.setState(update(this.state, {rotationID: {$set: value.value}}), () => {
+                    this.setState({rotationID: value.value}, () => {
                         this.fetchRotation();
                     });
                 }}
@@ -152,7 +152,9 @@ class Projects extends Component {
                             readOnly={true}
                             disabled={this.state.forceComputational}
                             onClick={() => {
-                                this.setState(update(this.state, {showComputational: {$set: !this.state.showComputational}}));
+                                this.setState((state, props) => ({
+                                    showComputational: !state.showComputational
+                                }));
                             }}
                         />
                         Show Computational Projects
@@ -164,7 +166,9 @@ class Projects extends Component {
                             readOnly={true}
                             disabled={this.state.forceWetlab}
                             onClick={() => {
-                                this.setState(update(this.state, {showWetlab: {$set: !this.state.showWetlab}}));
+                                this.setState((state, props) => ({
+                                    showWetlab: !state.showWetlab
+                                }));
                             }}
                         />
                         Show Wetlab Projects
@@ -178,7 +182,7 @@ class Projects extends Component {
                         items = {this.state.programmes}
                         noneSelectedText = "Filter By Programme"
                         onSelect = {programme => {
-                            this.setState(update(this.state, {
+                            this.setState((state, props) => update(state, {
                                 programmes: {$toggle: [programme]}
                             }));
                         }}

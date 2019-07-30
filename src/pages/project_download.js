@@ -22,7 +22,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProject, downloadProject, getSeriesPart} from '../actions/projects';
-import update from 'immutability-helper';
 import {Link} from 'react-router-dom';
 import Alert from 'react-s-alert';
 
@@ -42,7 +41,7 @@ class ProjectDownload extends Component {
 
     setMessage(message) {
         if (message !== this.state.message) {
-            this.setState(update(this.state, {$set: {message}}));
+            this.setState({message});
         }
     }
 
@@ -56,10 +55,10 @@ class ProjectDownload extends Component {
                     this.setMessage(status);
                 }
             );
-            this.setState(update(this.state, {$merge: {
+            this.setState({
                 message: "Starting download...",
                 started: true
-            }}));
+            });
         }
     }
 

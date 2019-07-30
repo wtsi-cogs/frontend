@@ -76,9 +76,9 @@ class RotationCreate extends Component {
                     className="form-control year"
                     value={this.state.series}
                     onChange = {(event) => {
-                        this.setState(update(this.state, {$merge: {
+                        this.setState({
                             series: parseInt(event.target.value, 10)
-                        }}));
+                        });
                     }}
                 />
                 <div className="dash">-</div>
@@ -91,9 +91,9 @@ class RotationCreate extends Component {
                     min={1}
                     max={3}
                     onChange = {(event) => {
-                        this.setState(update(this.state, {$merge: {
+                        this.setState({
                             part: parseInt(event.target.value, 10)
-                        }}));
+                        });
                     }}
                 />
             </span>
@@ -108,8 +108,12 @@ class RotationCreate extends Component {
                     rotationHeader = {this.renderRotationHeader()}
                     submitName = "Create Rotation"
                     updateDeadline = {(deadlineName, date) => {
-                        const newDeadline = update(this.state.deadlines[deadlineName], {$merge: {value: date}});
-                        this.setState(update(this.state, {deadlines: {$merge: {[deadlineName]: newDeadline}}}));
+                        this.setState((state, props) => {
+                            const newDeadline = update(state.deadlines[deadlineName], {$merge: {value: date}});
+                            return update(state, {
+                                deadlines: {$merge: {[deadlineName]: newDeadline}}
+                            });
+                        });
                     }}
                     onSubmit = {() => {this.onSubmit()}}
                     afterSubmit = {() => {}}

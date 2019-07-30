@@ -64,7 +64,7 @@ class RotationCogsEditor extends Component {
     }
 
     setCogsMarker(projectID, userID) {
-        this.setState(update(this.state, {
+        this.setState((state, props) => update(state, {
             cogsMarkers: {$merge: {[projectID]: userID}}
         }));
     }

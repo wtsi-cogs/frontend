@@ -22,7 +22,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {grades} from '../constants.js';
-import update from 'immutability-helper';
 import RichTextEditor from 'react-rte';
 import Alert from 'react-s-alert';
 import {fetchProject, markProject} from '../actions/projects';
@@ -135,7 +134,7 @@ class ProjectFeedback extends Component {
                                                 checked={this.state.grade === i}
                                                 readOnly={true}
                                                 onClick={() => {
-                                                    this.setState(update(this.state, {$merge: {grade: i}}));
+                                                    this.setState({grade: i});
                                                 }}
                                             />
                                             {grade} - {description}
@@ -148,9 +147,9 @@ class ProjectFeedback extends Component {
                                 <RichTextEditor
                                     value={this.state.goodFeedback}
                                     onChange={(value) => {
-                                        this.setState(update(this.state, {$merge: {
+                                        this.setState({
                                             goodFeedback: value
-                                        }}));
+                                        });
                                     }}
                                     readOnly={false}
                                 />
@@ -160,9 +159,9 @@ class ProjectFeedback extends Component {
                                 <RichTextEditor
                                     value={this.state.badFeedback}
                                     onChange={(value) => {
-                                        this.setState(update(this.state, {$merge: {
+                                        this.setState({
                                             badFeedback: value
-                                        }}));
+                                        });
                                     }}
                                     readOnly={false}
                                 />
@@ -172,9 +171,9 @@ class ProjectFeedback extends Component {
                                 <RichTextEditor
                                     value={this.state.generalFeedback}
                                     onChange={(value) => {
-                                        this.setState(update(this.state, {$merge: {
+                                        this.setState({
                                             generalFeedback: value
-                                        }}));
+                                        });
                                     }}
                                     readOnly={false}
                                 />
