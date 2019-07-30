@@ -42,6 +42,11 @@ class MultiselectDropDown extends Component {
                     checked={value}
                     readOnly={true}
                     className="dropdown_checkbox_padding"
+                    // FIXME: this is an atrocious hack!
+                    // This works around an issue where, if you clicked on the
+                    // checkbox (instead of on the rest of the MenuItem), the
+                    // state of the checkbox wouldn't visually update.
+                    onChange={() => setTimeout(() => this.forceUpdate())}
                 />
                 {key}
             </MenuItem>
