@@ -129,7 +129,7 @@ class GroupEditor extends Component {
                             )}
                     </div>
                 }
-                submitName = "Edit Rotation"
+                submitName = "Save Rotation"
                 updateDeadline = {(deadlineName, date) => {
                     this.setState(update(this.state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}

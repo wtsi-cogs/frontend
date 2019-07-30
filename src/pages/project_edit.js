@@ -56,7 +56,7 @@ class ProjectEdit extends Component {
                 wetlab = {project.is_wetlab}
                 computational = {project.is_computational}
                 student={project.student_id}
-                submitLabel="Edit Project"
+                submitLabel="Save Project"
                 onSubmit={project => {
                     this.props.editProject(
                         projectID,
