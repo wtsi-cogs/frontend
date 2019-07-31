@@ -53,7 +53,7 @@ class EmailEditor extends Component {
         }).catch((status_message) => {
             confirmAlert({
                 title: "Error saving email",
-                message: status_message,
+                message: <pre>{status_message}</pre>,
                 buttons: [
                     {label: "Back", onClick: () => {}},
                 ]
