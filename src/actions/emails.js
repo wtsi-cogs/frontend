@@ -54,12 +54,12 @@ export function fetchEmails() {
     }
 }
 
-export function setEmail(emailID, subject, content, onError) {
+export function setEmail(emailID, subject, content) {
     return function (dispatch, getState) {
         const state = getState();
         const email = state.emails.emails[emailID];
-        axios.put(
-            `${api_url}/api/emails/${email.name}`, 
+        return axios.put(
+            `${api_url}/api/emails/${email.name}`,
             {subject, content},
             {
                 headers: {
@@ -67,13 +67,13 @@ export function setEmail(emailID, subject, content, onError) {
                 }
             }
         ).then(response => {
-            const updatedEmail = update(email, 
+            const updatedEmail = update(email,
                 {$merge: {subject, content}}
             );
             dispatch(requestEmails(1));
             dispatch(receiveEmail(updatedEmail));
         }).catch(response => {
-            onError(response.response.data.status_message);
+            throw response.response.data.status_message
         });
     }
 }

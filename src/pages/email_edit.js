@@ -48,7 +48,9 @@ class EmailEditor extends Component {
     saveEmail() {
         const subject = this.refs.input.value;
         const content = this.state.content.toString("html");
-        this.props.setEmail(this.state.emailID, subject, content, (status_message) => {
+        this.props.setEmail(this.state.emailID, subject, content).then(() => {
+            Alert.info("Changes saved");
+        }).catch((status_message) => {
             confirmAlert({
                 title: "Error saving email",
                 message: status_message,
@@ -57,7 +59,6 @@ class EmailEditor extends Component {
                 ]
             });
         });
-        Alert.info("Changes saved");
     }
 
     onContentChange(value) {
@@ -122,13 +123,11 @@ class EmailEditor extends Component {
 
 const mapStateToProps = state => {
     return state.emails;
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchEmails: () => dispatch(fetchEmails()),
-        setEmail: (name, subject, content, onError) => dispatch(setEmail(name, subject, content, onError))
-    }
+const mapDispatchToProps = {
+    fetchEmails,
+    setEmail,
 };
 
 export default connect(
