@@ -1,0 +1,20 @@
+/*
+FIXME: this seems like a bad way to style the alert!
+Probably it would be better to create a component <MyAlert> or something that
+emits a confirmAlert({customUI: ...}) instead.
+*/
+.react-confirm-alert-overlay {
+    /* Make overlarge alerts scrollable */
+    overflow: scroll;
+    /* Appear on top of the header and footer too */
+    /*
+    NB: this is the z-index Bootstrap 4 uses for modal backdrops; it's likely
+    that Bootstrap 3 is the same:
+    https://getbootstrap.com/docs/4.3/layout/overview/
+    */
+    z-index: 1040;
+}
+.react-confirm-alert {
+    /* Don't overflow the screen */
+    max-height: 100%;
+}
