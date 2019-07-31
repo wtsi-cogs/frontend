@@ -18,3 +18,7 @@ emits a confirmAlert({customUI: ...}) instead.
     /* Don't overflow the screen */
     max-height: 100%;
 }
+.s-alert-box {
+    /* Appear on top of confirmAlert()s */
+    z-index: 1031;
+}
