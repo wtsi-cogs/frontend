@@ -56,7 +56,7 @@ class GroupForm extends Component {
             const deadlines = Object.values(this.props.deadlines).slice(i+1).map(deadline=>deadline.value).filter(deadline=>deadline!==undefined);
             // The last valid deadline has no constraints
             if (deadlines.length === 0) {return true}
-            // Otherwise, deadlines are only valid if the input is before every deadline after 
+            // Otherwise, deadlines are only valid if the input is before every deadline after
             return deadlines.every(deadline=>date.isBefore(deadline));
         });
         return (
@@ -65,7 +65,7 @@ class GroupForm extends Component {
                 <div className="col-md-8">
                     <div className="well well-sm">
                         <div className="row">
-                            <div className="col-sm-6 col-sm-push-5">
+                            <div className="col-sm-4 col-sm-push-7">
                                 <div>
                                     <div className="pull-right visible-sm-block visible-md-block visible-lg-block">
                                         { this.props.rotationHeader }
@@ -75,18 +75,24 @@ class GroupForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-6 col-sm-pull-5">
+                            <div className="col-sm-6 col-sm-pull-3">
                                 {Object.keys(this.props.deadlines).map((deadline, i) => this.renderDateBox(deadline, this.props.deadlines[deadline], validity[i]))}
-                                <br/>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary btn-lg"
-                                    onClick={this.props.onSubmit}
-                                    disabled={!validity.every(i=>i)}
-                                >
-                                    {this.props.submitName}
-                                </button>
-                                { this.props.afterSubmit() }
+                            </div>
+                        </div>
+                        <br/>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-10 col-sm-push-1">
+                                <div className="btn-toolbar">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-lg"
+                                        onClick={this.props.onSubmit}
+                                        disabled={!validity.every(i=>i)}
+                                    >
+                                        {this.props.submitName}
+                                    </button>
+                                    { this.props.afterSubmit() }
+                                </div>
                             </div>
                         </div>
                     </div>
