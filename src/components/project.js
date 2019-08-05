@@ -20,11 +20,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import ExpandCollapse from 'react-expand-collapse';
+import {Link} from 'react-router-dom';
+import Alert from 'react-s-alert';
 import {fetchUser, canMark} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
-import {Link} from 'react-router-dom';
 import "./project.css";
 import "./expand-collapse.css"
 
@@ -40,16 +41,18 @@ class Project extends Component {
 
     renderVoteButtons() {
         const pressed = this.props.pressed;
-        const onClick = (buttonID) => {
-            return () => {
-                this.props.onClick(this.props.project.data.id, buttonID);
-            }
-        }
+        const onClick = buttonID => () => (
+            this.props.onClick(this.props.project.data.id, buttonID).then(() => {
+                Alert.info("Choice saved");
+            }).catch(() => {
+                Alert.error("Failed to save choice");
+            })
+        )
         return <div className="col-xs-2 col-md-1 button-list">
             <button type="button" className={`btn btn-primary vote-button ${pressed === 1 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(1)}>1st Choice</button>
             <button type="button" className={`btn btn-primary vote-button ${pressed === 2 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(2)}>2nd Choice</button>
             <button type="button" className={`btn btn-primary vote-button ${pressed === 3 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(3)}>3rd Choice</button>
-    </div>
+        </div>
     }
 
     render() {
@@ -95,7 +98,7 @@ class Project extends Component {
         return <div>
             <div className="media-body">
                 <h3 className="col-sm-10 col-md-10 media-head project-title">
-                    {project.title} - {displayName} 
+                    {project.title} - {displayName}
                     <small> {project.small_info}</small>
                     {editUrl}
                 </h3>
@@ -124,13 +127,11 @@ const mapStateToProps = state => {
         rotations: state.rotations.rotations,
         currentRotation: state.rotations.latestID
     }
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchUser: (userID) => dispatch(fetchUser(userID)),
-        fetchRotationFromURL: (url) => dispatch(fetchRotationFromURL(url))
-    }
+const mapDispatchToProps = {
+    fetchUser,
+    fetchRotationFromURL,
 };
 
 export default connect(

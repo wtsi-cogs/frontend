@@ -79,12 +79,10 @@ const mapStateToProps = state => {
         user: state.users.users[state.users.loggedInID],
         users: state.users.users
     }
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        voteProject: (projectID, option) => dispatch(voteProject(projectID, option))
-    }
+const mapDispatchToProps = {
+    voteProject,
 };
 
 export default connect(

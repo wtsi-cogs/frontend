@@ -135,7 +135,7 @@ export function voteProject(projectID, option) {
     function getDataKey(option) {return [null, "first", "second", "third"][option] + "_option_id"}
 
     return function (dispatch, getState) {
-        axios.put(`${api_url}/api/users/me/vote`, {
+        return axios.put(`${api_url}/api/users/me/vote`, {
             project_id: projectID,
             choice: option
         }).then(response => {
@@ -148,7 +148,7 @@ export function voteProject(projectID, option) {
                 if (me.data[getDataKey(i)] === projectID) {
                     me = update(me, {data: {$merge: {[getDataKey(i)]: null}}});
                 }
-            } 
+            }
             me = update(me, {
                 links: {$merge: {[getLinkKey(option)]: `/api/projects/${projectID}`}},
                 data: {$merge: {[getDataKey(option)]: projectID}}});
