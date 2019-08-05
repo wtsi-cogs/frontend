@@ -25,9 +25,10 @@ import MultiselectDropDown from './multiselect_dropdown';
 import RichTextEditor from 'react-rte';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import update from 'immutability-helper';
-import styledAlert from '../components/styledAlert';
 import Alert from 'react-s-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css' 
+import 'react-confirm-alert/src/react-confirm-alert.css'
+import {fetchAllUsers} from '../actions/users';
+import styledAlert from '../components/styledAlert';
 import './project_editor.css';
 
 class ProjectEditor extends Component {
@@ -42,6 +43,10 @@ class ProjectEditor extends Component {
             authors: this.props.authors,
             student: this.props.student,
         };
+    }
+
+    async componentDidMount() {
+        this.props.fetchAllUsers();
     }
 
     submitCheck() {
@@ -240,6 +245,11 @@ const mapStateToProps = state => ({
     }, {}),
 })
 
+const mapDispatchToProps = {
+    fetchAllUsers,
+}
+
 export default connect(
     mapStateToProps,
+    mapDispatchToProps,
 )(ProjectEditor);
