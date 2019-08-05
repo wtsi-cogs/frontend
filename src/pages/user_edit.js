@@ -33,7 +33,7 @@ const userDefault = {
     name: "",
     email: "",
     email_personal: "",
-    priority: 0,
+    priority: "0",
     user_type: []
 }
 
@@ -162,7 +162,7 @@ class UserEditor extends Component {
                 <div className="col-xs-3"><input value={user.name || ""} onChange={updateUser("name", user, id)} className="form-control" placeholder="Name"/></div>
                 <div className="col-xs-2"><input value={user.email || ""} onChange={updateUser("email", user, id)} type="email" className="form-control" placeholder="Email"/></div>
                 <div className="col-xs-2"><input value={user.email_personal || ""} onChange={updateUser("email_personal", user, id)} type="email" className="form-control"/></div>
-                <div className="col-xs-2"><input value={user.priority || ""} onChange={updateUser("priority", user, id)} type="number" className="form-control" placeholder="Student Priority"/></div>
+                <div className="col-xs-2"><input value={user.priority == null ? "" : user.priority} onChange={updateUser("priority", user, id)} type="number" className="form-control" placeholder="Student Priority"/></div>
                 <div className="col-xs-3">
                     <MultiselectDropDown
                         items = {userRoles.reduce((map, role) => {map[role] = user.user_type.includes(role); return map}, {})}
@@ -173,6 +173,7 @@ class UserEditor extends Component {
                             if (index === -1) {user_type.push(role)}
                             else {user_type.splice(index, 1)}
                             const newUser = update(user, {$merge: {user_type}});
+                            // FIXME: this.setState(fn(this.state)) is broken
                             this.setState(update(this.state, {
                                 [stateVar]: {$merge: {[id]: newUser}}
                             }));
