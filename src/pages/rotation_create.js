@@ -23,7 +23,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import GroupForm from '../components/group_form';
 import update from 'immutability-helper';
-import {createRotation} from '../actions/rotations';
+import {createRotation, fetchRotationYears} from '../actions/rotations';
 
 import './rotation_create.css'
 
@@ -61,8 +61,10 @@ class RotationCreate extends Component {
         }, {});
         deadlines.series = this.state.series;
         deadlines.part = this.state.part;
-        this.props.createRotation(deadlines);
-        this.props.history.push("/");
+        this.props.createRotation(deadlines).then(() => {
+            this.props.fetchRotationYears();
+            this.props.history.push("/");
+        });
     }
 
     renderRotationHeader() {
@@ -103,7 +105,7 @@ class RotationCreate extends Component {
     render() {
         return (
             <div className="container">
-                <GroupForm 
+                <GroupForm
                     deadlines = {this.state.deadlines}
                     rotationHeader = {this.renderRotationHeader()}
                     submitName = "Create Rotation"
@@ -128,12 +130,11 @@ const mapStateToProps = state => {
     return {
         latestRotation
     }
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        createRotation: rotation => dispatch(createRotation(rotation))
-    }
+const mapDispatchToProps = {
+    createRotation,
+    fetchRotationYears,
 };
 
 export default connect(
