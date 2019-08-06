@@ -30,10 +30,18 @@ import "./choice_editor.css";
 class ChoiceEditor extends Component {
     getProjectTitle(projectID) {
         const project = this.props.projects[projectID];
-        if (!project) {
-            return "";
+        if (project == null) {
+            return this.props.projectsFetching > 0 ? "Loading project..." : "Unknown project";
         }
-        return project.data.title;
+        const title = project.data.title;
+        const supervisor_id = project.data.supervisor_id;
+        const supervisor = this.props.users[supervisor_id];
+        const supervisor_name = supervisor != null ? supervisor.data.name : this.props.usersFetching > 0 ? "Loading supervisor..." : "Unknown supervisor";
+        const wetlab_computational = [
+            ...(project.data.is_wetlab ? ["wetlab"] : []),
+            ...(project.data.is_computational ? ["computational"] : []),
+        ].join(" and ") || "project type not entered";
+        return `${title} –  ${supervisor_name} (${wetlab_computational})`
     }
 
     getUserChoices(user) {
@@ -123,10 +131,10 @@ class ChoiceEditor extends Component {
         const selected = this.getSelectedCheckBox(userID);
         return (
             <div>
-                <div className="one-line">
+                <div className="one-line btn-long">
                     <input type="checkbox" checked={selected === 3} readOnly={true}/>
                     <DropdownButton
-                        title={selected === 3 && projects.hasOwnProperty(this.props.choices[userID].id)? this.props.projects[this.props.choices[userID].id].data.title: "Other Project"}
+                        title={selected === 3 && projects.hasOwnProperty(this.props.choices[userID].id) ? this.getProjectTitle(this.props.choices[userID].id) : "Other Project"}
                         id={`project_dropdown_${userID}`}
                     >
                         {Object.keys(this.props.projects).filter(projectID => !this.getUserChoices(this.props.students[userID].data).includes(parseInt(projectID, 10))).map(projectID => {
@@ -136,7 +144,7 @@ class ChoiceEditor extends Component {
                                     key={projectID}
                                     onSelect={() => {this.onSelect(userID, "project", projectID)}}
                                 >
-                                    {projects[projectID].data.title}
+                                    {this.getProjectTitle(projectID)}
                                 </MenuItem>
                             );
                         })}
@@ -182,7 +190,7 @@ class ChoiceEditor extends Component {
                     <div className="col-xs-8">
                         <ol>
                             {projectIDs.map((projectID, i) => {
-                                const title = this.getProjectTitle(projectID) || "(No choice)";
+                                const title = projectID != null ? this.getProjectTitle(projectID) : "(No choice)";
                                 if (showButtons) {
                                     return (
                                         <li key={i}>
@@ -236,10 +244,10 @@ class ChoiceEditor extends Component {
 
 const mapStateToProps = state => {
     return {
-        fetching: state.users.fetching
-
+        usersFetching: state.users.fetching,
+        projectsFetching: state.projects.fetching,
     }
-};  
+};
 
 const mapDispatchToProps = dispatch => {
     return {

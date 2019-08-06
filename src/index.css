@@ -27,3 +27,22 @@ emits a confirmAlert({customUI: ...}) instead.
     /* Make dropdown contents wrap to avoid going off-screen */
     white-space: normal;
 }
+
+/* Class for (dropdown) buttons with long contents */
+/* This is usable as a wrapper class to make it easier to apply to
+ * react-bootstrap components (since react-bootstrap 0.x doesn't provide
+ * bsClass) */
+.btn-long .btn, .btn-long.btn {
+    /* Make button contents wrap to avoid going off-screen */
+    white-space: normal;
+    /* Don't center-align wrapped lines */
+    text-align: unset;
+    /* Display dropdown carets vertically centered at the right-hand side,
+     * instead of inline at the end of the text */
+    display: flex;
+    align-items: center;
+}
+.btn-long .caret {
+    /* Re-add the margin that Bootstrap removes for carets in buttons */
+    margin-left: 4px;
+}
