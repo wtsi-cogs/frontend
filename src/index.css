@@ -22,3 +22,8 @@ emits a confirmAlert({customUI: ...}) instead.
     /* Appear on top of confirmAlert()s */
     z-index: 1031;
 }
+
+.dropdown-menu > li > a {
+    /* Make dropdown contents wrap to avoid going off-screen */
+    white-space: normal;
+}
