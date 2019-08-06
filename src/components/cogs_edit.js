@@ -62,10 +62,11 @@ class CogsEditor extends Component {
             >
                 {Object.keys(this.props.users).filter(userID => this.props.users[userID].data.permissions[reviewOtherProjects]).map(userID => {
                     return (
-                        <MenuItem 
+                        <MenuItem
                             eventKey={userID}
-                            key={userID} 
-                            onSelect={() => 
+                            key={userID}
+                            disabled={parseInt(userID, 10) === project.supervisor_id}
+                            onSelect={() =>
                                 this.props.setCogsMarker(project.id, parseInt(userID, 10))
                             }
                         >
