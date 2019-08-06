@@ -158,6 +158,10 @@ export function voteProject(projectID, option) {
     }
 }
 
+export const sendReceipt = () => dispatch => (
+    axios.post(`${api_url}/api/users/me/send_receipt`)
+)
+
 export function saveStudentProjects(choices, callback=()=>{}) {
     return function (dispatch) {
         axios.put(`${api_url}/api/users/assign_projects`, {

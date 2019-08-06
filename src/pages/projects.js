@@ -21,8 +21,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import Alert from 'react-s-alert';
 import {fetchProjects} from '../actions/projects';
-import {getStudentProjects} from '../actions/users'
+import {getStudentProjects, sendReceipt} from '../actions/users'
 import {fetchAllRotations} from '../actions/rotations';
 import ProjectList from '../components/project_list.js';
 import {programmes} from '../constants';
@@ -213,10 +214,26 @@ class Projects extends Component {
                 {text}
                 {text && showVote && <br/>}
                 {showVote && (
-                    "You may now vote for which projects you would like to do for this rotation. " +
-                    "Please select a first, second and third choice that you would be happy doing. " +
-                    `The choices you have selected by the choice selection deadline (${rotation.data.deadlines.student_choice.value} 23:59) will be used to inform the Graduate Office in project allocation.`
-                    )}
+                    <p>You may now vote for which projects you would like to do for this rotation. Please select a first, second and third choice that you would be happy doing. You may change your choices freely until the deadline of {rotation.data.deadlines.student_choice.value} 23:59, at which point they will be used to inform the Graduate Office in project allocation.</p>
+                )}
+                {showVote && (
+                    <p>
+                        Once you have made your choices, click the following button, and a list of the projects you have voted for will be emailed to you:&nbsp;
+                        <button
+                            type="submit"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => (
+                                this.props.sendReceipt().then(() => {
+                                    Alert.info("Receipt sent")
+                                }).catch(() => {
+                                    Alert.error("Receipt could not be sent")
+                                })
+                            )}
+                        >
+                            Send receipt
+                        </button>
+                    </p>
+                )}
                 <ProjectList
                     projects={
                         Object.keys(projects).reduce((filtered, id) => {
@@ -242,14 +259,13 @@ const mapStateToProps = state => {
         fetching: state.projects.fetching,
         projects: state.projects.projects
     }
-};  
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
-        fetchAllRotations: () => dispatch(fetchAllRotations()),
-        getStudentProjects: (user) => dispatch(getStudentProjects(user))
-    }
+const mapDispatchToProps = {
+    fetchProjects,
+    fetchAllRotations,
+    getStudentProjects,
+    sendReceipt,
 };
 
 export default connect(
