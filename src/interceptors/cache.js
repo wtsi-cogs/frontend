@@ -60,8 +60,8 @@ export default function cacheRequests() {
         return response;
     },
     error => {
-        if (methods.includes(error.response.config.method)) {
-            const uri = getUri(error.response.config);
+        if (methods.includes(error.config.method)) {
+            const uri = getUri(error.config);
             const cached = cache.get(uri);
             if (cached !== undefined) {
                 cached.reject(error);
