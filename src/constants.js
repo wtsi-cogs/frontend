@@ -23,8 +23,6 @@ export const programmes = [
     "Tree of Life",
 ]
 
-export const submissionGraceTime = "3 days"
-
 export const groupAttrs = [
     "student_viewable",
     "student_choosable",

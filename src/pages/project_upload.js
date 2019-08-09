@@ -26,7 +26,7 @@ import Alert from 'react-s-alert';
 import {getCurrentStudentProject} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import {uploadProject, getProjectFileStatus} from '../actions/projects';
-import {submissionGraceTime, maxFilesize} from '../constants';
+import {maxFilesize} from '../constants';
 import update from 'immutability-helper';
 import JSZip from 'jszip';
 import {renderDownload} from '../pages/project_download';
@@ -130,11 +130,7 @@ class ProjectUpload extends Component {
             <div>
                 <h5>Deadline: {deadline}</h5>
                 <p>
-                    You may submit your final document for the project at any time.
-                    {group.part !== 2 && ` You will receive ${submissionGraceTime} grace period where you can edit your final upload as you please. `}
-                    {group.part === 2 && ` You may edit your final upload until the final deadline of ${deadline}. `}
-                    After this time, you will no longer be able to modify the project at all and it will be sent to your supervisor and dedicated CoGS marker.
-                    You will be then sent your grade for the project by email along with accompanying feedback.
+                    You may submit your final document for the project at any time, and you may resubmit as many times as you like until the final deadline of {deadline}. After this time, you will no longer be able to modify the project at all, and it will be sent to your supervisor and dedicated CoGS marker. You will be then sent your grade for the project by email along with accompanying feedback.
                 </p>
             </div>
         );
