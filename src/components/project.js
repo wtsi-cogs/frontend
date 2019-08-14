@@ -24,6 +24,7 @@ import {connect} from 'react-redux';
 import ExpandCollapse from 'react-expand-collapse';
 import {Link} from 'react-router-dom';
 import Alert from 'react-s-alert';
+import ClassNames from 'classnames';
 import {fetchUser, canMark} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import "./project.css";
@@ -49,9 +50,9 @@ class Project extends Component {
             })
         )
         return <div className="col-xs-2 col-md-1 button-list">
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 1 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(1)}>1st Choice</button>
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 2 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(2)}>2nd Choice</button>
-            <button type="button" className={`btn btn-primary vote-button ${pressed === 3 && "active"}`} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(3)}>3rd Choice</button>
+            <button type="button" className={ClassNames("btn", "btn-primary", "vote-button", {"active": pressed === 1})} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(1)}>1st Choice</button>
+            <button type="button" className={ClassNames("btn", "btn-primary", "vote-button", {"active": pressed === 2})} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(2)}>2nd Choice</button>
+            <button type="button" className={ClassNames("btn", "btn-primary", "vote-button", {"active": pressed === 3})} data-toggle="button" aria-pressed="false" autoComplete="off" onClick={onClick(3)}>3rd Choice</button>
         </div>
     }
 

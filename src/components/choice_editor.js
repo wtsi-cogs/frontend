@@ -22,6 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
+import ClassNames from 'classnames';
 import {createProjects} from '../constants';
 import FinaliseStudentProjectsButton from '../components/finalise_student_choices_button';
 import "./choice_editor.css";
@@ -182,7 +183,7 @@ class ChoiceEditor extends Component {
             const projectIDs = this.getUserChoices(user);
 
             return (
-                <div className={`row striped${invalidUsers.includes(id)? " invalid": ""}`} key={id}>
+                <div className={ClassNames("row", "striped", {"invalid": invalidUsers.includes(id)})} key={id}>
                     <div className="col-xs-3">{user.name}</div>
                     {this.props.showPriority && (
                         <div className="col-xs-1">{user.priority}</div>
