@@ -26,7 +26,6 @@ import {
     Switch
   } from 'react-router-dom';
 import thunkMiddleware from 'redux-thunk';
-//import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom';
@@ -63,7 +62,6 @@ import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_fe
 import catchErrors from './interceptors/errors';
 import cacheRequests from './interceptors/cache';
 
-//const loggerMiddleware = createLogger();
 const history = createBrowserHistory();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true}) : compose;
 const store = createStore(
@@ -71,7 +69,6 @@ const store = createStore(
     composeEnhancers(applyMiddleware(
       thunkMiddleware, // lets us dispatch() functions
       routerMiddleware(history) // for dispatching history actions
-      //,loggerMiddleware // neat middleware that logs actions
     ))
   )
 
