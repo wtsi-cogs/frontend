@@ -177,15 +177,14 @@ class ProjectUpload extends Component {
             return (
                 <div className="container">
                     <p>
-                        The grace time to upload this project has expired.
-                        You may no longer edit your submission
+                        The grace time to upload this project has expired. You may no longer edit your submission.
                     </p>
                 </div>
             );
         }
 
         const projectStatus = this.props.projectStatus[project.id];
-        const projectGrace = projectStatus? projectStatus.data.grace_time: "Loading deadline";
+        const projectGrace = projectStatus? projectStatus.data.grace_time || "unknown" : "(loading deadline)";
 
         const groupAll = this.props.rotations[project.group_id];
         if (!groupAll) {
@@ -197,17 +196,18 @@ class ProjectUpload extends Component {
             <div className="container">
                 <h4>Upload final document for {project.title}</h4>
                 {!project.uploaded && this.renderToUpload(group)}
-                {group.part === 2 && 
+                {group.part === 2 &&
                     <p>
-                        When the deadline is reached, your project will be sent to the grad office, your supervisor and dedicated CoGS marker.
-                        It is your own responsibility to send it to reprographics to have it printed.
+                        When the deadline is reached, your project will be sent to the Graduate Office, your supervisor and dedicated CoGS marker. It is your own responsibility to send it to reprographics to have it printed.
                     </p>
                 }
-                {project.uploaded && 
+                {project.uploaded &&
                     <p>
-                        You have already uploaded your final document for this rotation.
-                        You may reupload the project until <b>{projectGrace}</b>.<br/>
-                        You may download what you have currently submitted {renderDownload(projectAll, "here")}.
+                        You have already uploaded your final document for this rotation. You may reupload your project until <b>{projectGrace}</b>. You may download what you have currently submitted {renderDownload(projectAll, "here")}.
+                    </p>
+                }
+                {project.uploaded &&
+                    <p>
                         You do not need to take any more action unless you wish to resubmit.
                     </p>
                 }
