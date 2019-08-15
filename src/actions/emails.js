@@ -43,7 +43,7 @@ function receiveEmail(email) {
 
 export function fetchEmails() {
     return function (dispatch) {
-        axios.get(`${api_url}/api/emails`).then(response => {
+        return axios.get(`${api_url}/api/emails`).then(response => {
             const emailList = response.data;
             dispatch(requestEmails(emailList.items.length));
             emailList.items.forEach(email => {

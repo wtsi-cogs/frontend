@@ -23,6 +23,7 @@ import axios from 'axios';
 import {api_url} from '../config.js';
 import {saveAs} from 'file-saver';
 import update from 'immutability-helper';
+import allSettled from 'promise.allsettled';
 
 
 export const FETCH_ROTATIONS = 'FETCH_ROTATIONS';
@@ -70,15 +71,14 @@ function receiveRotationYears(rotationYears) {
 
 export function fetchLatestSeries() {
     return function (dispatch) {
-        axios.get(`${api_url}/api/series`).then(response => {
+        return axios.get(`${api_url}/api/series`).then(response => {
             const yearData = response.data;
             const latestSeries = Math.max(...Object.keys(yearData.links));
-            axios.get(`${api_url}/api/series/${latestSeries}`).then(response => {
+            return axios.get(`${api_url}/api/series/${latestSeries}`).then(response => {
                 const seriesParts = Object.keys(response.data.links);
-                seriesParts.forEach(part => {
-                    dispatch(fetchRotation(latestSeries, part));
-                });
-                dispatch(fetchLatestRotation());
+                return allSettled(seriesParts.map(part => (
+                    dispatch(fetchRotation(latestSeries, part))
+                )).concat([dispatch(fetchLatestRotation())]));
             });
         });
     }
@@ -86,14 +86,14 @@ export function fetchLatestSeries() {
 
 export function fetchRotation(series, part) {
     return function (dispatch) {
-        dispatch(fetchRotationFromURL(`/api/series/${series}/${part}`));
+        return dispatch(fetchRotationFromURL(`/api/series/${series}/${part}`));
     }
 }
 
 export function fetchRotationFromURL(url) {
     return function (dispatch) {
         dispatch(requestRotations(1));
-        axios.get(`${api_url}${url}`).then(response => {
+        return axios.get(`${api_url}${url}`).then(response => {
             const rotation = response.data;
             dispatch(receiveRotation(rotation));
         });
@@ -105,7 +105,7 @@ export function fetchLatestRotation() {
     return function (dispatch) {
         dispatch(requestRotations(1));
         dispatch(requestLatestRotation());
-        axios.get(`${api_url}/api/series/latest`).then(response => {
+        return axios.get(`${api_url}/api/series/latest`).then(response => {
             const rotation = response.data;
             dispatch(receiveRotation(rotation));
             dispatch(receiveLatestRotation(rotation.data.id));
@@ -116,11 +116,11 @@ export function fetchLatestRotation() {
 
 export function fetchAllRotations() {
     return function (dispatch) {
-        axios.get(`${api_url}/api/series/rotations`).then(response => {
-            Object.values(response.data.links).forEach(url => {
-                dispatch(fetchRotationFromURL(url));
-            })
-        });
+        return axios.get(`${api_url}/api/series/rotations`).then(response => (
+            allSettled(Object.values(response.data.links).map(url => (
+                dispatch(fetchRotationFromURL(url))
+            )))
+        ));
     }
 }
 
@@ -128,7 +128,8 @@ export function saveRotation(rotation, onDone) {
     return function (dispatch, getState) {
         const state = getState();
         const updatedState = update(rotation, {$unset: ["id"]});
-        axios.put(`${api_url}/api/series/${state.rotations.rotations[rotation.id].data.series}/${state.rotations.rotations[rotation.id].data.part}`, updatedState).then(response => {
+        const {series, part} = state.rotations.rotations[rotation.id].data;
+        return axios.put(`${api_url}/api/series/${series}/${part}`, updatedState).then(response => {
             dispatch(requestRotations(1));
             dispatch(receiveRotation(response.data));
             onDone();
@@ -138,18 +139,17 @@ export function saveRotation(rotation, onDone) {
 
 export function createRotation(rotation) {
     return function (dispatch) {
-        return axios.post(`${api_url}/api/series`, rotation).then(response => {
-            dispatch(fetchLatestRotation());
-        });
+        return axios.post(`${api_url}/api/series`, rotation).then(response => (
+            dispatch(fetchLatestRotation())
+        ));
     };
 }
 
-
 export function fetchRotationYears() {
     return function (dispatch) {
-        axios.get(`${api_url}/api/series`).then(response => {
+        return axios.get(`${api_url}/api/series`).then(response => {
             const years = Object.keys(response.data.links).map(year => parseInt(year, 10));
-	    // requestRotationYears not needed
+            // requestRotationYears not needed
             dispatch(receiveRotationYears(years));
         });
     };
@@ -157,8 +157,9 @@ export function fetchRotationYears() {
 
 export function sendReminder(rotation) {
     return function (dispatch) {
-	dispatch(requestRotations(1));
-        axios.get(`${api_url}/api/series/${rotation.data.series}/${rotation.data.part}/remind`).then(response => {
+        dispatch(requestRotations(1));
+        const {series, part} = rotation.data;
+        return axios.get(`${api_url}/api/series/${series}/${part}/remind`).then(response => {
             dispatch(receiveRotation(response.data));
         });
     };
@@ -166,7 +167,7 @@ export function sendReminder(rotation) {
 
 export function excelExport(year) {
     return function (dispatch) {
-        axios.get(`${api_url}/api/series/${year}/export.xlsx`, {responseType: 'blob'}).then(response => {
+        return axios.get(`${api_url}/api/series/${year}/export.xlsx`, {responseType: 'blob'}).then(response => {
             saveAs(response.data, `export_${year}.xlsx`);
         });
     }

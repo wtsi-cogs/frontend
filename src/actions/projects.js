@@ -23,6 +23,7 @@ import axios from 'axios';
 import {api_url} from '../config.js';
 import {saveAs} from 'file-saver';
 import update from '../../node_modules/immutability-helper';
+import allSettled from 'promise.allsettled';
 
 
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
@@ -71,14 +72,14 @@ export function removeProject(projectID) {
 
 export function fetchProjects(series, part) {
     return function (dispatch) {
-        axios.get(`${api_url}/api/series/${series}/${part}`).then(response => {
+        return axios.get(`${api_url}/api/series/${series}/${part}`).then(response => {
             const projects = response.data.links.projects;
             dispatch(requestProjects(projects.length));
-            projects.forEach(link => {
-                axios.get(`${api_url}${link}`).then(response => {
-                    dispatch(receiveProject(response.data));
-                });
-            })
+            return allSettled(projects.map(link => (
+                axios.get(`${api_url}${link}`).then(response => (
+                    dispatch(receiveProject(response.data))
+                ))
+            )));
         });
     }
 }
@@ -86,25 +87,25 @@ export function fetchProjects(series, part) {
 export function fetchProject(projectID) {
     return function (dispatch) {
         dispatch(requestProjects(1));
-        axios.get(`${api_url}/api/projects/${projectID}`).then(response => {
-            dispatch(receiveProject(response.data));
-        });
+        return axios.get(`${api_url}/api/projects/${projectID}`).then(response => (
+            dispatch(receiveProject(response.data))
+        ));
     }
 }
 
 export function fetchProjectMarks(projectID) {
     return function (dispatch) {
         // requestProjectMarks not needed
-        axios.get(`${api_url}/api/projects/${projectID}/mark`).then(response => {
-            dispatch(receiveProjectMarks(projectID, response.data.data));
-        });
+        return axios.get(`${api_url}/api/projects/${projectID}/mark`).then(response => (
+            dispatch(receiveProjectMarks(projectID, response.data.data))
+        ));
     }
 }
 
 export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
-        axios.post(`${api_url}/api/projects`, project).then(response => {
+        return axios.post(`${api_url}/api/projects`, project).then(response => {
             dispatch(receiveProject(response.data));
             onDone();
         }).catch(onFail);
@@ -114,7 +115,7 @@ export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
 export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
-        axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
+        return axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
             dispatch(receiveProject(response.data));
             onDone();
         }).catch(onFail);
@@ -123,9 +124,9 @@ export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
 
 export function deleteProject(projectID) {
     return function (dispatch) {
-        axios.delete(`${api_url}/api/projects/${projectID}`).then(response => {
-            dispatch(removeProject(projectID));
-        });
+        return axios.delete(`${api_url}/api/projects/${projectID}`).then(response => (
+            dispatch(removeProject(projectID))
+        ));
     }
 }
 
@@ -140,8 +141,8 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
         const data = new FormData();
         data.append('file', blob, `${projectID}.zip`);
         dispatch(requestProjects(1));
-        axios.put(
-            `${api_url}/api/projects/${projectID}/file`, 
+        return axios.put(
+            `${api_url}/api/projects/${projectID}/file`,
             data,
             {
                 headers: {
@@ -152,14 +153,14 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
         ).then(response => {
             dispatch(receiveProject(project));
             callback(response.data.status_message);
-        }).catch(response => {
-            callback(response.response.data.status_message);
+        }).catch(error => {
+            callback(error.response.data.status_message);
         });
     }
 }
 
 export function downloadProject(project, callback) {
-    axios.get(`${api_url}/api/projects/${project.data.id}/file`, {
+    return axios.get(`${api_url}/api/projects/${project.data.id}/file`, {
         responseType: 'blob',
         headers: {
             '_axios': true
@@ -172,8 +173,7 @@ export function downloadProject(project, callback) {
     }).catch(response => {
         if (response.response.status === 404) {
             callback("Project not yet uploaded", true);
-        } 
-        else {
+        } else {
             var reader = new FileReader();
             reader.onload = function() {
                 callback(JSON.parse(reader.result).status_message, true);
@@ -185,7 +185,7 @@ export function downloadProject(project, callback) {
 
 export function markProject(projectID, feedback, callback) {
     return function (dispatch) {
-        axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
+        return axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
             callback();
         });
     }
@@ -200,7 +200,7 @@ export function saveCogsMarkers(project_user_map, callback=()=>{}) {
 
         const state = getState();
         dispatch(requestProjects(state.projects.projects.length));
-        axios.put(`${api_url}/api/projects/set_cogs`, {projects: project_user_map}).then(response => {
+        return axios.put(`${api_url}/api/projects/set_cogs`, {projects: project_user_map}).then(response => {
             Object.keys(state.projects.projects).forEach(projectID => {
                 const project = update(state.projects.projects[projectID], {
                     links: {$merge: {cogs_marker: getCogsURL(project_user_map[projectID])}},
@@ -216,9 +216,9 @@ export function saveCogsMarkers(project_user_map, callback=()=>{}) {
 export function getProjectFileStatus(projectID) {
     return function (dispatch) {
         // requestProjectStatus not needed
-        axios.get(`${api_url}/api/projects/${projectID}/file/status`).then(response => {
-            dispatch(receiveProjectStatus(projectID, response.data));
-        });
+        return axios.get(`${api_url}/api/projects/${projectID}/file/status`).then(response => (
+            dispatch(receiveProjectStatus(projectID, response.data))
+        ));
     }
 }
 

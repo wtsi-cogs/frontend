@@ -22,6 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
+import allSettled from 'promise.allsettled';
 import {requestProjects, receiveProject, fetchProject} from './projects.js';
 import {requestRotations, receiveRotation} from './rotations';
 
@@ -63,7 +64,7 @@ function receiveMe(userID) {
 export function fetchUser(userID) {
     return function (dispatch) {
         dispatch(requestUsers(1));
-        axios.get(`${api_url}/api/users/${userID}`).then(response => {
+        return axios.get(`${api_url}/api/users/${userID}`).then(response => {
             const user = response.data;
             dispatch(receiveUser(user));
         });
@@ -74,7 +75,7 @@ export function fetchMe() {
     return function (dispatch) {
         dispatch(requestUsers(1));
         dispatch(requestMe());
-        axios.get(`${api_url}/api/users/me`).then(response => {
+        return axios.get(`${api_url}/api/users/me`).then(response => {
             const user = response.data;
             dispatch(receiveUser(user));
             dispatch(receiveMe(user.data.id));
@@ -84,30 +85,30 @@ export function fetchMe() {
 
 export function fetchAllUsers() {
     return function (dispatch) {
-        axios.get(`${api_url}/api/users`).then(response => {
+        return axios.get(`${api_url}/api/users`).then(response => {
             const userLinks = Object.values(response.data.links);
             dispatch(requestUsers(userLinks.length));
-            userLinks.forEach((link) => {
+            return allSettled(userLinks.map((link) => (
                 axios.get(`${api_url}${link}`).then(response => {
                     const user = response.data;
                     dispatch(receiveUser(user));
-                });
-            });
+                })
+            )));
         });
     }
 }
 
 export function fetchUsersWithPermissions(permissions) {
     return function (dispatch) {
-        axios.get(`${api_url}/api/users/permissions`, {params: {permissions}}).then(response => {
+        return axios.get(`${api_url}/api/users/permissions`, {params: {permissions}}).then(response => {
             const userLinks = Object.values(response.data.links);
             dispatch(requestUsers(userLinks.length));
-            userLinks.forEach((link) => {
+            return allSettled(userLinks.map((link) => (
                 axios.get(`${api_url}${link}`).then(response => {
                     const user = response.data;
                     dispatch(receiveUser(user));
-                });
-            });
+                })
+            )));
         });
     }
 }
@@ -115,7 +116,7 @@ export function fetchUsersWithPermissions(permissions) {
 export function saveUser(userID, user) {
     return function (dispatch) {
         dispatch(requestUsers(1));
-        axios.put(`${api_url}/api/users/${userID}`, user).then(response => {
+        return axios.put(`${api_url}/api/users/${userID}`, user).then(response => {
             dispatch(receiveUser(response.data));
         });
     }
@@ -124,7 +125,7 @@ export function saveUser(userID, user) {
 export function createUser(user) {
     return function (dispatch) {
         dispatch(requestUsers(1));
-        axios.post(`${api_url}/api/users`, user).then(response => {
+        return axios.post(`${api_url}/api/users`, user).then(response => {
             dispatch(receiveUser(response.data));
         });
     }
@@ -164,7 +165,7 @@ export const sendReceipt = () => dispatch => (
 
 export function saveStudentProjects(choices, callback=()=>{}) {
     return function (dispatch) {
-        axios.put(`${api_url}/api/users/assign_projects`, {
+        return axios.put(`${api_url}/api/users/assign_projects`, {
             choices: choices
         }).then(response => {
             const projects = response.data.data.projects;
@@ -186,7 +187,7 @@ export function saveStudentProjects(choices, callback=()=>{}) {
 export function unsetVotes(callback=()=>{}) {
     return function (dispatch, getState) {
         const state = getState();
-        axios.post(`${api_url}/api/users/unset_votes`).then(response => {
+        return axios.post(`${api_url}/api/users/unset_votes`).then(response => {
             const priorities = response.data.data.priorities;
             dispatch(requestUsers(Object.keys(state.users.users).length));
             Object.values(state.users.users).forEach(user => {
@@ -234,11 +235,11 @@ export function getSupervisorProjects(user) {
     return function (dispatch) {
         const projects = user.links.supervisor_projects;
         dispatch(requestProjects(projects.length));
-        projects.forEach(link => {
+        return allSettled(projects.map(link => (
             axios.get(`${api_url}${link}`).then(response => {
                 dispatch(receiveProject(response.data));
-            });
-        })
+            })
+        )));
     }
 }
 
@@ -246,11 +247,11 @@ export function getCogsProjects(user) {
     return function (dispatch) {
         const projects = user.links.cogs_projects;
         dispatch(requestProjects(projects.length));
-        projects.forEach(link => {
+        return allSettled(projects.map(link => (
             axios.get(`${api_url}${link}`).then(response => {
                 dispatch(receiveProject(response.data));
-            });
-        })
+            })
+        )));
     }
 }
 
@@ -258,17 +259,17 @@ export function getStudentProjects(user) {
     return function (dispatch) {
         const projects = user.links.student_projects;
         dispatch(requestProjects(projects.length));
-        projects.forEach(link => {
+        return allSettled(projects.map(link => (
             axios.get(`${api_url}${link}`).then(response => {
                 dispatch(receiveProject(response.data));
-            });
-        })
+            })
+        )))
     }
 }
 
 export function getCurrentStudentProject(user) {
     return function (dispatch) {
         const projectID = user.data.current_student_project;
-        dispatch(fetchProject(projectID));
+        return dispatch(fetchProject(projectID));
     }
 }
