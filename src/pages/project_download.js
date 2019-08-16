@@ -49,12 +49,9 @@ class ProjectDownload extends Component {
         const project = this.props.projects[this.props.match.params.projectID];
         if (!project) this.setMessage("Fetching project...");
         else if (!this.state.started) {
-            downloadProject(
-                project,
-                (status) => {
-                    this.setMessage(status);
-                }
-            );
+            downloadProject(project).then(status => {
+                this.setMessage(status);
+            });
             this.setState({
                 message: "Starting download...",
                 started: true
@@ -105,14 +102,11 @@ export default connect(
 export function renderDownload(project, label) {
     return (
         <Link to="#" onClick={() => {
-            downloadProject(project, (msg, failed) => {
-                if (!failed) {
-                    Alert.success(msg);
-                }
-                else {
-                    Alert.error(msg);
-                }
-            });
+            downloadProject(project).then(msg => (
+                Alert.success(msg)
+            )).catch(error => (
+                Alert.error(error.message)
+            ));
         }}>
             {label}
         </Link>
