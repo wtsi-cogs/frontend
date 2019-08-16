@@ -112,14 +112,15 @@ class ProjectUpload extends Component {
         this.setState((state, props) => ({
             uploads: state.uploads.concat(accept)
         }), () => {
-            if (this.state.uploads.length > noRequired) {
+            const filesLeft = noRequired - this.state.uploads.length;
+            if (filesLeft < 0) {
                 Alert.error("Too many files.");
                 this.setState({
                     uploads: []
                 });
             }
-            else if (this.state.uploads.length < noRequired) {
-                Alert.info(`Still need ${noRequired - this.state.uploads.length} file(s).`);
+            else if (filesLeft > 0) {
+                Alert.info(`Still need ${filesLeft} file${filesLeft === 1 ? '' : 's'}.`);
             }
         });
     }
