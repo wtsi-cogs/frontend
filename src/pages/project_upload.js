@@ -85,25 +85,39 @@ class ProjectUpload extends Component {
 
     upload() {
         const projectID = this.props.user.data.current_student_project;
+        const numFiles = this.state.uploads.length;
         var zip = new JSZip();
         this.state.uploads.forEach(file => {
             zip.file(file.name, file);
         });
-        zip.generateAsync({type:"blob"}).then(blob => {
+        zip.generateAsync({type:"blob"}).catch(error => {
+            if (error instanceof DOMException) {
+                // XXX: when trying to read from a File that represents a
+                // directory, Chrome 76 raises NotFoundError, and Firefox 67
+                // raises NotReadableError. However, if the File represents a
+                // file which has been removed since it was selected, both
+                // Firefox and Chrome raise NotFoundError!
+                if (error.name === "NotReadableError") {
+                    throw new Error("Couldn't read file (directory uploads are not supported)");
+                } else if (error.name === "NotFoundError") {
+                    throw new Error("File not found (directory uploads are not supported)");
+                }
+            }
+            throw error;
+        }).then(blob => {
             if (blob.size > maxFilesize) {
-                Alert.error("Selected file(s) too large");
+                throw new Error(`Selected file${numFiles === 1 ? '' : 's'} too large`);
             }
-            else {
-                this.props.uploadProject(projectID, blob, (status_message) => {
-                    if (status_message === "success" || !status_message) {
-                        Alert.success(`Successfully uploaded your files for ${this.props.projects[projectID].data.title}.`);
-                        this.onSuccessfulUpload();
-                    }
-                    else {
-                        Alert.error(`Error when uploading ${this.props.projects[projectID].data.title}: ${status_message}`);
-                    }
-                });
+            return this.props.uploadProject(projectID, blob);
+        }).then(status_message => {
+            if (status_message === "success" || !status_message) {
+                Alert.success(`Successfully uploaded your file${numFiles === 1 ? '' : 's'}.`);
+                this.onSuccessfulUpload();
+            } else {
+                throw new Error(status_message);
             }
+        }).catch(error => {
+            Alert.error(`Error when uploading project: ${error.message}`);
         });
     }
 

@@ -130,7 +130,7 @@ export function deleteProject(projectID) {
     }
 }
 
-export function uploadProject(projectID, blob, callback=()=>{}) {
+export function uploadProject(projectID, blob) {
     return function (dispatch, getState) {
         const project = update(getState().projects.projects[projectID], {
             data: {$merge: {
@@ -151,9 +151,9 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
             }
         ).then(response => {
             dispatch(receiveProject(project));
-            callback(response.data.status_message);
+            return response.data.status_message;
         }).catch(error => {
-            callback(error.response.data.status_message);
+            throw new Error(error.response.data.status_message);
         });
     }
 }
