@@ -50,10 +50,10 @@ class EmailEditor extends Component {
         const content = this.state.content.toString("html");
         this.props.setEmail(this.state.emailID, subject, content).then(() => {
             Alert.info("Changes saved");
-        }).catch((status_message) => {
+        }).catch(error => {
             confirmAlert({
                 title: "Error saving email",
-                message: <pre>{status_message}</pre>,
+                message: <pre>{error.message}</pre>,
                 buttons: [
                     {label: "Back", onClick: () => {}},
                 ]

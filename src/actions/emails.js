@@ -72,8 +72,8 @@ export function setEmail(emailID, subject, content) {
             );
             dispatch(requestEmails(1));
             dispatch(receiveEmail(updatedEmail));
-        }).catch(response => {
-            throw response.response.data.status_message
+        }).catch(error => {
+            throw new Error(error.response.data.status_message);
         });
     }
 }
