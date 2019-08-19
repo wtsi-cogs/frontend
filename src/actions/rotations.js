@@ -140,7 +140,10 @@ export function saveRotation(rotation, onDone) {
 export function createRotation(rotation) {
     return function (dispatch) {
         return axios.post(`${api_url}/api/series`, rotation).then(response => (
-            dispatch(fetchLatestRotation())
+            Promise.all([
+                dispatch(fetchLatestRotation()),
+                dispatch(fetchRotationYears()),
+            ])
         ));
     };
 }
