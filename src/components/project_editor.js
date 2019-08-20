@@ -27,7 +27,8 @@ import {DropdownButton, MenuItem} from 'react-bootstrap';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-import {fetchAllUsers} from '../actions/users';
+import {joinProjects} from '../constants';
+import {fetchUsersWithPermissions} from '../actions/users';
 import styledAlert from '../components/styledAlert';
 import './project_editor.css';
 
@@ -46,7 +47,7 @@ class ProjectEditor extends Component {
     }
 
     async componentDidMount() {
-        this.props.fetchAllUsers();
+        this.props.fetchUsersWithPermissions([joinProjects]);
     }
 
     submitCheck() {
@@ -246,7 +247,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-    fetchAllUsers,
+    fetchUsersWithPermissions,
 }
 
 export default connect(
