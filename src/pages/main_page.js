@@ -39,7 +39,8 @@ class MainPage extends Component {
     }
 
     renderRotations() {
-        return Object.values(this.props.rotations).sort(rotation => rotation.data.part).map(rotation =>
+        // Sort descending by part.
+        return Object.values(this.props.rotations).sort((a, b) => b.data.part - a.data.part).map(rotation =>
             <GroupEditor
                 key = {rotation.data.part}
                 group = {rotation}

@@ -177,7 +177,8 @@ class ChoiceEditor extends Component {
 
     renderStudentChoices(invalidUsers) {
         const showButtons = Boolean(this.props.choices);
-        return Object.entries(this.props.students).sort((a,b) => a[1].data.priority < b[1].data.priority).map((kv) => {
+        // Sort descending by priority.
+        return Object.entries(this.props.students).sort((a, b) => b[1].data.priority - a[1].data.priority).map((kv) => {
             const [id, userAll] = kv;
             const user = userAll.data;
             const projectIDs = this.getUserChoices(user);

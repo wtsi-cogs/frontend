@@ -119,13 +119,14 @@ class CogsEditor extends Component {
         const aUser = this.props.users[a[1].data.student_id];
         const bUser = this.props.users[b[1].data.student_id];
         if (!aUser || !bUser) {
-            return false;
+            return 0;
         }
-        return this.getSurname(aUser.data.name) > this.getSurname(bUser.data.name);
+        // TODO: does this behave how users expect?
+        return this.getSurname(aUser.data.name).localeCompare(this.getSurname(bUser.data.name));
     }
-  
+
     renderProjects() {
-        return Object.entries(this.props.projects).sort((a,b) => this.sortProjects(a,b)).map((kv, i) => {
+        return Object.entries(this.props.projects).sort((a, b) => this.sortProjects(a, b)).map((kv, i) => {
             const [id, projectAll] = kv;
             const project = projectAll.data;
             return (
