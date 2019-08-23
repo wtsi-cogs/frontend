@@ -59,6 +59,7 @@ class Project extends Component {
     render() {
         const project = this.props.project.data;
         const rotation = this.props.rotations[project.group_id];
+        const user = this.props.user.data;
 
         const displayUserId = this.props.displaySupervisorName? project.supervisor_id: project.student_id;
         let displayName = "";
@@ -70,7 +71,7 @@ class Project extends Component {
         if (project.is_computational) {projectType += "Computational "}
 
         let editUrl = "";
-        if (this.props.user.data.id === project.supervisor_id && rotation) {
+        if ((user.id === project.supervisor_id || user.permissions.modify_permissions) && rotation) {
             editUrl = <small> <Link to={`/projects/${project.id}/edit`}>(edit)</Link></small>;
             if (rotation.data.read_only && rotation.data.id !== this.props.currentRotation) {
                 editUrl = <small> <Link to={`/projects/${project.id}/resubmit`}>(edit and resubmit)</Link></small>;
