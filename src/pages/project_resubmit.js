@@ -56,6 +56,8 @@ class ProjectResubmit extends Component {
                 wetlab = {project.is_wetlab}
                 computational = {project.is_computational}
                 student={null}
+                supervisor={project.supervisor_id}
+                canSelectSupervisor={this.props.user.data.permissions.modify_permissions}
                 submitLabel="Create Project"
                 onSubmit={project => {
                     this.props.createProject(
@@ -76,9 +78,10 @@ class ProjectResubmit extends Component {
 
 const mapStateToProps = state => {
     return {
-        projects: state.projects.projects
+        projects: state.projects.projects,
+        user: state.users.users[state.users.loggedInID],
     }
-};  
+};
 
 const mapDispatchToProps = {
     fetchProject,

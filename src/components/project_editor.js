@@ -27,7 +27,7 @@ import {DropdownButton, MenuItem} from 'react-bootstrap';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-import {joinProjects} from '../constants';
+import {createProjects, joinProjects} from '../constants';
 import {fetchUsersWithPermissions} from '../actions/users';
 import styledAlert from '../components/styledAlert';
 import './project_editor.css';
@@ -43,11 +43,12 @@ class ProjectEditor extends Component {
             title: this.props.title,
             authors: this.props.authors,
             student: this.props.student,
+            supervisor: this.props.supervisor,
         };
     }
 
     async componentDidMount() {
-        this.props.fetchUsersWithPermissions([joinProjects]);
+        this.props.fetchUsersWithPermissions([createProjects, joinProjects]);
     }
 
     submitCheck() {
@@ -173,12 +174,30 @@ class ProjectEditor extends Component {
                             </div>
                         </div>
                         <div className="row form-group">
-                            <div className="col-xs-7">
-                                If this project is intended for a particular student, you can pre-assign it to them. This will prevent the project from being selected by other students.
-                            </div>
-                            <div className="col-xs-5">
+                            <div className="col-xs-6">
                                 <DropdownButton
-                                    title={this.props.students.hasOwnProperty(this.state.student) ? this.props.students[this.state.student].data.name : "Any student"}
+                                    // TODO: rewrite this with optional chaining!
+                                    title={this.state.supervisor != null ? `Supervisor: ${this.props.supervisors[this.state.supervisor] != null ? this.props.supervisors[this.state.supervisor].data.name : this.props.usersFetching > 0 ? "Loading" : "Unknown"}` : "Select supervisor"}
+                                    id="assign_supervisor_dropdown"
+                                    className="form-control"
+                                    disabled={!this.props.canSelectSupervisor}
+                                >
+                                    {Object.keys(this.props.supervisors).map(userID => (
+                                        <MenuItem
+                                            eventKey={userID}
+                                            key={userID}
+                                            onSelect={userID => {
+                                                this.setState({supervisor: parseInt(userID, 10)})
+                                            }}
+                                        >
+                                            {this.props.supervisors[userID].data.name}
+                                        </MenuItem>
+                                    ))}
+                                </DropdownButton>
+                            </div>
+                            <div className="col-xs-6">
+                                <DropdownButton
+                                    title={this.props.students.hasOwnProperty(this.state.student) ? `Student: ${this.props.students[this.state.student].data.name}` : "Any student"}
                                     id="assign_student_dropdown"
                                     className="form-control"
                                 >
@@ -238,8 +257,15 @@ class ProjectEditor extends Component {
 }
 
 const mapStateToProps = state => ({
+    usersFetching: state.users.fetching,
     students: Object.entries(state.users.users).reduce((users, [id, user]) => {
         if (user.data.user_type.includes("student")) {
+            users[id] = user;
+        }
+        return users;
+    }, {}),
+    supervisors: Object.entries(state.users.users).reduce((users, [id, user]) => {
+        if (user.data.user_type.includes("supervisor")) {
             users[id] = user;
         }
         return users;

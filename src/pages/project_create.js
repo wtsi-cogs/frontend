@@ -39,6 +39,7 @@ class ProjectCreate extends Component {
     }
 
     render() {
+        const {user} = this.props;
         return (
             <ProjectEditor
                 title=""
@@ -48,6 +49,8 @@ class ProjectCreate extends Component {
                 wetlab = {false}
                 computational = {false}
                 student={null}
+                supervisor={user && user.data.permissions.create_projects ? user.data.id : null}
+                canSelectSupervisor={user.data.permissions.modify_permissions}
                 submitLabel="Create Project"
                 extraLabel="You can edit the project later"
                 onSubmit={project => {
@@ -68,8 +71,10 @@ class ProjectCreate extends Component {
 }
 
 const mapStateToProps = state => {
-    return {}
-};  
+    return {
+        user: state.users.users[state.users.loggedInID],
+    }
+};
 
 const mapDispatchToProps = dispatch => {
     return {
