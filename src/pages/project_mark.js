@@ -29,7 +29,7 @@ import {fetchUser} from '../actions/users';
 import {renderDownload} from './project_download';
 import './project_mark.css';
 
-class ProjectFeedback extends Component {
+class ProjectMark extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -213,4 +213,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ProjectFeedback);
+)(ProjectMark);
