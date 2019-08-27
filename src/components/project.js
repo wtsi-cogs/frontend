@@ -25,7 +25,7 @@ import ExpandCollapse from 'react-expand-collapse';
 import {Link} from 'react-router-dom';
 import Alert from 'react-s-alert';
 import ClassNames from 'classnames';
-import {fetchUser, canMark} from '../actions/users';
+import {fetchUser} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
 import "./project.css";
 import "./expand-collapse.css"
@@ -79,7 +79,7 @@ class Project extends Component {
         }
 
         let links = [];
-        if (this.props.user.data.id === project.student_id) {
+        if (user.id === project.student_id) {
             if (rotation && rotation.data.student_uploadable && !project.grace_passed) {
                 links.push(<div key="upload_project"><h3><Link to={`/projects/upload`}>Upload final project report</Link></h3></div>);
             }
@@ -90,8 +90,15 @@ class Project extends Component {
                 links.push(<div key="supervisor_feedback"><h3><Link to={`/projects/${project.id}/supervisor_feedback`}>Supervisor Feedback</Link></h3></div>);
             }
         }
-        if (canMark(this.props.user, this.props.project)) {
-            links.push(<div key="provide_feedback"><h3><Link to={`/projects/${project.id}/provide_feedback`}>Provide Feedback</Link></h3></div>);
+        if (project.grace_passed) {
+            if ((user.id === project.supervisor_id)
+                && project.supervisor_feedback_id == null) {
+                links.push(<div key="provide_feedback_supervisor"><h3><Link to={`/projects/${project.id}/provide_feedback/supervisor`}>Provide Supervisor Feedback</Link></h3></div>);
+            }
+            if ((user.id === project.cogs_marker_id)
+                && project.cogs_feedback_id == null) {
+                links.push(<div key="provide_feedback_cogs"><h3><Link to={`/projects/${project.id}/provide_feedback/cogs`}>Provide CoGS Feedback</Link></h3></div>);
+            }
         }
 
         const voteButtonClassName = this.props.showVote? "col-xs-10 col-md-11": "";

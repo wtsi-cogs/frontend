@@ -92,7 +92,19 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(
+const ConnectedProjectMark = connect(
     mapStateToProps,
     mapDispatchToProps
 )(ProjectMark);
+
+export const ProjectMarkSupervisor = props => (
+    <ConnectedProjectMark
+        {...props}
+    />
+);
+
+export const ProjectMarkCogs = props => (
+    <ConnectedProjectMark
+        {...props}
+    />
+);
