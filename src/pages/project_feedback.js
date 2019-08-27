@@ -41,11 +41,21 @@ class ProjectFeedback extends Component {
         if (!projectAll || !marks) {
             return "";
         }
+        const {
+            grade,
+            good_feedback,
+            bad_feedback,
+            general_feedback,
+        } = this.props.getMarker(marks);
 
         return (
             <ProjectFeedbackForm
                 project={projectAll}
-                feedback={this.props.getMarker(marks)}
+                grade={grade}
+                goodFeedback={good_feedback}
+                badFeedback={bad_feedback}
+                generalFeedback={general_feedback}
+                readOnly={true}
             />
         );
     }

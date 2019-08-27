@@ -29,11 +29,22 @@ import {renderDownload} from '../pages/project_download';
 import './project_feedback_form.css';
 
 class ProjectFeedbackForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            grade: this.props.grade,
+            goodFeedback: RichTextEditor.createValueFromString(this.props.goodFeedback || "", "html"),
+            badFeedback: RichTextEditor.createValueFromString(this.props.badFeedback || "", "html"),
+            generalFeedback: RichTextEditor.createValueFromString(this.props.generalFeedback || "", "html")
+        }
+    }
+
     async componentDidMount() {
         const project = this.props.project;
         const studentID = project.data.student_id;
         const supervisorID = project.data.supervisor_id;
         const cogsID = project.data.cogs_marker_id;
+        // TODO: this should happen in DidUpdate (what if the props change?)
         if (!this.props.users[studentID]) this.props.fetchUser(studentID);
         if (!this.props.users[supervisorID]) this.props.fetchUser(supervisorID);
         if (cogsID && !this.props.users[cogsID]) this.props.fetchUser(cogsID);
@@ -70,11 +81,14 @@ class ProjectFeedbackForm extends Component {
                                     const [grade, description] = kv;
                                     return (
                                         <label key={grade} className="btn">
-                                            <input 
+                                            <input
                                                 type="radio"
                                                 className="grade-radio"
-                                                checked={this.props.feedback.grade === grade}
-                                                readOnly={true}
+                                                checked={this.state.grade === grade}
+                                                onClick={this.props.readOnly ? null : () => {
+                                                    this.setState({grade})
+                                                }}
+                                                readOnly={this.props.readOnly}
                                             />
                                             {grade} - {description}
                                         </label>
@@ -84,24 +98,57 @@ class ProjectFeedbackForm extends Component {
                             <div className="col-xs-12 form-group editor-div">
                                 What did the student do particularly well?
                                 <RichTextEditor
-                                    value={RichTextEditor.createValueFromString(this.props.feedback.good_feedback, "html")}
-                                    readOnly={true}
+                                    value={this.state.goodFeedback}
+                                    onChange={value => {
+                                        this.setState({
+                                            goodFeedback: value,
+                                        });
+                                    }}
+                                    readOnly={this.props.readOnly}
                                 />
                             </div>
                             <div className="col-xs-12 form-group editor-div">
                                 What improvements could the student make?
                                 <RichTextEditor
-                                    value={RichTextEditor.createValueFromString(this.props.feedback.bad_feedback, "html")}
-                                    readOnly={true}
+                                    value={this.state.badFeedback}
+                                    onChange={value => {
+                                        this.setState({
+                                            badFeedback: value,
+                                        });
+                                    }}
+                                    readOnly={this.props.readOnly}
                                 />
                             </div>
                             <div className="col-xs-12 form-group editor-div">
                                 General comments on the project and report:
                                 <RichTextEditor
-                                    value={RichTextEditor.createValueFromString(this.props.feedback.general_feedback, "html")}
-                                    readOnly={true}
+                                    value={this.state.generalFeedback}
+                                    onChange={value => {
+                                        this.setState({
+                                            generalFeedback: value,
+                                        });
+                                    }}
+                                    readOnly={this.props.readOnly}
                                 />
                             </div>
+                            {!this.props.readOnly &&
+                                <div className="col-xs-2">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-lg"
+                                        onClick={() => {
+                                            this.props.onSubmit({
+                                                grade: this.state.grade,
+                                                good_feedback: this.state.goodFeedback.toString("html"),
+                                                bad_feedback: this.state.badFeedback.toString("html"),
+                                                general_feedback: this.state.generalFeedback.toString("html"),
+                                            })
+                                        }}
+                                    >
+                                        Send Feedback
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -115,7 +162,7 @@ const mapStateToProps = state => {
         users: state.users.users,
         projects: state.projects.projects
     }
-};  
+};
 
 const mapDispatchToProps = dispatch => {
     return {

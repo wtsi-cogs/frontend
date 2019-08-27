@@ -21,53 +21,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {grades} from '../constants.js';
-import RichTextEditor from 'react-rte';
 import Alert from 'react-s-alert';
+import ProjectFeedbackForm from '../components/project_feedback_form';
 import {fetchProject, markProject} from '../actions/projects';
 import {fetchUser} from '../actions/users';
-import {renderDownload} from './project_download';
 import './project_mark.css';
 
 class ProjectMark extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            grade: null,
-            goodFeedback: RichTextEditor.createValueFromString("", "html"),
-            badFeedback: RichTextEditor.createValueFromString("", "html"),
-            generalFeedback: RichTextEditor.createValueFromString("", "html")
-        };
-    }
-
     async componentDidMount() {
         document.title = "Mark Project";
         this.props.fetchProject(this.props.match.params.projectID);
     }
 
-    async componentDidUpdate() {
-        const projectID = this.props.match.params.projectID;
-        const projectAll = this.props.projects[projectID];
-        if (projectAll) {
-            const project = projectAll.data;
-            const studentID = project.student_id;
-            const supervisorID = project.supervisor_id;
-            const cogsID = project.cogs_marker_id;
-            if (!this.props.users[studentID]) this.props.fetchUser(studentID);
-            if (!this.props.users[supervisorID]) this.props.fetchUser(supervisorID);
-            if (cogsID && !this.props.users[cogsID]) this.props.fetchUser(cogsID);
-        }
-    }
-
-    submitCheck() {
-        const feedback = {
-            grade_id: this.state.grade,
-            good_feedback: this.state.goodFeedback.toString("html"),
-            bad_feedback: this.state.badFeedback.toString("html"),
-            general_feedback: this.state.generalFeedback.toString("html")
-        }
+    submitCheck(feedback) {
         let success = true;
-        if (feedback.grade_id === null) {
+        if (feedback.grade == null) {
             success = false;
             Alert.error("You must assign the report a grade");
         }
@@ -98,99 +66,13 @@ class ProjectMark extends Component {
         if (!projectAll) {
             return "";
         }
-        const project = projectAll.data;
-
-        const studentAll = this.props.users[project.student_id];
-        const supervisorAll = this.props.users[project.supervisor_id];
-        const cogsAll = this.props.users[project.cogs_marker_id];
-
-        const student = studentAll? studentAll.data: {name: "Loading"};
-        const supervisor = supervisorAll? supervisorAll.data: {name: "Loading"};
-        const cogsMarker = project.cogs_marker_id? (cogsAll? cogsAll.data: {name: "Loading"}): {name: "Nobody"};
-
         return (
-            <div className="container">
-                <div className="col-md-1"/>
-                <div className="col-md-10">
-                    <div className="well well-sm">
-                        <div className="row">
-                            <div className="col-xs-1"/>
-                            <div className="col-xs-10">
-                                <h3>{project.title}</h3>
-                                <h5>Student name: {student.name}</h5>
-                                <h5>Supervisor name: {supervisor.name}</h5>
-                                <h5>CoGS member: {cogsMarker.name}</h5>
-                                {renderDownload(projectAll, "Download Project")}
-                            </div>
-                            <div className="clearfix"/>
-                            <div className="col-xs-12">
-                                {Object.entries(grades).map((kv, i) => {
-                                    const [grade, description] = kv;
-                                    return (
-                                        <label key={grade} className="btn">
-                                            <input 
-                                                type="radio"
-                                                className="grade-radio"
-                                                checked={this.state.grade === i}
-                                                readOnly={true}
-                                                onClick={() => {
-                                                    this.setState({grade: i});
-                                                }}
-                                            />
-                                            {grade} - {description}
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                            <div className="col-xs-12 form-group editor-div">
-                                What did the student do particularly well?
-                                <RichTextEditor
-                                    value={this.state.goodFeedback}
-                                    onChange={(value) => {
-                                        this.setState({
-                                            goodFeedback: value
-                                        });
-                                    }}
-                                    readOnly={false}
-                                />
-                            </div>
-                            <div className="col-xs-12 form-group editor-div">
-                                What improvements could the student make?
-                                <RichTextEditor
-                                    value={this.state.badFeedback}
-                                    onChange={(value) => {
-                                        this.setState({
-                                            badFeedback: value
-                                        });
-                                    }}
-                                    readOnly={false}
-                                />
-                            </div>
-                            <div className="col-xs-12 form-group editor-div">
-                                General comments on the project and report:
-                                <RichTextEditor
-                                    value={this.state.generalFeedback}
-                                    onChange={(value) => {
-                                        this.setState({
-                                            generalFeedback: value
-                                        });
-                                    }}
-                                    readOnly={false}
-                                />
-                            </div>
-                            <div className="col-xs-2">
-                                <button
-                                    type="button"
-                                    className="btn btn-primary btn-lg"
-                                    onClick={() => this.submitCheck()}
-                                >
-                                    Send Feedback
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ProjectFeedbackForm
+                project={projectAll}
+                onSubmit={feedback => {
+                    this.submitCheck(feedback)
+                }}
+            />
         );
     }
 }
@@ -200,7 +82,7 @@ const mapStateToProps = state => {
         users: state.users.users,
         projects: state.projects.projects
     }
-};  
+};
 
 const mapDispatchToProps = dispatch => {
     return {
