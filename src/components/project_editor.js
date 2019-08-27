@@ -30,7 +30,6 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import {createProjects, joinProjects} from '../constants';
 import {fetchUsersWithPermissions} from '../actions/users';
 import styledAlert from '../components/styledAlert';
-import './project_editor.css';
 
 class ProjectEditor extends Component {
     constructor(props) {
