@@ -23,7 +23,7 @@ import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
 import allSettled from 'promise.allsettled';
-import {requestProjects, receiveProject, fetchProject} from './projects.js';
+import {requestProjects, receiveProject} from './projects.js';
 import {requestRotations, receiveRotation} from './rotations';
 
 export const FETCH_USERS = 'FETCH_USERS';
@@ -264,12 +264,5 @@ export function getStudentProjects(user) {
                 dispatch(receiveProject(response.data));
             })
         )))
-    }
-}
-
-export function getCurrentStudentProject(user) {
-    return function (dispatch) {
-        const projectID = user.data.current_student_project;
-        return dispatch(fetchProject(projectID));
     }
 }

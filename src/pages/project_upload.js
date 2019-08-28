@@ -23,9 +23,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone'
 import Alert from 'react-s-alert';
-import {getCurrentStudentProject} from '../actions/users';
 import {fetchRotationFromURL} from '../actions/rotations';
-import {uploadProject, getProjectFileStatus} from '../actions/projects';
+import {uploadProject, getProjectFileStatus, fetchProject} from '../actions/projects';
 import {maxFilesize} from '../constants';
 import update from 'immutability-helper';
 import JSZip from 'jszip';
@@ -44,7 +43,7 @@ class ProjectUpload extends Component {
     
     async componentDidMount() {
         document.title = "Upload Final Project";
-        this.props.getCurrentStudentProject(this.props.user);
+        this.props.fetchProject(this.props.match.params.projectID);
         this.setState({
             uploads: [],
             required: 0,
@@ -53,7 +52,7 @@ class ProjectUpload extends Component {
     }
 
     async componentDidUpdate() {
-        const projectAll = this.props.projects[this.props.user.data.current_student_project];
+        const projectAll = this.props.projects[this.props.match.params.projectID];
         if (projectAll) {
             const rotation = this.props.rotations[projectAll.data.group_id];
             if (!rotation) {
@@ -84,7 +83,7 @@ class ProjectUpload extends Component {
     }
 
     upload() {
-        const projectID = this.props.user.data.current_student_project;
+        const projectID = this.props.match.params.projectID;
         var zip = new JSZip();
         this.state.uploads.forEach(file => {
             zip.file(file.name, file);
@@ -138,7 +137,7 @@ class ProjectUpload extends Component {
     }
 
     renderUploaded() {
-        const projectID = this.props.user.data.current_student_project
+        const projectID = this.props.match.params.projectID;
         const projectStatus = this.props.projectStatus[projectID];
         const projectFiles = projectStatus? projectStatus.data.file_names: [];
         return (
@@ -168,7 +167,7 @@ class ProjectUpload extends Component {
     }
 
     render() {
-        const projectAll = this.props.projects[this.props.user.data.current_student_project];
+        const projectAll = this.props.projects[this.props.match.params.projectID];
         if (!projectAll) {
             return null;
         }
@@ -293,7 +292,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getCurrentStudentProject: (user) => dispatch(getCurrentStudentProject(user)),
+        fetchProject: (projectID) => dispatch(fetchProject(projectID)),
         fetchRotationFromURL: (url) => dispatch(fetchRotationFromURL(url)),
         uploadProject: (projectID, blob, callback) => dispatch(uploadProject(projectID, blob, callback)),
         getProjectFileStatus: (projectID) => dispatch(getProjectFileStatus(projectID))

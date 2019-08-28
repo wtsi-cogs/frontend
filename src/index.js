@@ -121,7 +121,7 @@ class App extends Component {
                         <Route exact path="/people/edit" component={UserEditor}/>
                         <Route exact path="/rotations/create" component={RotationCreate}/>
                         <Route exact path="/projects/create" component={ProjectCreate}/>
-                        <Route exact path="/projects/upload" component={ProjectUpload}/>
+                        <Route exact path="/projects/:projectID/upload" component={ProjectUpload}/>
                         <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                         <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
                         <Route exact path="/projects/:projectID/download" component={ProjectDownload}/>
