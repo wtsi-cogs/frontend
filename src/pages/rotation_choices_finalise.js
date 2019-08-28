@@ -81,7 +81,7 @@ class RotationChoiceEditor extends Component {
         this.props.saveStudentProjects(this.state.choices, () => {
             Alert.info("Saved choices.");
             if (!unmounted) {
-                Object.values(this.props.projects).forEach(project => {
+                Object.values(this.getProjects()).forEach(project => {
                     const studentID = project.data.student_id;
                     if (studentID !== null) {
                         this.setChoice(studentID, {type: "project", id: project.data.id});
