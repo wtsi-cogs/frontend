@@ -25,11 +25,11 @@ li>label {
 }
 
 .invalid {
-    background: #FFB3B3;
+    background: #ffd7d7;
 }
 
 .invalid.striped:nth-child(2n) {
-    background: #F1A8A8;
+    background: #f7cece;
 }
 
 .dropdown-menu {
