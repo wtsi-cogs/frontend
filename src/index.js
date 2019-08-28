@@ -22,8 +22,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 
 import {
+    BrowserRouter as Router,
     Route,
-    Switch
+    Switch,
   } from 'react-router-dom';
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -35,8 +36,6 @@ import DefaultPage from './pages/default_page.js';
 import {fetchMe} from './actions/users'
 import Header from './header.js';
 import { connect } from 'react-redux';
-import { createBrowserHistory } from 'history';
-import { routerMiddleware, connectRouter, ConnectedRouter } from 'connected-react-router'
 
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
@@ -62,13 +61,11 @@ import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_fe
 import catchErrors from './interceptors/errors';
 import cacheRequests from './interceptors/cache';
 
-const history = createBrowserHistory();
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true}) : compose;
 const store = createStore(
-    connectRouter(history)(rootReducer),
+    rootReducer,
     composeEnhancers(applyMiddleware(
       thunkMiddleware, // lets us dispatch() functions
-      routerMiddleware(history) // for dispatching history actions
     ))
   )
 
@@ -92,7 +89,7 @@ class App extends Component {
         if (!this.props.latestRotationID || !this.props.loggedInID) {
             if (this.props.user && !this.props.user.data.permissions.view_projects_predeadline) {
                 return (
-                    <ConnectedRouter history={history}>
+                    <Router>
                         <div>
                             <Header/>
                             <div className="container">
@@ -102,7 +99,7 @@ class App extends Component {
                             </div>
                             <Alert stack={{limit: 3}} effect="stackslide"/>
                         </div>
-                    </ConnectedRouter>
+                    </Router>
                 );
             }
             return (
@@ -110,7 +107,7 @@ class App extends Component {
             );
         }
         return (
-            <ConnectedRouter history={history}>
+            <Router>
                 <div>
                     <Header/>
                     <Switch>
@@ -135,7 +132,7 @@ class App extends Component {
                     </Switch>
                     <Alert stack={{limit: 3}} effect="stackslide"/>
                 </div>
-            </ConnectedRouter>
+            </Router>
         );
     }
 }
