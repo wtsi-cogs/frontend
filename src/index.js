@@ -55,7 +55,7 @@ import ProjectEdit from './pages/project_edit.js';
 import RotationCogsEditor from './pages/rotation_cogs_edit.js';
 import RotationChoiceEditor from './pages/rotation_choices_finalise.js'
 import ProjectUpload from './pages/project_upload'
-import ProjectMark from './pages/project_mark'
+import {ProjectMarkSupervisor, ProjectMarkCogs} from './pages/project_mark'
 import ProjectDownload from './pages/project_download'
 import {ProjectFeedbackSupervisor, ProjectFeedbackCogs} from './pages/project_feedback';
 
@@ -125,7 +125,8 @@ class App extends Component {
                         <Route exact path="/projects/:projectID/resubmit" component={ProjectResubmit}/>
                         <Route exact path="/projects/:projectID/edit" component={ProjectEdit}/>
                         <Route exact path="/projects/:projectID/download" component={ProjectDownload}/>
-                        <Route exact path="/projects/:projectID/provide_feedback" component={ProjectMark}/>
+                        <Route exact path="/projects/:projectID/provide_feedback/supervisor" component={ProjectMarkSupervisor}/>
+                        <Route exact path="/projects/:projectID/provide_feedback/cogs" component={ProjectMarkCogs}/>
                         <Route exact path="/projects/:projectID/supervisor_feedback" component={ProjectFeedbackSupervisor}/>
                         <Route exact path="/projects/:projectID/cogs_feedback" component={ProjectFeedbackCogs}/>
                         <Route exact path="/rotations/:series/:part/choices" component={RotationChoiceEditor}/>
@@ -138,7 +139,7 @@ class App extends Component {
         );
     }
 }
-    
+
 const mapStateToProps = state => {
     return {
         loggedInID: state.users.loggedInID,

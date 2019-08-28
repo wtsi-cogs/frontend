@@ -69,9 +69,12 @@ class ProjectMark extends Component {
         return (
             <ProjectFeedbackForm
                 project={projectAll}
-                onSubmit={feedback => {
-                    this.submitCheck(feedback)
-                }}
+                onSubmit={feedback => this.submitCheck(
+                    Object.assign(
+                        feedback,
+                        {marker: this.props.getMarkerID(projectAll.data)},
+                    )
+                )}
             />
         );
     }
@@ -92,7 +95,21 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(
+const ConnectedProjectMark = connect(
     mapStateToProps,
     mapDispatchToProps
 )(ProjectMark);
+
+export const ProjectMarkSupervisor = props => (
+    <ConnectedProjectMark
+        getMarkerID={project => project.supervisor_id}
+        {...props}
+    />
+);
+
+export const ProjectMarkCogs = props => (
+    <ConnectedProjectMark
+        getMarkerID={project => project.cogs_marker_id}
+        {...props}
+    />
+);
