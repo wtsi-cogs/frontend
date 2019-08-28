@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import ClassNames from 'classnames';
@@ -75,30 +75,37 @@ class ChoiceEditor extends Component {
         this.props.onClick(studentID, {type, id: parseInt(id, 10)});
     }
 
-
+    // Produces an object mapping user IDs to lists of conflicting
+    // users. If a user's choice does not conflict, it will not be
+    // present in the keys of the returned object.
     invalidChoices() {
-        return Object.keys(this.props.students).filter(userID => {
+        return Object.keys(this.props.students).reduce((obj, userID) => {
             const userOption = this.props.choices[userID];
             if (!userOption) {
-                return false;
+                return obj;
             }
             if (userOption.type === "user") {
-                return false;
+                return obj;
             }
-            return Object.keys(this.props.students).some(otherUserID => {
+            const conflictingUsers = Object.keys(this.props.students).map(otherUserID => {
                 if (otherUserID === userID) {
-                    return false;
+                    return null;
                 }
                 const otherUserOption = this.props.choices[otherUserID];
                 if (!otherUserOption) {
-                    return false;
+                    return null;
                 }
                 if (otherUserOption.type === "user") {
-                    return false;
+                    return null;
                 }
-                return userOption.id === otherUserOption.id;
-            });
-        });
+                if (userOption.id !== otherUserOption.id) {
+                    return null;
+                }
+                return otherUserID;
+            }).filter(x => x != null);
+            obj[userID] = conflictingUsers;
+            return obj;
+        }, {});
     }
 
     renderSaveButtons(submitDisabled, saveDisabled) {
@@ -182,14 +189,15 @@ class ChoiceEditor extends Component {
             const [id, userAll] = kv;
             const user = userAll.data;
             const projectIDs = this.getUserChoices(user);
+            const conflicts = invalidUsers[id] || [];
 
             return (
-                <div className={ClassNames("row", "striped", {"invalid": invalidUsers.includes(id)})} key={id}>
-                    <div className="col-xs-3">{user.name}</div>
+                <div className={ClassNames("row", "striped", {"invalid": conflicts.length})} key={id}>
+                    <div className="col-xs-3 col-lg-2">{user.name}</div>
                     {this.props.showPriority && (
                         <div className="col-xs-1">{user.priority}</div>
                     )}
-                    <div className="col-xs-8">
+                    <div className="col-xs-5 col-lg-6">
                         <ol>
                             {projectIDs.map((projectID, i) => {
                                 const title = projectID != null ? this.getProjectTitle(projectID) : "(No choice)";
@@ -216,6 +224,15 @@ class ChoiceEditor extends Component {
                         </ol>
                        {showButtons && this.renderDropdowns(id)}
                     </div>
+                    <div className="col-xs-3">
+                        {
+                            conflicts.length ?
+                                <Fragment>Choice conflicts with {conflicts.map(uid =>
+                                    this.props.users[uid].data.name
+                                ).join(", ")}</Fragment>
+                                : null
+                        }
+                    </div>
                 </div>
             );
         });
@@ -223,9 +240,9 @@ class ChoiceEditor extends Component {
 
     render() {
         const showButtons = Boolean(this.props.choices);
-        const invalidUsers = showButtons? this.invalidChoices(): [];
+        const invalidUsers = showButtons? this.invalidChoices(): {};
         return (
-            <div className="container">            
+            <div className="container">
                 <div className="row">
                     <div className="col-xs-3">Student</div>
                     {this.props.showPriority && (
@@ -236,8 +253,8 @@ class ChoiceEditor extends Component {
                 {this.renderStudentChoices(invalidUsers)}
 
                 {showButtons && this.renderSaveButtons(
-                    invalidUsers.length || Object.keys(this.props.choices).length < Object.keys(this.props.students).length,
-                    Boolean(invalidUsers.length)
+                    Object.keys(invalidUsers).length || Object.keys(this.props.choices).length < Object.keys(this.props.students).length,
+                    Boolean(Object.keys(invalidUsers).length)
                 )}
             </div>
         );
