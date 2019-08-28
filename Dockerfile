@@ -7,7 +7,7 @@ RUN \
 apt-get update && \
 apt-get install -y curl gnupg && \
 curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-apt-get install -y nodejs build-essential && \
+apt-get install -y nodejs=6.* build-essential && \
 npm install -g create-react-app
 
 COPY package.json package-lock.json /app/
