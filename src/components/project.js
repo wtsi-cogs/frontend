@@ -92,10 +92,12 @@ class Project extends Component {
         }
         if (project.grace_passed) {
             if ((user.id === project.supervisor_id || user.permissions.modify_permissions)
+                && project.supervisor_id != null
                 && project.supervisor_feedback_id == null) {
                 links.push(<div key="provide_feedback_supervisor"><h3><Link to={`/projects/${project.id}/provide_feedback/supervisor`}>Provide Supervisor Feedback</Link></h3></div>);
             }
             if ((user.id === project.cogs_marker_id || user.permissions.modify_permissions)
+                && project.cogs_marker_id != null
                 && project.cogs_feedback_id == null) {
                 links.push(<div key="provide_feedback_cogs"><h3><Link to={`/projects/${project.id}/provide_feedback/cogs`}>Provide CoGS Feedback</Link></h3></div>);
             }
