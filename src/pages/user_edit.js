@@ -167,12 +167,13 @@ class UserEditor extends Component {
             disabled: true,
             title: "Can't edit students once they are assigned a project",
         } : {};
+        const showPriority = user.user_type.includes("student") || user.user_type.length === 0;
         return (
             <div key={id} className="row">
                 <div className="col-xs-3"><input value={user.name || ""} onChange={updateUser("name", user, id)} {...forbidEditsProps} className="form-control" placeholder="Name"/></div>
                 <div className="col-xs-2"><input value={user.email || ""} onChange={updateUser("email", user, id)} {...forbidEditsProps} type="email" className="form-control" placeholder="Email"/></div>
                 <div className="col-xs-2"><input value={user.email_personal || ""} onChange={updateUser("email_personal", user, id)} {...forbidEditsProps} type="email" className="form-control"/></div>
-                <div className="col-xs-2"><input value={user.priority == null ? "" : user.priority} onChange={updateUser("priority", user, id)} type="number" className="form-control" placeholder="Student Priority"/></div>
+                <div className="col-xs-2"><input value={showPriority ? user.priority || "0" : "n/a"} onChange={updateUser("priority", user, id)} type={showPriority ? "number" : "text"} disabled={!showPriority} title={showPriority ? undefined : "Only students have a priority"} className="form-control" placeholder="Student Priority"/></div>
                 <div className="col-xs-3">
                     <MultiselectDropDown
                         items = {userRoles.reduce((map, role) => {map[role] = user.user_type.includes(role); return map}, {})}
