@@ -103,7 +103,9 @@ class ChoiceEditor extends Component {
                 }
                 return otherUserID;
             }).filter(x => x != null);
-            obj[userID] = conflictingUsers;
+            if (conflictingUsers.length) {
+                obj[userID] = conflictingUsers;
+            }
             return obj;
         }, {});
     }
