@@ -170,10 +170,37 @@ class UserEditor extends Component {
         const showPriority = user.user_type.includes("student") || user.user_type.length === 0;
         return (
             <div key={id} className="row">
-                <div className="col-xs-3"><input value={user.name || ""} onChange={updateUser("name", user, id)} {...forbidEditsProps} className="form-control" placeholder="Name"/></div>
-                <div className="col-xs-2"><input value={user.email || ""} onChange={updateUser("email", user, id)} {...forbidEditsProps} type="email" className="form-control" placeholder="Email"/></div>
-                <div className="col-xs-2"><input value={user.email_personal || ""} onChange={updateUser("email_personal", user, id)} {...forbidEditsProps} type="email" className="form-control"/></div>
-                <div className="col-xs-2"><input value={showPriority ? user.priority || "0" : "n/a"} onChange={updateUser("priority", user, id)} type={showPriority ? "number" : "text"} disabled={!showPriority} title={showPriority ? undefined : "Only students have a priority"} className="form-control" placeholder="Student Priority"/></div>
+                <div className="col-xs-3"><input
+                    className="form-control"
+                    placeholder="Name"
+                    value={user.name || ""}
+                    onChange={updateUser("name", user, id)}
+                    {...forbidEditsProps}
+                /></div>
+                <div className="col-xs-2"><input
+                    type="email"
+                    className="form-control"
+                    placeholder="Email"
+                    value={user.email || ""}
+                    onChange={updateUser("email", user, id)}
+                    {...forbidEditsProps}
+                /></div>
+                <div className="col-xs-2"><input
+                    type="email"
+                    className="form-control"
+                    value={user.email_personal || ""}
+                    onChange={updateUser("email_personal", user, id)}
+                    {...forbidEditsProps}
+                /></div>
+                <div className="col-xs-2"><input
+                    type={showPriority ? "number" : "text"}
+                    className="form-control"
+                    placeholder="0"
+                    value={showPriority ? user.priority || "0" : "n/a"}
+                    onChange={updateUser("priority", user, id)}
+                    disabled={!showPriority}
+                    title={showPriority ? undefined : "Only students have a priority"}
+                /></div>
                 <div className="col-xs-3">
                     <MultiselectDropDown
                         items = {userRoles.reduce((map, role) => {map[role] = user.user_type.includes(role); return map}, {})}
