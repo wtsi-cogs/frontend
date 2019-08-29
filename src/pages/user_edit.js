@@ -169,7 +169,7 @@ class UserEditor extends Component {
         } : {};
         const showPriority = user.user_type.includes("student") || user.user_type.length === 0;
         return (
-            <div key={id} className="row">
+            <div key={id} className="row row-tiny-gutters">
                 <div className="col-xs-3"><input
                     className="form-control"
                     placeholder="Name"
@@ -269,7 +269,7 @@ class UserEditor extends Component {
         return (
             <div className="container">
                 {this.renderFilterOptions()}
-                <div className="row spacing">
+                <div className="row row-tiny-gutters spacing">
                     <div className="col-xs-3">Name</div>
                     <div className="col-xs-2">Email Address</div>
                     <div className="col-xs-2">Personal Email</div>

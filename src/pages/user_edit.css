@@ -17,3 +17,13 @@ input[type=checkbox].role-check {
     flex: 1;
     margin-left: 8px;
 }
+
+.row-tiny-gutters {
+    margin-left: -4px;
+    margin-right: -4px;
+}
+
+.row-tiny-gutters [class*=col-] {
+    padding-left: 4px;
+    padding-right: 4px;
+}
