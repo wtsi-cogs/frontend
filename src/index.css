@@ -46,3 +46,13 @@ emits a confirmAlert({customUI: ...}) instead.
     /* Re-add the margin that Bootstrap removes for carets in buttons */
     margin-left: 4px;
 }
+
+/* Default Bootstrap text colour. */
+.color-normal {
+    color: #333;
+}
+
+/* Don't add extra space at the bottom of popovers. */
+.popover-content > :last-child {
+    margin-bottom: 0;
+}

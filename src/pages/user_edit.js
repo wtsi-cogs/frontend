@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import isEqual from 'is-equal';
 import {userRoles, archive} from '../constants.js';
+import InfoButton from '../components/info_button.js';
 import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import {fetchAllUsers, saveUser, createUser} from '../actions/users';
@@ -272,8 +273,17 @@ class UserEditor extends Component {
                 <div className="row row-tiny-gutters spacing">
                     <div className="col-xs-3">Name</div>
                     <div className="col-xs-2">Email Address</div>
-                    <div className="col-xs-2">Personal Email</div>
-                    <div className="col-xs-2">Student Priority</div>
+                    <div className="col-xs-2">
+                        Personal Email <InfoButton placement="bottom" id="email_popover">
+                            If users don't have a Sanger email address, you can add a personal email address (e.g. Gmail) here. They will be able to log in with either address.
+                        </InfoButton>
+                    </div>
+                    <div className="col-xs-2">
+                        Student Priority <InfoButton placement="bottom" id="priority_popover">
+                            <p>Priority is automatically updated when students are assigned projects. A higher priority means that the student did not get their first choice of project.</p>
+                            <p>You probably don't need to change this number.</p>
+                        </InfoButton>
+                    </div>
                     <div className="col-xs-3">User Type</div>
                 </div>
                 {this.renderUserList()}
