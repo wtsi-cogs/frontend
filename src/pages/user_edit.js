@@ -157,11 +157,21 @@ class UserEditor extends Component {
                 }));
             }
         }
+        // Don't allow editing the name/email of students who have ever
+        // been assigned a project. This is a dumb heuristic to stop the
+        // Graduate Office reusing old user IDs for new users.
+        // FIXME: this is ugly as hell; we have to cope with the fact
+        // that IDs can refer to multiple different arrays, and they
+        // only sometimes match up with what's in this.props.users.
+        const forbidEditsProps = stateVar === "users" && this.props.users[id].data.current_student_project != null ? {
+            disabled: true,
+            title: "Can't edit students once they are assigned a project",
+        } : {};
         return (
             <div key={id} className="row">
-                <div className="col-xs-3"><input value={user.name || ""} onChange={updateUser("name", user, id)} className="form-control" placeholder="Name"/></div>
-                <div className="col-xs-2"><input value={user.email || ""} onChange={updateUser("email", user, id)} type="email" className="form-control" placeholder="Email"/></div>
-                <div className="col-xs-2"><input value={user.email_personal || ""} onChange={updateUser("email_personal", user, id)} type="email" className="form-control"/></div>
+                <div className="col-xs-3"><input value={user.name || ""} onChange={updateUser("name", user, id)} {...forbidEditsProps} className="form-control" placeholder="Name"/></div>
+                <div className="col-xs-2"><input value={user.email || ""} onChange={updateUser("email", user, id)} {...forbidEditsProps} type="email" className="form-control" placeholder="Email"/></div>
+                <div className="col-xs-2"><input value={user.email_personal || ""} onChange={updateUser("email_personal", user, id)} {...forbidEditsProps} type="email" className="form-control"/></div>
                 <div className="col-xs-2"><input value={user.priority == null ? "" : user.priority} onChange={updateUser("priority", user, id)} type="number" className="form-control" placeholder="Student Priority"/></div>
                 <div className="col-xs-3">
                     <MultiselectDropDown
