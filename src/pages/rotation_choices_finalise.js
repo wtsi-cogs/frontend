@@ -21,8 +21,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import {Prompt} from 'react-router';
 import Alert from 'react-s-alert';
 import update from 'immutability-helper';
+import isEqual from 'is-equal';
 import {fetchProjects} from '../actions/projects';
 import {saveStudentProjects} from '../actions/users';
 import {fetchUsersWithPermissions} from '../actions/users';
@@ -34,7 +36,12 @@ import ChoiceEditor from '../components/choice_editor.js';
 class RotationChoiceEditor extends Component {
     constructor(props) {
         super(props);
-        this.state = {choices: {}};
+        this.state = {
+            // The choices as displayed to the user.
+            choices: {},
+            // The choices which have actually been submitted to the server.
+            savedChoices: {},
+        };
     }
 
     async componentDidMount() {
@@ -50,6 +57,9 @@ class RotationChoiceEditor extends Component {
         Object.values(this.getProjects()).forEach(project => {
             const studentID = project.data.student_id;
             if (studentID !== null) {
+                if (!this.state.savedChoices.hasOwnProperty(studentID)) {
+                    this.setSavedChoice(studentID, {type: "project", id: project.data.id});
+                }
                 if (!this.state.choices.hasOwnProperty(studentID)) {
                     this.setChoice(studentID, {type: "project", id: project.data.id});
                 }
@@ -77,6 +87,14 @@ class RotationChoiceEditor extends Component {
         }));
     }
 
+    setSavedChoice(studentID, newState) {
+        this.setState((state, props) => ({
+            savedChoices: update(state.savedChoices, {$merge: {
+                [studentID]: newState,
+            }})
+        }));
+    }
+
     onSave(unmounted=false, cb=()=>{}) {
         this.props.saveStudentProjects(this.state.choices, () => {
             Alert.info("Saved choices.");
@@ -84,6 +102,7 @@ class RotationChoiceEditor extends Component {
                 Object.values(this.getProjects()).forEach(project => {
                     const studentID = project.data.student_id;
                     if (studentID !== null) {
+                        this.setSavedChoice(studentID, {type: "project", id: project.data.id});
                         this.setChoice(studentID, {type: "project", id: project.data.id});
                     }
                 });
@@ -125,6 +144,10 @@ class RotationChoiceEditor extends Component {
             <div className="container-fluid">
                 {studentText}
                 {projectText}
+                <Prompt
+                    when={!isEqual(this.state.choices, this.state.savedChoices)}
+                    message="You have unsaved changes, which will be lost if you leave this page. Leave anyway?"
+                />
                 <ChoiceEditor
                     users={this.props.users}
                     students={students}
