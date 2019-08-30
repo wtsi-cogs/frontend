@@ -66,14 +66,7 @@ class GroupForm extends Component {
                     <div className="well well-sm">
                         <div className="row">
                             <div className="col-sm-4 col-sm-push-7">
-                                <div>
-                                    <div className="pull-right visible-sm-block visible-md-block visible-lg-block">
-                                        { this.props.rotationHeader }
-                                    </div>
-                                    <div className="visible-xs-block">
-                                        { this.props.rotationHeader }
-                                    </div>
-                                </div>
+                                { this.props.rotationHeader }
                             </div>
                             <div className="col-sm-6 col-sm-pull-3">
                                 {Object.keys(this.props.deadlines).map((deadline, i) => this.renderDateBox(deadline, this.props.deadlines[deadline], validity[i]))}
