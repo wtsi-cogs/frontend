@@ -68,8 +68,8 @@ class RotationCreate extends Component {
 
     renderRotationHeader() {
         return (
-            <span>
-                <div className="dash">Rotation </div>
+            <span className="rotation-series-part-inputs">
+                <span className="dash">Rotation </span>
                 <input
                     type="number"
                     placeholder="Year"
@@ -82,7 +82,7 @@ class RotationCreate extends Component {
                         });
                     }}
                 />
-                <div className="dash">-</div>
+                <span className="dash">&ndash;</span>
                 <input
                     type="number"
                     placeholder="Part"

@@ -1,12 +1,27 @@
+/* This width is:
+ * - 1em for each character in the number
+ * - 1em extra for a stepper inserted by the browser
+ * - 12px of horizontal padding, added by .rotation-series-part-inputs > input (see below)
+ * If things were different, we could use box-sizing: content-box and not have
+ * to worry about compensating for the padding; unfortunately the spinner is
+ * counted as "content", so we'd have to add on an extra em, and Bootstrap
+ * assumes box-sizing: border-box anyway.
+ */
 .year {
-    width: 5em;
-    float: left;
+    width: calc(5em + 12px);
 }
 .part {
-    width: 3.5em;
-    float: right;
+    width: calc(2em + 12px);
 }
-.dash {
-    float: left;
-    line-height: 30px;
+
+.rotation-series-part-inputs {
+    /* Don't overflow onto a new line. */
+    white-space: nowrap;
+}
+
+.rotation-series-part-inputs > input {
+    /* Keep inputs inline with the text. */
+    display: inline-block;
+    /* Make the absurdly-large padding slightly less absurd. */
+    padding: 6px;
 }
