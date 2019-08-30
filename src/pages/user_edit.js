@@ -300,7 +300,7 @@ class UserEditor extends Component {
                     </div>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4 spacing">
-                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveUsers()}>Archive Selected Users</button>
+                        <button className="btn btn-warning btn-lg btn-block" onClick={() => this.archiveUsers()}>Archive Displayed Users</button>
                     </div>
                 </div>
                 <div className="row spacing">
