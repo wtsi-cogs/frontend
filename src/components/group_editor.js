@@ -20,6 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import ClassNames from 'classnames';
 import GroupForm from '../components/group_form';
 import moment from 'moment';
@@ -85,7 +86,26 @@ class GroupEditor extends Component {
         Object.keys(this.state.deltaDeadlines).forEach(key => {
             deadlines[key].value = this.state.deltaDeadlines[key];
         });
+        const now = moment();
         const attrs = this.getAttrs();
+        const rotation = this.props.group.data;
+        let rotationState = null;
+        if (!rotation.student_viewable) {
+            rotationState = <p>Waiting for supervisors to submit project proposals.</p>;
+        } else if (rotation.student_choosable) {
+            rotationState = <p>Waiting for students to choose projects.</p>;
+        } else if (rotation.can_finalise) {
+            rotationState = <p>Ready for you to <Link to={`/rotations/${rotation.series}/${rotation.part}/choices`}>finalise student choices</Link>.</p>;
+        } else if (rotation.student_uploadable) {
+            rotationState = <p>Students are completing their projects.</p>;
+            if (now >= deadlines.student_complete.value.clone().hour(23).minute(59)) {
+                rotationState = <p>Markers are marking submitted projects.</p>;
+            }
+            // TODO: check that all projects are actually marked here.
+            if (now >= deadlines.marking_complete.value.clone().hour(23).minute(59)) {
+                rotationState = <p>Rotation is finished.</p>;
+            }
+        }
         return (
             <GroupForm
                 deadlines = {deadlines}
@@ -125,6 +145,7 @@ class GroupEditor extends Component {
                                 ))}
                             </div>
                         )}
+                        <div className="rotation-subtitle">{rotationState}</div>
                     </div>
                 }
                 submitName = "Save Rotation"

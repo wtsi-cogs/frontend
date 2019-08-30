@@ -2,6 +2,10 @@
     float: right;
 }
 
+.rotation-subtitle {
+    font-size: 18px;
+}
+
 .rotation-edit-advanced {
     font-weight: 400;
     font-size: 12px;
