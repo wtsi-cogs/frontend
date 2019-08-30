@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
 import {fetchLatestSeries, saveRotation, sendReminder} from '../actions/rotations';
 import {getSupervisorProjects, getCogsProjects, getStudentProjects} from '../actions/users';
-import GroupEditor from './group_editor';
+import GroupEditor from '../components/group_editor';
 import ProjectList from '../components/project_list.js';
 
 import './main_page.css';
