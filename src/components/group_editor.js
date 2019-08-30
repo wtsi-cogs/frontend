@@ -87,13 +87,13 @@ class GroupEditor extends Component {
         });
         const attrs = this.getAttrs();
         return (
-            <GroupForm 
+            <GroupForm
                 deadlines = {deadlines}
                 rotationHeader = {
                     <div>
                         <h2>Rotation {this.props.group.data.part}</h2>
                         {developer && (
-                            <h5 
+                            <h5
                                 className="rotation-edit-advanced"
                                 onClick={() => {
                                     this.setState((state, props) => ({showAdvance: !state.showAdvance}));
@@ -104,29 +104,27 @@ class GroupEditor extends Component {
                             </h5>
                         )}
                         {this.state.showAdvance && (
-                                <div>
-                                    {groupAttrs.map(attr => {
-                                        return (
-                                            <div key={attr}>
-                                                <label className="rotation-edit-advanced">
-                                                    <input 
-                                                        type="checkbox"
-                                                        name={attr} 
-                                                        checked={attrs[attr]}
-                                                        readOnly={true}
-                                                        onClick={() => {
-                                                            this.setState((state, props) => update(state, {deltaAttrs: (obj) => {
-                                                                return Object.assign(obj, {[attr]: !(obj[attr] === undefined? props.group.data[attr]: obj[attr])});
-                                                            }}));
-                                                        }}
-                                                    />
-                                                    {attr}
-                                                </label>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
+                            <div>
+                                {groupAttrs.map(attr => (
+                                    <div key={attr}>
+                                        <label className="rotation-edit-advanced">
+                                            <input
+                                                type="checkbox"
+                                                name={attr}
+                                                checked={attrs[attr]}
+                                                readOnly={true}
+                                                onClick={() => {
+                                                    this.setState((state, props) => update(state, {deltaAttrs: (obj) => (
+                                                        Object.assign(obj, {[attr]: !(obj[attr] === undefined? props.group.data[attr]: obj[attr])})
+                                                    )}));
+                                                }}
+                                            />
+                                            {attr}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 }
                 submitName = "Save Rotation"
