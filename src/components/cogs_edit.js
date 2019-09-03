@@ -152,7 +152,7 @@ class CogsEditor extends Component {
             <div>
                 <div className="row">
                     <div className="col-xs-2"><h5>Project Title</h5></div>
-                    <div className="col-xs-1"><h5>Wetlab</h5></div>
+                    <div className="col-xs-1"><h5>Experimental</h5></div>
                     <div className="col-xs-1"><h5>Computational</h5></div>
                     <div className="col-xs-1"><h5>Student</h5></div>
                     <div className="col-xs-1"><h5>Supervisor</h5></div>

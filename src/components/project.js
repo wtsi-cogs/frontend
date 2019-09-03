@@ -67,7 +67,7 @@ class Project extends Component {
             displayName = this.props.users[displayUserId].data.name;
         }
         let projectType = "";
-        if (project.is_wetlab) {projectType += "Wetlab "}
+        if (project.is_wetlab) {projectType += "Experimental "}
         if (project.is_computational) {projectType += "Computational "}
 
         let editUrl = "";

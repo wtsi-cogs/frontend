@@ -39,7 +39,7 @@ class ChoiceEditor extends Component {
         const supervisor = this.props.users[supervisor_id];
         const supervisor_name = supervisor != null ? supervisor.data.name : this.props.usersFetching > 0 ? "Loading supervisor..." : "Unknown supervisor";
         const wetlab_computational = [
-            ...(project.data.is_wetlab ? ["wetlab"] : []),
+            ...(project.data.is_wetlab ? ["experimental"] : []),
             ...(project.data.is_computational ? ["computational"] : []),
         ].join(" and ") || "project type not entered";
         return `${title} –  ${supervisor_name} (${wetlab_computational})`

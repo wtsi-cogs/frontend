@@ -172,7 +172,7 @@ class Projects extends Component {
                                 }));
                             }}
                         />
-                        Show Wetlab Projects
+                        Show Experimental Projects
                     </label>
                 </div>
                 <div className="col-xs-4">

@@ -65,7 +65,7 @@ class ProjectEditor extends Component {
             success = false;
         }
         if (!(this.state.wetlab || this.state.computational)) {
-            Alert.error("Projects must be either computational or wetlab");
+            Alert.error("Projects must be either computational or experimental");
             success = false;
         }
         if (success) {
@@ -143,7 +143,7 @@ class ProjectEditor extends Component {
                                         wetlab: true,
                                         computational: false
                                     });
-                                }}/> Wetlab</label>
+                                }}/> Experimental</label>
                                 <label className="btn"><input type="radio" checked={!this.state.wetlab & this.state.computational} readOnly={true} onClick={() => {
                                     this.setState({
                                         wetlab: false,
