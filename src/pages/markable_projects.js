@@ -59,7 +59,6 @@ class MarkableProjects extends Component {
 const mapStateToProps = state => {
     return {
         user: state.users.users[state.users.loggedInID],
-        rotation: state.rotations.rotations[state.rotations.latestID],
         fetching: state.projects.fetching,
         projects: state.projects.projects
     }
