@@ -223,7 +223,7 @@ class Projects extends Component {
                             type="submit"
                             className="btn btn-primary btn-sm"
                             onClick={() => (
-                                this.props.sendReceipt().then(() => {
+                                this.props.sendReceipt(this.state.rotationID).then(() => {
                                     Alert.info("Receipt sent")
                                 }).catch(() => {
                                     Alert.error("Receipt could not be sent")

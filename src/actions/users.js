@@ -159,8 +159,8 @@ export function voteProject(projectID, option) {
     }
 }
 
-export const sendReceipt = () => dispatch => (
-    axios.post(`${api_url}/api/users/me/send_receipt`)
+export const sendReceipt = rotationID => dispatch => (
+    axios.post(`${api_url}/api/users/me/send_receipt`, {rotation: rotationID})
 )
 
 export function saveStudentProjects(choices, callback=()=>{}) {
