@@ -23,8 +23,10 @@ import React, {Component, Fragment} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import ClassNames from 'classnames';
+import Alert from 'react-s-alert';
+import {confirmAlert} from 'react-confirm-alert';
+import {unsetVotes} from '../actions/users';
 import {createProjects} from '../constants';
-import FinaliseStudentProjectsButton from '../components/finalise_student_choices_button';
 import "./choice_editor.css";
 
 // FIXME: there is very tight coupling between this and the RotationChoiceEditor
@@ -124,13 +126,30 @@ class ChoiceEditor extends Component {
                 </div>
                 <div className="col-sm-4"></div>
                 <div className="col-sm-4 spacing">
-                    <FinaliseStudentProjectsButton
-                        preClick={(cb) => this.props.onSave(cb)}
-                        postClick={() => this.props.onSubmit()}
+                    <button
+                        className="btn btn-primary btn-lg btn-block"
                         disabled={submitDisabled}
-                    >
-                        Finalise Projects
-                    </FinaliseStudentProjectsButton>
+                        onClick={() => {
+                            confirmAlert({
+                                title: "Finalise Student Projects",
+                                message: "You are about to finalise all student choices. " +
+                                "After this point, you will not be able to reassign projects. " +
+                                "CoGS markers however will continue to be able to be set. " +
+                                "Do you wish to continue?",
+                                buttons: [
+                                    {label: "Yes", onClick: () => {
+                                        this.props.onSave(() => {
+                                            this.props.unsetVotes(this.props.rotationID, () => {
+                                                Alert.info("Finalised Student choices. Emails have been sent out. Students may now upload.");
+                                                this.props.onSubmit();
+                                            });
+                                        });
+                                    }},
+                                    {label: "No", onClick: () => {}},
+                                ],
+                            })
+                        }}
+                    >Finalise Projects</button>
                 </div>
             </div>
         );
@@ -270,9 +289,8 @@ const mapStateToProps = state => {
     }
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-    }
+const mapDispatchToProps = {
+    unsetVotes,
 };
 
 export default connect(

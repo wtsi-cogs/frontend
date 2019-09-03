@@ -96,7 +96,7 @@ class RotationChoiceEditor extends Component {
     }
 
     onSave(unmounted=false, cb=()=>{}) {
-        this.props.saveStudentProjects(this.state.choices, () => {
+        this.props.saveStudentProjects(this.state.choices, this.props.rotation.data.id, () => {
             Alert.info("Saved choices.");
             if (!unmounted) {
                 Object.values(this.getProjects()).forEach(project => {
@@ -152,6 +152,7 @@ class RotationChoiceEditor extends Component {
                     users={this.props.users}
                     students={students}
                     projects={projects}
+                    rotationID={rotation.id}
                     onClick={(studentID, newState) => {
                         this.setChoice(studentID, newState);
                     }}

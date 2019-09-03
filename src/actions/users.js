@@ -163,10 +163,11 @@ export const sendReceipt = rotationID => dispatch => (
     axios.post(`${api_url}/api/users/me/send_receipt`, {rotation: rotationID})
 )
 
-export function saveStudentProjects(choices, callback=()=>{}) {
+export function saveStudentProjects(choices, rotation, callback=()=>{}) {
     return function (dispatch) {
         return axios.put(`${api_url}/api/users/assign_projects`, {
-            choices: choices
+            choices,
+            rotation,
         }).then(response => {
             const projects = response.data.data.projects;
             dispatch(requestProjects(projects.length));
@@ -184,10 +185,12 @@ export function saveStudentProjects(choices, callback=()=>{}) {
 }
 
 
-export function unsetVotes(callback=()=>{}) {
+export function unsetVotes(rotation, callback=()=>{}) {
     return function (dispatch, getState) {
         const state = getState();
-        return axios.post(`${api_url}/api/users/unset_votes`).then(response => {
+        return axios.post(`${api_url}/api/users/unset_votes`, {
+            rotation,
+        }).then(response => {
             const priorities = response.data.data.priorities;
             dispatch(requestUsers(Object.keys(state.users.users).length));
             Object.values(state.users.users).forEach(user => {
@@ -206,7 +209,7 @@ export function unsetVotes(callback=()=>{}) {
                 });
                 dispatch(receiveUser(newUser));
             });
-            const latestRotationOld = state.rotations.rotations[state.rotations.latestID];
+            const latestRotationOld = state.rotations.rotations[rotation];
             const latestRotation = update(latestRotationOld, {
                 data: {$merge: {
                     student_uploadable: true,
