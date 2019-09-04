@@ -28,6 +28,7 @@ import styledAlert from '../components/styledAlert';
 import update from 'immutability-helper';
 import {groupAttrs} from '../constants';
 import {developer} from '../config';
+import InfoButton from '../components/info_button';
 
 import './group_editor.css';
 
@@ -91,7 +92,15 @@ class GroupEditor extends Component {
         const rotation = this.props.group.data;
         let rotationState = null;
         if (!rotation.student_viewable) {
-            rotationState = <p>Waiting for supervisors to submit project proposals.</p>;
+            // Guard against the initial rotation, which is not visible but read-only.
+            if (rotation.read_only) {
+                rotationState = <p>Please create a new rotation. <InfoButton id="dummy-rotation-information" title="Why is this necessary?">
+                    <p>This rotation is automatically generated and exists for technical reasons. You should not alter this rotation.</p>
+                    <p>To allow other users to use the Student Portal, you will need to create a new rotation.</p>
+                </InfoButton></p>;
+            } else {
+                rotationState = <p>Waiting for supervisors to submit project proposals.</p>;
+            }
         } else if (rotation.student_choosable) {
             rotationState = <p>Waiting for students to choose projects.</p>;
         } else if (rotation.can_finalise) {
