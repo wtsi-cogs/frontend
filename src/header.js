@@ -61,7 +61,12 @@ class Header extends Component {
                 {this.renderLink("/projects/create", "Create Project", (permissions.create_projects || permissions.modify_permissions) && !rotation.read_only)}
                 {this.renderLink("/projects", "All Projects", permissions.view_projects_predeadline || rotation.student_viewable)}
                 {this.renderLink("/projects/markable", "Markable Projects", permissions.create_projects || permissions.review_other_projects)}
-                {this.renderLink(`/projects/${user.current_student_project}/upload`, "Upload final project", user.can_upload_project)}
+                {/* TODO: there used to be an "Upload final project" link here,
+                but it no longer worked, because a student's latest project
+                isn't necessarily the project that they expect to upload to. It
+                would be nice if this button could be resurrected -- e.g. by
+                looking for the student's (only) uploadable project.
+                */}
             </Nav>
         );
     }
