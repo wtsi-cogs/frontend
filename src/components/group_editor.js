@@ -22,6 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import ClassNames from 'classnames';
+import Alert from 'react-s-alert';
 import GroupForm from '../components/group_form';
 import moment from 'moment';
 import styledAlert from '../components/styledAlert';
@@ -161,9 +162,16 @@ class GroupEditor extends Component {
                 updateDeadline = {(deadlineName, date) => {
                     this.setState((state, props) => update(state, {deltaDeadlines: {$merge: {[deadlineName]: date}}}));
                 }}
-                onSubmit = {() => {this.onSubmit()}}
+                onSubmit = {() => {
+                    // Guard against modifying the initial dummy rotation.
+                    if (!this.props.group.data.student_viewable && this.props.group.data.read_only) {
+                        Alert.error("Please create a new rotation.");
+                    } else {
+                        this.onSubmit();
+                    }
+                }}
                 afterSubmit = {() => {
-                    return ( !this.props.group.data.student_viewable &&
+                    return ( !this.props.group.data.student_viewable && !this.props.group.data.read_only &&
                         <button
                             type="submit"
                             className="btn btn-warning btn-lg"
