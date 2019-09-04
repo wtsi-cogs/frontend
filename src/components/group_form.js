@@ -19,13 +19,35 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import DatePicker from 'react-datepicker';
 import ClassNames from 'classnames';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
+
 import {developer} from '../config';
+import InfoButton from '../components/info_button';
+
 import './datepicker.css';
+
+
+const DEADLINE_DESCRIPTIONS = {
+    supervisor_submit: "Supervisors can still submit projects after this date, if they need to.",
+    student_invite: "Supervisors can still submit projects after this date, if they need to.",
+    student_choice: <Fragment>
+        <p>After this date:</p>
+        <ul>
+            <li>Students cannot change their project choices (even if they have not submitted any choices yet)</li>
+            <li>New projects cannot be submitted</li>
+        </ul>
+        <p>You will only be able to create the next rotation once this deadline has passed and you have finalised project assignments.</p>
+    </Fragment>,
+    student_complete: <Fragment>
+        <p>There is a three-day 'grace period' after this date, where students can still reupload their reports. At the end of the grace period, markers (supervisors and CoGS members) will be emailed reports to mark.</p>
+        <p>If a student has not uploaded a report by the end of the grace period, they will be sent an email reminder (and their supervisor will be CC'd). They can still upload their report, and it will be sent to markers at the end of the day.</p>
+    </Fragment>,
+    marking_complete: "Markers can continue to mark reports after this date.",
+};
 
 
 class GroupForm extends Component {
@@ -33,6 +55,11 @@ class GroupForm extends Component {
         return (
             <div key={deadline.id}>
                 <b>{deadline.name}</b>
+                {DEADLINE_DESCRIPTIONS[deadlineName] && <Fragment>
+                    {" "}<InfoButton id={`${deadlineName}_info`} placement="bottom">
+                        {DEADLINE_DESCRIPTIONS[deadlineName]}
+                    </InfoButton>
+                </Fragment>}
                 <br/>
                 <DatePicker
                     selected={deadline.value}
