@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import MultiselectDropDown from './multiselect_dropdown';
@@ -31,6 +30,22 @@ import {createProjects, joinProjects} from '../constants';
 import {fetchUsersWithPermissions} from '../actions/users';
 import styledAlert from '../components/styledAlert';
 
+// A form for creating a new project or editing an existing project.
+//
+// Props:
+// - abstract
+// - authors
+// - canSelectSupervisor
+// - computational
+// - extraLabel
+// - onDelete
+// - onSubmit
+// - programmes
+// - student
+// - submitLabel
+// - supervisor
+// - title
+// - wetlab
 class ProjectEditor extends Component {
     constructor(props) {
         super(props);
@@ -46,10 +61,18 @@ class ProjectEditor extends Component {
         };
     }
 
+    // Fetch all supervisors and students in order to display their
+    // names in the dropdowns.
     async componentDidMount() {
         this.props.fetchUsersWithPermissions([createProjects, joinProjects]);
     }
 
+    // If the form is sufficiently filled in, submit it, otherwise
+    // display an error. (The backend checks for at least some of these,
+    // but possibly not all, and it also performs checks that are not
+    // done here -- you can tell the difference from the frontend
+    // because if a server-side check fails, you'll get two popups, one
+    // with a generic "this didn't work"-type message, instead of one.)
     submitCheck() {
         let success = true;
         if (!this.state.title) {
@@ -77,6 +100,7 @@ class ProjectEditor extends Component {
         };
     }
 
+    // Render the "Delete Project" button.
     renderDelete() {
         return (
             <button

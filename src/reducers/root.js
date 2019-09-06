@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import { combineReducers } from 'redux'
 import update from 'immutability-helper';
 
@@ -26,6 +25,18 @@ import {REQUEST_PROJECTS, RECEIVE_PROJECT, RECEIVE_PROJECT_STATUS, RECEIVE_PROJE
 import {REQUEST_EMAILS, RECIEVE_EMAIL} from '../actions/emails';
 import { REQUEST_USERS, RECEIVE_USER, RECEIVE_ME } from '../actions/users';
 import { REQUEST_ROTATIONS, RECEIVE_ROTATION, RECEIVE_LATEST_ROTATION, RECEIVE_ROTATION_YEARS } from '../actions/rotations';
+
+// Most of the functions here are relatively self-explanatory, so
+// there's little point commenting them individually. The actions are
+// defined in files in src/actions, so there are some comments there
+// explaining what each action is meant to do; each of the functions
+// here is a reducer that takes the current state and an action, and
+// returns a new state that is somehow altered as a result of the
+// action.
+//
+// If you're confused by this, read the Redux documentation:
+// <https://redux.js.org/> (this app also uses React Redux, which is all
+// the connect() gubbins, but that's not relevant in this file).
 
 function projects(state={
     fetching: 0,
@@ -132,6 +143,12 @@ function emails(state={
     }
 }
 
+// When an action is received, send it to all reducers (in this
+// application, all but one will ignore it), and combine the new states
+// they return into one state indexed by the name of the reducer.
+//
+// In other words: the structure of the reducers mirrors the structure
+// of the data.
 const rootReducer = combineReducers({
   projects,
   users,

@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 
 import {
@@ -69,13 +68,18 @@ const store = createStore(
     ))
   )
 
+// The root component.
 class App extends Component {
+    // Install the Axios interceptors, and fetch the ID of the logged-in
+    // user and all rotations from the latest series.
     async componentDidMount() {
         catchErrors();
         cacheRequests();
         this.props.fetchMe();
         this.props.fetchLatestSeries();
     }
+    // Fetch the ID of the logged-in user and all rotations from the
+    // latest series, if they haven't yet been fetched.
     async componentDidUpdate() {
         if (!this.props.loggedInID) {
             this.props.fetchMe();

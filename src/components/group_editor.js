@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import ClassNames from 'classnames';
@@ -33,6 +32,13 @@ import InfoButton from '../components/info_button';
 
 import './group_editor.css';
 
+// A box listing the details of a rotation (deadlines and current
+// state), with a button to remind supervisors to submit projects (only
+// displayed if the rotation is not yet visible to students).
+//
+// Props:
+// - group
+// - sendReminder
 class GroupEditor extends Component {
     constructor(props) {
         super(props);
@@ -43,19 +49,29 @@ class GroupEditor extends Component {
         }
     }
 
+    // Return a new deadline object with the date changed based on the
+    // parsed passed string.
     updateDeadline(deadline, dateString) {
         return update(deadline, {$merge: {value: moment.utc(dateString)}});
     }
 
+    // (As best I can tell:) Return the deadlines passed in props, with
+    // date strings converted to `moment`s.
     deadlinesFromProps() {
         return Object.keys(this.props.group.data.deadlines).reduce((obj, x) => {
             const deadline = this.props.group.data.deadlines[x];
+            // TODO: why the hell are you passing a `moment` to a
+            // function whose sole job is to call `moment` on a string!?
             obj[x] = this.updateDeadline(deadline, moment.utc(this.props.group.data.deadlines[x].value));
             return obj;
         }, {});
     }
 
+    // Overlay the changed rotation attributes on top of the existing
+    // attributes.
     getAttrs() {
+        // Read this function from bottom to top -- the second reduce is
+        // evaluated first. (Why was it written like this? Who knows.)
         return Object.keys(this.state.deltaAttrs).reduce((obj, attr) => {
             obj[attr] = this.state.deltaAttrs[attr];
             return obj;
@@ -67,6 +83,8 @@ class GroupEditor extends Component {
         }, {}));
     }
 
+    // Save the entered deadlines and attributes, in a vastly
+    // overcomplicated manner.
     async onSubmit() {
         const origDeadlines = this.deadlinesFromProps();
         let finalDeadlines = {}
@@ -111,7 +129,8 @@ class GroupEditor extends Component {
             if (now >= deadlines.student_complete.value.clone().hour(23).minute(59)) {
                 rotationState = <p>Markers are marking submitted projects.</p>;
             }
-            // TODO: check that all projects are actually marked here.
+            // TODO: check that all projects are actually marked before
+            // displaying this.
             if (now >= deadlines.marking_complete.value.clone().hour(23).minute(59)) {
                 rotationState = <p>Rotation is finished.</p>;
             }

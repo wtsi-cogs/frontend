@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -32,6 +31,9 @@ import MultiselectDropDown from '../components/multiselect_dropdown';
 import update from 'immutability-helper';
 import './projects.css';
 
+// A page listing all projects in a rotation. Members of staff
+// (supervisors, CoGS members, Graduate Office) -- but not students --
+// can select which rotation they are viewing the projects for.
 class Projects extends Component {
     constructor(props) {
         super(props);
@@ -55,14 +57,22 @@ class Projects extends Component {
         if (this.props.rotations[this.props.rotationID].data.part === 3) {
             this.props.getStudentProjects(this.props.user);
         }
+        // Fetch metadata about all rotations, if the user is a member
+        // of staff, so that we can display the dropdown to select a
+        // different rotation.
         if (this.props.user.data.permissions.view_projects_predeadline) {
             this.props.fetchAllRotations();
         }
     }
 
+    // Update the filter checkboxes to enforce that experimental
+    // projects are shown if the student needs to do an experimental
+    // project, or vice versa for computational projects.
     async componentDidUpdate() {
         const rotation = this.props.rotations[this.state.rotationID];
         if (this.props.user.data.permissions.join_projects) {
+            // List of projects from the current series which this
+            // student is assigned to.
             const studentProjects = Object.keys(this.props.projects).reduce((filtered, id) => {
                 const project_rotation = this.props.rotations[this.props.projects[id].data.group_id];
                 if (this.props.projects[id].data.student_id === this.props.user.data.id
@@ -90,11 +100,16 @@ class Projects extends Component {
         }
     }
 
+    // Fetch *the projects for* the *current* rotation.
     fetchRotation() {
         const rotation = this.props.rotations[this.state.rotationID];
         this.props.fetchProjects(rotation.data.series, rotation.data.part);
     }
 
+    // Determine whether to show a project based on the filter
+    // checkboxes and the programme filter. Also filter out projects
+    // which have been assigned to a different user, unless the current
+    // user is a member of staff.
     shouldShowProject(project) {
         const programmeFilter = Object.entries(this.state.programmes).filter(kv => kv[1]).map(kv => kv[0]);
         var show = true;
@@ -119,6 +134,7 @@ class Projects extends Component {
         return show;
     }
 
+    // Render the dropdown to select a previous rotation.
     renderPreviousRotations() {
         const rotationValue = (rotation) => {
             const series = rotation.data.series;
@@ -142,6 +158,8 @@ class Projects extends Component {
         );
     }
 
+    // Render the filtering options (checkboxes, rotation selection,
+    // programme filter).
     renderFilterOptions() {
         return (
             <div className="row">

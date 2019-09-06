@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -26,6 +25,8 @@ import ProjectEditor from '../components/project_editor';
 import {programmes} from '../constants';
 import {createProject} from '../actions/projects';
 
+// Page for creating a new project. Accessible to both supervisors and
+// the Graduate Office.
 class ProjectCreate extends Component {
     constructor(props) {
         super(props);

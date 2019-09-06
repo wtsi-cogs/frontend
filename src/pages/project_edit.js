@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -26,6 +25,8 @@ import ProjectEditor from '../components/project_editor';
 import {programmes} from '../constants';
 import {editProject, deleteProject, fetchProject} from '../actions/projects';
 
+// Page for editing an existing project. Accessible to both the
+// project's supervisor and members of the Graduate Office.
 class ProjectEdit extends Component {
     constructor(props) {
         super(props);
@@ -69,6 +70,9 @@ class ProjectEdit extends Component {
                 }}
                 onDelete={() => {
                     this.props.deleteProject(projectID);
+                    // TODO: this assumes that the project will be
+                    // deleted successfully, which is not always the
+                    // case (e.g. in a read-only rotation).
                     Alert.info(`"${project.title}" deleted.`);
                     this.props.history.push("/");
                 }}

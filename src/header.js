@@ -18,25 +18,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {fetchRotationYears, excelExport} from './actions/rotations'
 
-
+// The header at the top of every page.
+//
+// Props: none
 class Header extends Component {
+    // Fetch the list of years which contain a rotation, to populate the
+    // dropdown for the "Export to Excel" button.
     async componentDidMount() {
         if (this.props.user.permissions.view_all_submitted_projects && !this.props.rotationYears.length) {
             this.props.fetchRotationYears();
         }
     }
 
+    // Which link should get the "active" styling?
     getActiveKey() {
         return this.props.location.pathname;
     }
 
+    // Conditionally render a styled link to a path.
     renderLink(link, name, do_render, key=undefined) {
         if (!do_render) return;
         return (
@@ -44,6 +49,8 @@ class Header extends Component {
         );
     }
 
+    // Render the left-hand side of the header, containing links to
+    // lists of projects and to the homepage.
     renderLeftNav() {
         const user = this.props.user;
         const rotation = this.props.rotation;
@@ -71,12 +78,14 @@ class Header extends Component {
         );
     }
 
+    // Render the contents of the "Edit CoGS Markers" dropdown.
     renderCogsEdit(series, maxPart) {
         return [...Array(maxPart).keys()].map(i => {
             return this.renderLink(`/rotations/${series}/${i+1}/cogs`, `Rotation ${i+1}`, true, i);
         });
     }
 
+    // Render the contents of the "Export to Excel" dropdown.
     renderExcelExport() {
         return this.props.rotationYears.map(year => {
             return <MenuItem 
@@ -90,6 +99,8 @@ class Header extends Component {
         });
     }
 
+    // Render the right-hand side of the header, containing links to
+    // things other than lists of projects.
     renderRightNav() {
         const user = this.props.user;
         const rotation = this.props.rotation;
@@ -151,14 +162,14 @@ class Header extends Component {
     }
 }
 
-
 const mapStateToProps = state => {
     return {
         user: state.users.users[state.users.loggedInID] !== undefined ? state.users.users[state.users.loggedInID].data : null,
         rotation: state.rotations.rotations[state.rotations.latestID] !== undefined ? state.rotations.rotations[state.rotations.latestID].data : null,
         rotationYears: state.rotations.yearList,
     }
-};  
+};
+
 const mapDispatchToProps = dispatch => {
     return {
         fetchRotationYears: () => dispatch(fetchRotationYears()),

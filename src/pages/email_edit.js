@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
@@ -29,6 +28,7 @@ import RichTextEditor from 'react-rte';
 import {fetchEmails, setEmail} from '../actions/emails.js';
 import './email_edit.css';
 
+// Page for editing email templates.
 class EmailEditor extends Component {
     constructor(props) {
         super(props);
@@ -40,12 +40,17 @@ class EmailEditor extends Component {
         }
     }
 
+    // Fetch all emails.
     async componentDidMount() {
         document.title = "Email Editor";
         this.props.fetchEmails();
     }
 
+    // Save the email being edited when the save button is pressed.
     saveEmail() {
+        // TODO: the content is a controlled component; probably the
+        // subject should be a controlled component too, then we can get
+        // rid of this hacky use of a ref.
         const subject = this.refs.input.value;
         const content = this.state.content.toString("html");
         this.props.setEmail(this.state.emailID, subject, content).then(() => {
@@ -61,6 +66,8 @@ class EmailEditor extends Component {
         });
     }
 
+    // Update the email content stored in the state when the email is
+    // edited. (The email editor is a controlled component.)
     onContentChange(value) {
         if (this.state.emailID === null) {return}
         this.setState({
@@ -68,6 +75,7 @@ class EmailEditor extends Component {
         });
     }
 
+    // Select an email template from the dropdown.
     selectFocusedEmail(email) {
         this.setState({
             dropdownTitle: email.name,
@@ -77,6 +85,7 @@ class EmailEditor extends Component {
         this.refs.input.value = email.subject;
     }
 
+    // Render the items in the dropdown list of email templates.
     renderEmailList() {
         return Object.values(this.props.emails).map(email =>
             <MenuItem eventKey={email.id} key={email.id} onSelect={() => this.selectFocusedEmail(email)}>{email.name}</MenuItem>

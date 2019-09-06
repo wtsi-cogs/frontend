@@ -3,10 +3,21 @@ import React from 'react';
 import axios from 'axios';
 import Alert from 'react-s-alert';
 
+// Install an Axios interceptor which displays an alert (small transient
+// pop-up in the top-right corner, currently) whenever a request fails
+// (HTTP status >= 400).
+//
+// If the request included a header called "_axios", this fallback error
+// handler will be disabled. (Why "_axios" rather than something like
+// "x-no-fallback-error-handler"? Not a clue.)
+//
+// If the failure was due to an authentication problem (e.g. session
+// expired, user is not logged in), then the user will be redirected to
+// the login page when the pop-up closes.
 export default function catchErrors() {
     // Add an alert whenever a request fails.
     axios.interceptors.response.use(undefined, (error) => {
-        // If the method does it's own error handling, don't report here
+        // If the method does its own error handling, don't report here
         if (error.config.headers.hasOwnProperty("_axios")) return Promise.reject(error);
         const resp = error.response;
         let msg = "";

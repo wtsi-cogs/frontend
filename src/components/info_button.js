@@ -21,6 +21,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 import React, {Component} from 'react';
 import {OverlayTrigger, Popover} from 'react-bootstrap';
 
+// A Glyphicon "(i)" icon, which displays a popup containing its
+// children on focus, hover or click.
+//
+// Props:
+// - id: a unique (per page) ID to use for a11y purposes
+// - placement: where to display the popover ("top", "bottom", "left",
+//   or "right")
+// - title: displayed in bold at the top of the popover, if present
+//
+// TODO: it would be lovely to modify react-bootstrap to make this less
+// bad. In particular, the popover currently vanishes on mouseout,
+// regardless of how it was shown (e.g. focus or click) -- it would be
+// nice to distinguish between these, so that mouseout only removes a
+// popover shown because of mouuseover, and a click elsewhere is
+// required to remove a popover shown because of a click.
 export default class InfoButton extends Component {
     render() {
         return (

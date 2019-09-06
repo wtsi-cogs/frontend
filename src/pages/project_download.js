@@ -18,13 +18,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchProject, downloadProject, getSeriesPart} from '../actions/projects';
 import {Link} from 'react-router-dom';
 import Alert from 'react-s-alert';
 
+// Page which automatically downloads a project.
+//
+// TODO: this isn't currently linked to from anywhere.
 class ProjectDownload extends Component {
     constructor(props) {
         super(props);

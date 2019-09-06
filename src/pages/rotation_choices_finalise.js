@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Prompt} from 'react-router';
@@ -32,6 +31,8 @@ import {fetchRotation} from '../actions/rotations';
 import {joinProjects, createProjects} from '../constants';
 import ChoiceEditor from '../components/choice_editor.js';
 
+// Page for finalising project assignments, or viewing student choices.
+//
 // FIXME: there is very tight coupling between this and the ChoiceEditor
 class RotationChoiceEditor extends Component {
     constructor(props) {
@@ -53,6 +54,8 @@ class RotationChoiceEditor extends Component {
         this.props.fetchUsersWithPermissions([joinProjects, createProjects]);
     }
 
+    // Update the component's state with information about choices
+    // that's been received from the backend.
     async componentDidUpdate() {
         Object.values(this.getProjects()).forEach(project => {
             const studentID = project.data.student_id;
@@ -67,6 +70,7 @@ class RotationChoiceEditor extends Component {
         });
     }
 
+    // Get all projects in this rotation.
     getProjects() {
         if (this.props.rotation === undefined) {
             return {};
@@ -79,6 +83,7 @@ class RotationChoiceEditor extends Component {
         }, {});
     }
 
+    // Assign a project to a user.
     setChoice(studentID, newState) {
         this.setState((state, props) => ({
             choices: update(state.choices, {$merge: {
@@ -87,6 +92,9 @@ class RotationChoiceEditor extends Component {
         }));
     }
 
+    // Declare that the server believes that this user has whatever
+    // project currently assigned to them (used to prompt if leaving the
+    // page without saving changes).
     setSavedChoice(studentID, newState) {
         this.setState((state, props) => ({
             savedChoices: update(state.savedChoices, {$merge: {
@@ -95,6 +103,9 @@ class RotationChoiceEditor extends Component {
         }));
     }
 
+    // Submit the choices made so far to the server. If this component
+    // is about to be unmounted, there is no need to ensure that the
+    // list of project assignments displayed is up-to-date.
     onSave(unmounted=false, cb=()=>{}) {
         this.props.saveStudentProjects(this.state.choices, this.props.rotation.data.id, () => {
             Alert.info("Saved choices.");

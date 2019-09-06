@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
@@ -34,6 +33,7 @@ export const FETCH_ME = 'FETCH_ME';
 export const REQUEST_ME = 'REQUEST_ME';
 export const RECEIVE_ME = 'RECEIVE_ME';
 
+// Increase (not increment!) the number of users being fetched.
 function requestUsers(noUsers) {
     return {
         type: REQUEST_USERS,
@@ -41,6 +41,8 @@ function requestUsers(noUsers) {
     }
 }
 
+// Decrement the number of users being fetched, and update the state
+// with the received user.
 function receiveUser(user) {
     return {
         type: RECEIVE_USER,
@@ -48,12 +50,14 @@ function receiveUser(user) {
     }
 }
 
+// Do nothing.
 function requestMe() {
     return {
         type: REQUEST_ME,
     }
 }
 
+// Update the stored "currently logged-in user" ID.
 function receiveMe(userID) {
     return {
         type: RECEIVE_ME,
@@ -61,6 +65,7 @@ function receiveMe(userID) {
     }
 }
 
+// Fetch a user (specified by ID).
 export function fetchUser(userID) {
     return function (dispatch) {
         dispatch(requestUsers(1));
@@ -71,6 +76,7 @@ export function fetchUser(userID) {
     }
 }
 
+// Fetch the currently logged-in user.
 export function fetchMe() {
     return function (dispatch) {
         dispatch(requestUsers(1));
@@ -83,6 +89,9 @@ export function fetchMe() {
     }
 }
 
+// Fetch all users in the system(!)
+// This is likely to be a very slow process after the system has been in
+// use for a while, since each user incurs a separate network request.
 export function fetchAllUsers() {
     return function (dispatch) {
         return axios.get(`${api_url}/api/users`).then(response => {
@@ -98,6 +107,7 @@ export function fetchAllUsers() {
     }
 }
 
+// Fetch all users with any of the given permissions.
 export function fetchUsersWithPermissions(permissions) {
     return function (dispatch) {
         return axios.get(`${api_url}/api/users/permissions`, {params: {permissions}}).then(response => {
@@ -113,6 +123,7 @@ export function fetchUsersWithPermissions(permissions) {
     }
 }
 
+// Save a user.
 export function saveUser(userID, user) {
     return function (dispatch) {
         dispatch(requestUsers(1));
@@ -122,6 +133,7 @@ export function saveUser(userID, user) {
     }
 }
 
+// Create a new user.
 export function createUser(user) {
     return function (dispatch) {
         dispatch(requestUsers(1));
@@ -131,6 +143,7 @@ export function createUser(user) {
     }
 }
 
+// Vote for a project (as your first, second, or third choice).
 export function voteProject(projectID, option) {
     function getLinkKey(option) {return `choice_${option}`}
     function getDataKey(option) {return [null, "first", "second", "third"][option] + "_option_id"}
@@ -159,10 +172,13 @@ export function voteProject(projectID, option) {
     }
 }
 
+// Request an email receipt of your currently-selected choices.
 export const sendReceipt = rotationID => dispatch => (
     axios.post(`${api_url}/api/users/me/send_receipt`, {rotation: rotationID})
 )
 
+// Assign projects to all students in a rotation.
+// TODO: convert this function and its callers to use promises (#6).
 export function saveStudentProjects(choices, rotation, callback=()=>{}) {
     return function (dispatch) {
         return axios.put(`${api_url}/api/users/assign_projects`, {
@@ -184,7 +200,8 @@ export function saveStudentProjects(choices, rotation, callback=()=>{}) {
     }
 }
 
-
+// Finalise project assignments for a rotation.
+// TODO: convert this function and its callers to use promises (#6).
 export function unsetVotes(rotation, callback=()=>{}) {
     return function (dispatch, getState) {
         const state = getState();
@@ -224,6 +241,7 @@ export function unsetVotes(rotation, callback=()=>{}) {
     }
 }
 
+// Ascertain whether the given user can mark the given project.
 export function canMark(user, project) {
     if (project.data.grace_passed) {
         if ((user.data.id === project.data.supervisor_id && project.data.supervisor_feedback_id === null) ||
@@ -234,6 +252,7 @@ export function canMark(user, project) {
     return false
 }
 
+// Fetch all projects for which this user is the supervisor.
 export function getSupervisorProjects(user) {
     return function (dispatch) {
         const projects = user.links.supervisor_projects;
@@ -246,6 +265,7 @@ export function getSupervisorProjects(user) {
     }
 }
 
+// Fetch all projects for which this user is the CoGS marker.
 export function getCogsProjects(user) {
     return function (dispatch) {
         const projects = user.links.cogs_projects;
@@ -258,6 +278,7 @@ export function getCogsProjects(user) {
     }
 }
 
+// Fetch all projects for which this user is the student.
 export function getStudentProjects(user) {
     return function (dispatch) {
         const projects = user.links.student_projects;

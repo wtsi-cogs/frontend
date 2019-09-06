@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component, Fragment} from 'react';
 import DatePicker from 'react-datepicker';
 import ClassNames from 'classnames';
@@ -30,7 +29,8 @@ import InfoButton from '../components/info_button';
 
 import './datepicker.css';
 
-
+// Mapping of deadline ID to detailed description, displayed in an
+// InfoButton next to the label for each deadline.
 const DEADLINE_DESCRIPTIONS = {
     supervisor_submit: "Supervisors can still submit projects after this date, if they need to.",
     student_invite: "Supervisors can still submit projects after this date, if they need to.",
@@ -49,8 +49,17 @@ const DEADLINE_DESCRIPTIONS = {
     marking_complete: "Markers can continue to mark reports after this date.",
 };
 
-
+// The thing that actually renders the data gathered by the GroupEditor.
+//
+// Props:
+// - deadlines
+// - rotationHeader
+// - submitName
+// - updateDeadline
+// - onSubmit
+// - afterSubmit
 class GroupForm extends Component {
+    // Render a textbox, with a date inside it and a description above.
     renderDateBox(deadlineName, deadline, valid) {
         return (
             <div key={deadline.id}>

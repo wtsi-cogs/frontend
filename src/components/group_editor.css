@@ -1,3 +1,5 @@
+/* Align the "remind supervisors" button to the right of its column.
+ * TODO: this should be a class, not an ID... */
 #remind-button {
     float: right;
 }

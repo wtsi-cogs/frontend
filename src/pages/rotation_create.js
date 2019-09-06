@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import GroupForm from '../components/group_form';
@@ -27,6 +26,8 @@ import {createRotation} from '../actions/rotations';
 
 import './rotation_create.css'
 
+// Page for creating a new rotation. Accessible by members of the
+// Graduate Office.
 class RotationCreate extends Component {
     constructor(props) {
         super(props);
@@ -37,6 +38,8 @@ class RotationCreate extends Component {
         };
     }
 
+    // Automatically set the series and part to follow on from the
+    // previous rotation.
     async componentDidMount() {
         document.title = "Create Rotation";
         const deadlines = this.props.latestRotation.data.deadlines
@@ -54,6 +57,7 @@ class RotationCreate extends Component {
         });
     }
 
+    // Submit the new rotation to the server.
     onSubmit() {
         const deadlines = Object.keys(this.state.deadlines).reduce((obj, x) => {
             obj[x] = this.state.deadlines[x].value.format("YYYY-MM-DD");
@@ -66,6 +70,7 @@ class RotationCreate extends Component {
         });
     }
 
+    // Render the "Rotation {n}" title, and the series and part inputs.
     renderRotationHeader() {
         return (
             <span className="rotation-series-part-inputs">

@@ -18,13 +18,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import axios from 'axios';
 import {api_url} from '../config.js';
 import {saveAs} from 'file-saver';
 import update from '../../node_modules/immutability-helper';
 import allSettled from 'promise.allsettled';
-
 
 export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS';
@@ -33,6 +31,7 @@ export const RECEIVE_PROJECT_STATUS = 'RECEIVE_PROJECT_STATUS';
 export const RECEIVE_PROJECT_MARKS = 'RECEIVE_PROJECT_MARKS';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 
+// Increase (not increment!) the number of projects being requested.
 export function requestProjects(noProjects) {
     return {
         type: REQUEST_PROJECTS,
@@ -40,6 +39,8 @@ export function requestProjects(noProjects) {
     }
 }
 
+// Decrement the number of projects being requested, and update the
+// state with the received project.
 export function receiveProject(project) {
     return {
         type: RECEIVE_PROJECT,
@@ -47,6 +48,7 @@ export function receiveProject(project) {
     }
 }
 
+// Update the state with the received project status.
 export function receiveProjectStatus(projectID, projectStatus) {
     return {
         type: RECEIVE_PROJECT_STATUS,
@@ -55,6 +57,7 @@ export function receiveProjectStatus(projectID, projectStatus) {
     }
 }
 
+// Update the state with the received project feedback.
 export function receiveProjectMarks(projectID, projectMarks) {
     return {
         type: RECEIVE_PROJECT_MARKS,
@@ -63,6 +66,7 @@ export function receiveProjectMarks(projectID, projectMarks) {
     }
 }
 
+// Remove the project from the state.
 export function removeProject(projectID) {
     return {
         type: DELETE_PROJECT,
@@ -70,6 +74,8 @@ export function removeProject(projectID) {
     }
 }
 
+// Fetch all projects for a rotation (specified by series & part).
+// Incurs one network request per project.
 export function fetchProjects(series, part) {
     return function (dispatch) {
         return axios.get(`${api_url}/api/series/${series}/${part}`).then(response => {
@@ -84,6 +90,7 @@ export function fetchProjects(series, part) {
     }
 }
 
+// Fetch a particular project (specified by ID).
 export function fetchProject(projectID) {
     return function (dispatch) {
         dispatch(requestProjects(1));
@@ -93,6 +100,7 @@ export function fetchProject(projectID) {
     }
 }
 
+// Fetch feedback for a project (specified by ID).
 export function fetchProjectMarks(projectID) {
     return function (dispatch) {
         // requestProjectMarks not needed
@@ -102,6 +110,8 @@ export function fetchProjectMarks(projectID) {
     }
 }
 
+// Create a new project.
+// TODO: convert this function and its callers to use promises (#6).
 export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
@@ -112,6 +122,8 @@ export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
     }
 }
 
+// Edit an existing project.
+// TODO: convert this function and its callers to use promises (#6).
 export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
     return function (dispatch) {
         dispatch(requestProjects(1));
@@ -122,6 +134,7 @@ export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
     }
 }
 
+// Delete a project.
 export function deleteProject(projectID) {
     return function (dispatch) {
         return axios.delete(`${api_url}/api/projects/${projectID}`).then(response => (
@@ -130,6 +143,8 @@ export function deleteProject(projectID) {
     }
 }
 
+// Upload a project report.
+// TODO: convert this function and its callers to use promises (#6).
 export function uploadProject(projectID, blob, callback=()=>{}) {
     return function (dispatch, getState) {
         const project = update(getState().projects.projects[projectID], {
@@ -158,6 +173,11 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
     }
 }
 
+// Download a previously-uploaded project report.
+// TODO: convert this function and its callers to use promises (#6).
+// TODO: it's probably more sensible to just direct the browser to a URL
+// which serves the appropriate Content-Disposition to make it download
+// the page, rather than doing it in JavaScript.
 export function downloadProject(project, callback) {
     return axios.get(`${api_url}/api/projects/${project.data.id}/file`, {
         responseType: 'blob',
@@ -182,6 +202,8 @@ export function downloadProject(project, callback) {
     });
 }
 
+// Submit marks/feedback for a project.
+// TODO: convert this function and its callers to use promises (#6).
 export function markProject(projectID, feedback, callback) {
     return function (dispatch) {
         return axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
@@ -190,6 +212,8 @@ export function markProject(projectID, feedback, callback) {
     }
 }
 
+// Set the CoGS markers for a set of projects.
+// TODO: convert this function and its callers to use promises (#6).
 export function saveCogsMarkers(project_user_map, callback=()=>{}) {
     return function (dispatch, getState) {
         function getCogsURL(userID) {
@@ -212,6 +236,7 @@ export function saveCogsMarkers(project_user_map, callback=()=>{}) {
     }
 }
 
+// Get the "status" of a project's uploaded files (e.g. filenames).
 export function getProjectFileStatus(projectID) {
     return function (dispatch) {
         // requestProjectStatus not needed
@@ -221,6 +246,9 @@ export function getProjectFileStatus(projectID) {
     }
 }
 
+// Parse the series and part out of a project directly, without
+// requiring its rotation. This is ugly as hell (and in what scenario
+// have you fetched a project but not its associated rotation?)
 export function getSeriesPart(project) {
     return project.links.group.match(/\d+/g).map(s => parseInt(s, 10));
 }

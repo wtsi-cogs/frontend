@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -29,6 +28,15 @@ import ProjectList from '../components/project_list.js';
 
 import './main_page.css';
 
+// The homepage.
+//
+// This renders quite different content depending on the roles the
+// current user has. Members of the Graduate Office see an editor with
+// the details of the rotations in this series; supervisors see a list
+// of the projects they have created; students see a list of projects
+// they have been assigned; and CoGS members see a list of projects they
+// are marking. If a user has multiple roles, they will see multiple
+// sections.
 class MainPage extends Component {
     async componentDidMount() {
         document.title = "Dashboard";
@@ -38,6 +46,8 @@ class MainPage extends Component {
         this.props.getStudentProjects(this.props.user);
     }
 
+    // Render all rotations in the current series (visible to members of
+    // the Graduate Office).
     renderRotations() {
         // Sort descending by part.
         return Object.values(this.props.rotations).sort((a, b) => b.data.part - a.data.part).map(rotation =>
@@ -56,6 +66,8 @@ class MainPage extends Component {
         );
     }
 
+    // Render projects where the current user's ID matches some property
+    // of the project (specified by `lambda`).
     renderProjects(header, lambda, displaySupervisorName) {
         const allProjects = this.props.projects;
         const projects = Object.keys(allProjects).reduce((filtered, id) => {
@@ -76,18 +88,23 @@ class MainPage extends Component {
         );
     }
 
+    // The list of projects owned by the current user.
     renderSupervisorProjects() {
         return this.renderProjects("Projects I own", (project => project.supervisor_id), false);
     }
 
+    // The list of projects the current user is the CoGS member for.
     renderCogsProjects() {
         return this.renderProjects("Projects I'm a CoGS marker for", (project => project.cogs_marker_id), false);
     }
 
+    // The list of projects the current user is assigned to complete.
     renderStudentProjects() {
         return this.renderProjects("My Projects", (project => project.student_id), true);
     }
 
+    // The separator between sections, shown if a user has multiple
+    // roles.
     renderSeparator() {
         return <hr className="main-sep"/>
     }

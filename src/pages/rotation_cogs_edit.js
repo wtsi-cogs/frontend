@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import update from 'immutability-helper';
@@ -27,6 +26,8 @@ import {fetchProjects, saveCogsMarkers} from '../actions/projects';
 import {fetchRotation} from '../actions/rotations';
 import CogsEditor from '../components/cogs_edit.js';
 
+// Page for assigning CoGS members to projects. Only projects from this
+// rotation with students assigned are displayed.
 class RotationCogsEditor extends Component {
     constructor(props) {
         super(props);
@@ -50,12 +51,15 @@ class RotationCogsEditor extends Component {
         }
     }
 
+    // Switch to displaying the given rotation, and fetch the necessary
+    // data to do so.
     fetchRotation(series, part) {
         this.setState({series, part});
         this.props.fetchProjects(series, part);
         this.props.fetchRotation(series, part);
     }
 
+    // Submit the currently-selected markers to the server.
     save(cb=()=>{}) {
         this.props.saveCogsMarkers(this.state.cogsMarkers, () => {
             Alert.info("Saved CoGS markers.");
@@ -63,6 +67,7 @@ class RotationCogsEditor extends Component {
         });
     }
 
+    // Select a CoGS member to mark a project.
     setCogsMarker(projectID, userID) {
         this.setState((state, props) => update(state, {
             cogsMarkers: {$merge: {[projectID]: userID}}

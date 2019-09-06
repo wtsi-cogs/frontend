@@ -18,12 +18,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 
 import "./styledAlert.css";
 
+// Render a modal alert, with any number of buttons. All buttons
+// implicitly dismiss the alert, but can perform other actions as well.
+//
+// NB: this is not a component! (despite being in the "components"
+// folder...)
+//
+// Props:
+// - buttons
+// - message
+// - title
 export default function styledAlert(args) {
     confirmAlert({
         customUI: ({onClose}) => {

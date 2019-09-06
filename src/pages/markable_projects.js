@@ -18,19 +18,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ProjectList from '../components/project_list.js';
 import {getSupervisorProjects, getCogsProjects, canMark} from '../actions/users';
 
+// Page of projects which the current user can mark (either because they
+// own that project, or because they are its assigned CoGS member).
 class MarkableProjects extends Component {
     async componentDidMount() {
         document.title = "Markable Projects";
         this.props.getSupervisorProjects(this.props.user);
         this.props.getCogsProjects(this.props.user);
     }
-
 
     render() {
         const projects = Object.keys(this.props.projects).reduce((filtered, id) => {

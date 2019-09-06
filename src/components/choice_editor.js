@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component, Fragment} from 'react';
 import { connect } from 'react-redux';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
@@ -29,8 +28,24 @@ import {unsetVotes} from '../actions/users';
 import {createProjects} from '../constants';
 import "./choice_editor.css";
 
+// A table listing students, their priorities, their project choices,
+// and their assigned project (if they have been assigned one).
+//
+// Props:
+// - choices
+// - onClick
+// - onSave
+// - onSubmit
+// - projects
+// - rotationID
+// - showPriority
+// - students
+// - users
+//
 // FIXME: there is very tight coupling between this and the RotationChoiceEditor
 class ChoiceEditor extends Component {
+    // Get the title, supervisor, and experimental/computational status
+    // of a project.
     getProjectTitle(projectID) {
         const project = this.props.projects[projectID];
         if (project == null) {
@@ -47,6 +62,7 @@ class ChoiceEditor extends Component {
         return `${title} –  ${supervisor_name} (${wetlab_computational})`
     }
 
+    // Return a list of the project IDs of a student's choices.
     getUserChoices(user) {
         return [
             user.first_option_id,
@@ -55,6 +71,8 @@ class ChoiceEditor extends Component {
         ];
     }
 
+    // Determine which checkbox should be selected for a student (one of
+    // their three choices, a different project, or a supervisor).
     getSelectedCheckBox(userID) {
         const userOption = this.props.choices[userID];
         if (!userOption) {
@@ -73,6 +91,8 @@ class ChoiceEditor extends Component {
         }
     }
 
+    // Handle assignment of a project or supervisor (specified by `id`)
+    // for a student. `type` is either "project" or "user".
     onSelect(studentID, type, id) {
         this.props.onClick(studentID, {type, id: parseInt(id, 10)});
     }
@@ -112,6 +132,7 @@ class ChoiceEditor extends Component {
         }, {});
     }
 
+    // Render the save/finalise buttons at the bottom of the page.
     renderSaveButtons(submitDisabled, saveDisabled) {
         return (
             <div className="row">
@@ -155,6 +176,7 @@ class ChoiceEditor extends Component {
         );
     }
 
+    // Render the dropdowns for a particular user.
     renderDropdowns(userID) {
         const projects = this.props.projects;
         const selected = this.getSelectedCheckBox(userID);
@@ -203,6 +225,7 @@ class ChoiceEditor extends Component {
         );
     }
 
+    // Render the contents of the table, for all users.
     renderStudentChoices(invalidUsers) {
         const showButtons = Boolean(this.props.choices);
         // Sort descending by priority.

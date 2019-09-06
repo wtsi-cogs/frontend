@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import ExpandCollapse from 'react-expand-collapse';
@@ -30,8 +29,17 @@ import {fetchRotationFromURL} from '../actions/rotations';
 import "./project.css";
 import "./expand-collapse.css"
 
-
+// A single project.
+//
+// Props:
+// - displaySupervisorName
+// - onClick
+// - pressed
+// - project
+// - showVote
 class Project extends Component {
+    // Fetch date for the user being displayed, and for the rotation
+    // this project belongs to.
     async componentDidMount() {
         const displayUserId = this.props.displaySupervisorName? this.props.project.data.supervisor_id: this.props.project.data.student_id;
         if (displayUserId !== null) {
@@ -40,6 +48,8 @@ class Project extends Component {
         this.props.fetchRotationFromURL(this.props.project.links.group);
     }
 
+    // Render the buttons used by students to select their first,
+    // second, and third choice of project.
     renderVoteButtons() {
         const pressed = this.props.pressed;
         const onClick = buttonID => () => (

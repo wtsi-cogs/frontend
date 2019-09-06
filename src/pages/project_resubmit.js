@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -26,6 +25,9 @@ import ProjectEditor from '../components/project_editor';
 import {programmes} from '../constants';
 import {createProject, fetchProject} from '../actions/projects';
 
+// Page for resubmitting an existing project into a new rotation.
+// Accessible by supervisors (for their own projects) and members of the
+// Graduate Office (for any project).
 class ProjectResubmit extends Component {
     constructor(props) {
         super(props);

@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import axios from 'axios';
 import {api_url} from '../config.js';
 import update from 'immutability-helper';
@@ -26,7 +25,8 @@ import update from 'immutability-helper';
 export const REQUEST_EMAILS = 'REQUEST_EMAILS';
 export const RECIEVE_EMAIL = 'RECIEVE_EMAIL';
 
-
+// Increase (not increment!) the number of email templates currently
+// being fetched.
 function requestEmails(noEmails) {
     return {
         type: REQUEST_EMAILS,
@@ -34,6 +34,8 @@ function requestEmails(noEmails) {
     }
 }
 
+// Decrement the number of email templates currently being fetched, and
+// update the state with the received template.
 function receiveEmail(email) {
     return {
         type: RECIEVE_EMAIL,
@@ -41,6 +43,7 @@ function receiveEmail(email) {
     }
 }
 
+// Fetch all email templates from the backend.
 export function fetchEmails() {
     return function (dispatch) {
         return axios.get(`${api_url}/api/emails`).then(response => {
@@ -54,6 +57,7 @@ export function fetchEmails() {
     }
 }
 
+// Set an email template (subject and contents).
 export function setEmail(emailID, subject, content) {
     return function (dispatch, getState) {
         const state = getState();
@@ -63,6 +67,7 @@ export function setEmail(emailID, subject, content) {
             {subject, content},
             {
                 headers: {
+                    // Disable the fallback error handler.
                     '_axios': true
                 }
             }
@@ -73,6 +78,7 @@ export function setEmail(emailID, subject, content) {
             dispatch(requestEmails(1));
             dispatch(receiveEmail(updatedEmail));
         }).catch(error => {
+            // Extract the error message from the response.
             throw new Error(error.response.data.status_message);
         });
     }

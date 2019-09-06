@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone'
@@ -31,6 +30,8 @@ import JSZip from 'jszip';
 import {renderDownload} from '../pages/project_download';
 import './project_upload.css';
 
+// Page for uploading project reports. Accessible to students and the
+// Graduate Office.
 class ProjectUpload extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +41,7 @@ class ProjectUpload extends Component {
             canUpload: ""
         }
     }
-    
+
     async componentDidMount() {
         document.title = "Upload Final Project";
         this.props.fetchProject(this.props.match.params.projectID);
@@ -75,6 +76,7 @@ class ProjectUpload extends Component {
         }
     }
 
+    // TODO: why is this factored out? It's used in exactly one place.
     onSuccessfulUpload() {
         this.setState({
             canUpload: false,
@@ -82,6 +84,8 @@ class ProjectUpload extends Component {
         });
     }
 
+    // Zip up the selected files, check that the zip isn't too large
+    // before trying to upload it, and then upload it.
     upload() {
         const projectID = this.props.match.params.projectID;
         var zip = new JSZip();
@@ -106,6 +110,9 @@ class ProjectUpload extends Component {
         });
     }
 
+    // Add a file to the list of files to upload (the name is because as
+    // well as clicking to select a file, you can drag and drop files
+    // into the "dropzone").
     onDrop(accept, reject) {
         const noRequired = this.state.required;
         this.setState((state, props) => ({
@@ -124,6 +131,7 @@ class ProjectUpload extends Component {
         });
     }
 
+    // Render text displayed before any files have been uploaded.
     renderToUpload(group) {
         const deadline = `${group.deadlines.student_complete.value} 23:59`;
         return (
@@ -136,6 +144,8 @@ class ProjectUpload extends Component {
         );
     }
 
+    // Render text displayed when no files have been selected, and some
+    // files have already been uploaded previously.
     renderUploaded() {
         const projectID = this.props.match.params.projectID;
         const projectStatus = this.props.projectStatus[projectID];

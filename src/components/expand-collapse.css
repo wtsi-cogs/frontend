@@ -1,3 +1,6 @@
+/* Styles for the expand/collapse buttons used in the list of projects,
+ * when a project abstract is overly long. */
+
 .react-expand-collapse__content {
   position: relative;
   overflow: hidden;

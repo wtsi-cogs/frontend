@@ -18,14 +18,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
-
-
 
 import {DropdownButton, MenuItem} from 'react-bootstrap';
 import './multiselect_dropdown.css';
 
+// A dropdown menu with checkboxes allowing multiple items to be
+// selected.
+//
+// Props:
+// - items
+// - noneSelectedText
+// - onSelect
 class MultiselectDropDown extends Component {
     constructor(props) {
         super(props);
@@ -34,6 +38,7 @@ class MultiselectDropDown extends Component {
         };
     }
 
+    // Render all items in the dropdown.
     renderItems() {
         return Object.entries(this.props.items).map(([key, value]) => 
             <MenuItem eventKey={key} key={key}>
@@ -53,6 +58,7 @@ class MultiselectDropDown extends Component {
         );
     }
 
+    // Render the text displayed in the dropdown button itself.
     renderTitle() {
         return (
             <div>
@@ -90,6 +96,5 @@ class MultiselectDropDown extends Component {
         );
     }
 }
-
 
 export default MultiselectDropDown;

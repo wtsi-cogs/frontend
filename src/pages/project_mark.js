@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -27,18 +26,30 @@ import {fetchProject, markProject} from '../actions/projects';
 import {fetchUser} from '../actions/users';
 import './project_mark.css';
 
+// Page for providing feedback on a project. Accessible to supervisors
+// and CoGS members.
+//
+// Note that this component is not used directly -- the
+// ProjectMarkSupervisor and ProjectMarkCogs components defined below
+// are used instead.
 class ProjectMark extends Component {
     async componentDidMount() {
         document.title = "Mark Project";
         this.props.fetchProject(this.props.match.params.projectID);
     }
 
+    // If the data in the form is all provided, submit it, otherwise
+    // display an error.
     submitCheck(feedback) {
         let success = true;
         if (feedback.grade == null) {
             success = false;
             Alert.error("You must assign the report a grade");
         }
+        // TODO: these feedback strings are HTML, and react-rte tends to
+        // generate silly things like "<p><br><p>" for an empty input,
+        // so these checks aren't sufficient unless the given input has
+        // never received focus.
         if (!feedback.good_feedback) {
             success = false;
             Alert.error("You must write some positive feedback on the project");

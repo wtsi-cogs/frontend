@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ClassNames from 'classnames';
@@ -27,12 +26,24 @@ import {fetchUser, fetchUsersWithPermissions} from '../actions/users';
 import {reviewOtherProjects} from '../constants';
 import "./cogs_edit.css";
 
-
+// A table listing various details about all projects with students
+// assigned, allowing the CoGS marker for those projects to be set.
+//
+// Props:
+// - cogsMarkers
+// - projects
+// - setCogsMarker
 class CogsEditor extends Component {
+    // Ensure that all CoGS markers are in the state.
     async componentDidMount() {
         this.props.fetchUsersWithPermissions([reviewOtherProjects]);
     }
 
+    // Ensure that all users referenced by the data in the table are in
+    // the state (NB: this fetch is guarded by a check that the user has
+    // not already been fetched, to ensure that we don't sit around
+    // fetching the same users for eternity), and ensure that the
+    // mapping of projects to CoGS markers is complete.
     async componentDidUpdate() {
         Object.entries(this.props.projects).forEach((kv) => {
             const [id, projectAll] = kv;
@@ -50,10 +61,14 @@ class CogsEditor extends Component {
         });
     }
 
+    // Attempt to extract the last name/surname from a specified name.
+    // See ProjectList.getLastName for critique.
     getSurname(name) {
         return name.substr(name.indexOf(" ") + 1);
     }
 
+    // Render the dropdown button to select the CoGS marker for a
+    // particular project.
     renderCogs(project) {
         return (
             <DropdownButton
@@ -80,6 +95,8 @@ class CogsEditor extends Component {
         );
     }
 
+    // Render the name of the specified user, or the word "None" (used
+    // for the CoGS marker dropdown).
     renderCogsText(userID) {
         if (!userID) {
             return "None";
@@ -91,6 +108,8 @@ class CogsEditor extends Component {
         return user.data.name;
     }
 
+    // Render a tick/checkmark icon if the passed argument is truthy; if
+    // the argument is falsy, render nothing.
     renderBoolean(bool) {
         if (bool) {
             return <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>;
@@ -98,12 +117,16 @@ class CogsEditor extends Component {
         return "";//<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>;
     }
 
+    // Render the (list of) programme(s) which the given project is
+    // associated with.
     renderProgrammes(project) {
         return project.programmes.map(function (programme, i) {
             return <div key={i}>{programme}</div>; 
         });
     }
 
+    // Render the name of the specified user, or nothing (used for names
+    // not in the CoGS marker dropdown).
     renderUser(userID) {
         if (!userID) {
             return null;
@@ -115,6 +138,9 @@ class CogsEditor extends Component {
         return user.data.name;
     }
 
+    // Compare two projects, and return a number representing their sort
+    // order. Intended to be used as a comparison function for
+    // Array.prototype.sort.
     sortProjects(a, b) {
         const aUser = this.props.users[a[1].data.student_id];
         const bUser = this.props.users[b[1].data.student_id];
@@ -125,6 +151,7 @@ class CogsEditor extends Component {
         return this.getSurname(aUser.data.name).localeCompare(this.getSurname(bUser.data.name));
     }
 
+    // Render the contents of the table.
     renderProjects() {
         return Object.entries(this.props.projects).sort((a, b) => this.sortProjects(a, b)).map((kv, i) => {
             const [id, projectAll] = kv;
@@ -166,12 +193,11 @@ class CogsEditor extends Component {
     }
 }
 
-
 const mapStateToProps = state => {
     return {
         users: state.users.users
     }
-};  
+};
 
 const mapDispatchToProps = dispatch => {
     return {

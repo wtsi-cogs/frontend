@@ -18,13 +18,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import axios from 'axios';
 import {api_url} from '../config.js';
 import {saveAs} from 'file-saver';
 import update from 'immutability-helper';
 import allSettled from 'promise.allsettled';
-
 
 export const FETCH_ROTATIONS = 'FETCH_ROTATIONS';
 export const REQUEST_ROTATIONS = 'REQUEST_ROTATIONS';
@@ -35,6 +33,7 @@ export const REQUEST_LATEST_ROTATION = 'REQUEST_LATEST_ROTATION';
 export const RECEIVE_LATEST_ROTATION = 'RECEIVE_LATEST_ROTATION';
 export const RECEIVE_ROTATION_YEARS = 'RECEIVE_ROTATION_YEARS';
 
+// Increase (not increment!) the number of rotations being fetched.
 export function requestRotations(noRotations) {
     return {
         type: REQUEST_ROTATIONS,
@@ -42,6 +41,8 @@ export function requestRotations(noRotations) {
     }
 }
 
+// Decrement the number of rotations being fetched, and update the state
+// with the received rotation.
 export function receiveRotation(rotation) {
     return {
         type: RECEIVE_ROTATION,
@@ -49,12 +50,15 @@ export function receiveRotation(rotation) {
     }
 }
 
+// Do nothing. (Seriously, the reducer doesn't do anything when it
+// receives this action!)
 function requestLatestRotation() {
     return {
         type: REQUEST_LATEST_ROTATION,
     }
 }
 
+// Set the ID of the latest rotation.
 function receiveLatestRotation(rotationID) {
     return {
         type: RECEIVE_LATEST_ROTATION,
@@ -62,6 +66,7 @@ function receiveLatestRotation(rotationID) {
     }
 }
 
+// Set the list of years in which there has been at least one rotation.
 function receiveRotationYears(rotationYears) {
     return {
         type: RECEIVE_ROTATION_YEARS,
@@ -69,6 +74,7 @@ function receiveRotationYears(rotationYears) {
     }
 }
 
+// Fetch all rotations from the latest series.
 export function fetchLatestSeries() {
     return function (dispatch) {
         return axios.get(`${api_url}/api/series`).then(response => {
@@ -84,12 +90,14 @@ export function fetchLatestSeries() {
     }
 }
 
+// Fetch a rotation (specified by series & part).
 export function fetchRotation(series, part) {
     return function (dispatch) {
         return dispatch(fetchRotationFromURL(`/api/series/${series}/${part}`));
     }
 }
 
+// Fetch a rotation from a given URL.
 export function fetchRotationFromURL(url) {
     return function (dispatch) {
         dispatch(requestRotations(1));
@@ -100,7 +108,7 @@ export function fetchRotationFromURL(url) {
     }
 }
 
-
+// Fetch the latest rotation (and update the stored latest rotation ID).
 export function fetchLatestRotation() {
     return function (dispatch) {
         dispatch(requestRotations(1));
@@ -113,7 +121,7 @@ export function fetchLatestRotation() {
     }
 }
 
-
+// Fetch all rotations in the system(!)
 export function fetchAllRotations() {
     return function (dispatch) {
         return axios.get(`${api_url}/api/series/rotations`).then(response => (
@@ -124,6 +132,8 @@ export function fetchAllRotations() {
     }
 }
 
+// Save a rotation (deadlines, state, ...).
+// TODO: convert this function and its callers to use promises (#6).
 export function saveRotation(rotation, onDone) {
     return function (dispatch, getState) {
         const state = getState();
@@ -137,6 +147,7 @@ export function saveRotation(rotation, onDone) {
     }
 }
 
+// Create a new rotation.
 export function createRotation(rotation) {
     return function (dispatch) {
         return axios.post(`${api_url}/api/series`, rotation).then(response => (
@@ -148,6 +159,7 @@ export function createRotation(rotation) {
     };
 }
 
+// Fetch the list of years which contain at least one rotation.
 export function fetchRotationYears() {
     return function (dispatch) {
         return axios.get(`${api_url}/api/series`).then(response => {
@@ -158,6 +170,7 @@ export function fetchRotationYears() {
     };
 }
 
+// Send a reminder to supervisors, asking them to submit projects.
 export function sendReminder(rotation) {
     return function (dispatch) {
         dispatch(requestRotations(1));
@@ -168,6 +181,7 @@ export function sendReminder(rotation) {
     };
 }
 
+// Export the current series to an Excel spreadsheet and save it.
 export function excelExport(year) {
     return function (dispatch) {
         return axios.get(`${api_url}/api/series/${year}/export.xlsx`, {responseType: 'blob'}).then(response => {

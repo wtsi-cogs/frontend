@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Alert from 'react-s-alert';
@@ -30,6 +29,9 @@ import update from 'immutability-helper';
 import {fetchAllUsers, saveUser, createUser} from '../actions/users';
 import './user_edit.css';
 
+// The default user. Compared with the "new user" inputs to determine
+// whether new data has been entered (if so, another row will be
+// appended).
 const userDefault = {
     name: "",
     email: "",
@@ -52,10 +54,14 @@ class UserEditor extends Component {
 
     async componentDidMount() {
         document.title = "User Editor";
+        // TODO: making a separate network request for each user is
+        // going to start making this page *really* slow to load after
+        // the system has been in use for a couple of years.
         this.props.fetchAllUsers();
     }
 
     async componentDidUpdate() {
+        // Add any new users to the list.
         Object.values(this.props.users).forEach(user => {
             if (!this.state.users.hasOwnProperty(user.data.id)) {
                 this.setState((state, props) => update(state, {
@@ -63,6 +69,8 @@ class UserEditor extends Component {
                 }));
             }
         });
+        // Remove rows which had data added then removed without ever
+        // being saved.
         Object.entries(this.state.newUsers).forEach((kv) => {
             const [id, user] = kv;
             if (isEqual(user, userDefault)) {
@@ -73,6 +81,8 @@ class UserEditor extends Component {
         });
     }
 
+    // Create an object representing a user, from an object representing
+    // a user.
     loadUserStruct(user) {
         return {
             [user.data.id]: {
@@ -85,6 +95,7 @@ class UserEditor extends Component {
         }
     }
 
+    // Submit all users to the server.
     save() {
         Object.entries(this.state.users).forEach((kv) => {
             const [id, user] = kv;
@@ -101,6 +112,7 @@ class UserEditor extends Component {
         Alert.info("Changes saved");
     }
 
+    // Discard all changes.
     cancel() {
         this.setState((state, props) => ({
             users: Object.keys(props.users).reduce((map, userID) => {
@@ -111,6 +123,7 @@ class UserEditor extends Component {
         }));
     }
 
+    // Change the roles of all currently-visible users to "archive".
     archiveUsers() {
         // FIXME: passing this.state to setState is broken:
         // https://reactjs.org/docs/react-component.html#setstate
@@ -125,6 +138,8 @@ class UserEditor extends Component {
         this.setState(state);
     }
 
+    // Determine whether a user should be shown in the list based on the
+    // current filter settings.
     shouldUserBeShown(kv) {
         const id = kv[0];
         const propsUser = this.props.users[id];
@@ -149,6 +164,7 @@ class UserEditor extends Component {
         });
     }
 
+    // Render a single row in the table.
     renderUser(id, user, stateVar) {
         const updateUser = (key, user, id) => {
             return event => {
@@ -223,6 +239,7 @@ class UserEditor extends Component {
         );
     }
 
+    // Render the table's content.
     renderUserList() {
         return Object.entries(this.state.users).filter(user => this.shouldUserBeShown(user)).map((kv) => {
             const [id, user] = kv;
@@ -230,10 +247,13 @@ class UserEditor extends Component {
         });
     }
 
+    // Render the empty row at the bottom of the table, where a new user
+    // can be added.
     renderNewUser(i) {
         return this.renderUser(i, userDefault, "newUsers");
     }
 
+    // Render the filtering controls at the top of the page.
     renderFilterOptions() {
         return (
             <div className="row">

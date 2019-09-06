@@ -1,7 +1,13 @@
+/* Make the dropdown at the right of the table fil the entire width of
+ * the column.
+ * TODO: this should be a class, not an ID, because there are multiple
+ * dropdown buttons on the page. */
 #cogs_dropdown {
     width: 100%
 }
 
+/* Darken the background of every other table row (yes, this works
+ * differently to the Finalise Student Choices screen...) */
 .shaded {
     background: #f3f3f3;
 }

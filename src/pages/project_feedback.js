@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import ProjectFeedbackForm from '../components/project_feedback_form'
@@ -26,6 +25,12 @@ import {fetchProject, fetchProjectMarks} from '../actions/projects';
 import {fetchUser} from '../actions/users';
 import './project_mark.css';
 
+// Page for viewing feedback on a project. Accessible to each project's
+// assigned student.
+//
+// Note that this component is not used directly -- the
+// ProjectFeedbackSupervisor and ProjectFeedbackCogs components defined
+// below are used instead.
 class ProjectFeedback extends Component {
     async componentDidMount() {
         document.title = this.props.title;

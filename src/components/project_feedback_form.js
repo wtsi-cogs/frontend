@@ -18,7 +18,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {grades} from '../constants.js';
@@ -28,6 +27,15 @@ import {renderDownload} from '../pages/project_download';
 
 import './project_feedback_form.css';
 
+// A form for submitting or viewing project feedback.
+//
+// Props:
+// - badFeedback
+// - generalFeedback
+// - goodFeedback
+// - onSubmit
+// - project
+// - readOnly
 class ProjectFeedbackForm extends Component {
     constructor(props) {
         super(props);
@@ -39,6 +47,8 @@ class ProjectFeedbackForm extends Component {
         }
     }
 
+    // Fetch the student, supervisor, and CoGS member associated with
+    // the project, if they haven't already been fetched.
     async componentDidMount() {
         const project = this.props.project;
         const studentID = project.data.student_id;

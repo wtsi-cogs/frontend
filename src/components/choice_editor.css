@@ -4,7 +4,7 @@ ol {
 
 .one-line {
     display: flex;
-    justify-content: space-between;  
+    justify-content: space-between;
     margin-bottom: 11px
 }
 
@@ -20,14 +20,15 @@ li>label {
     font-weight: initial;
 }
 
+/* Make the background of tables alternate between white and grey. */
 .striped:nth-child(2n) {
     background: #f0f0f0;
 }
 
+/* Change the background colour of invalid table rows. */
 .invalid {
     background: #ffd7d7;
 }
-
 .invalid.striped:nth-child(2n) {
     background: #f7cece;
 }

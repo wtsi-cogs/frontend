@@ -1,3 +1,7 @@
+/* Make the separator between sections on the homepage thicker (e.g. if
+ * a user is a supervisor and a CoGS member, the border between the
+ * projects they have created and the projects they are the assigned
+ * CoGS member for). */
 .main-sep {
     border: 1.5px solid #959595;
     border-radius: 7px;
