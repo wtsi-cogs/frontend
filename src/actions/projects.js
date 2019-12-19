@@ -94,9 +94,12 @@ export function fetchProjects(series, part) {
 export function fetchProject(projectID) {
     return function (dispatch) {
         dispatch(requestProjects(1));
-        return axios.get(`${api_url}/api/projects/${projectID}`).then(response => (
-            dispatch(receiveProject(response.data))
-        ));
+
+        return axios.get(`${api_url}/api/projects/${projectID}`).then(response => {
+           
+            return dispatch(receiveProject(response.data)); 
+        })
+        
     }
 }
 
@@ -166,6 +169,7 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
             }
         ).then(response => {
             dispatch(receiveProject(project));
+            dispatch(receiveProjectStatus(projectID, response.data.file_names));
             callback(response.data.status_message);
         }).catch(error => {
             callback(error.response.data.status_message);
