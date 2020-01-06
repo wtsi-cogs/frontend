@@ -210,9 +210,7 @@ export function downloadProject(project, callback) {
 // TODO: convert this function and its callers to use promises (#6).
 export function markProject(projectID, feedback, callback) {
     return function (dispatch) {
-        return axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback).then(response => {
-            callback();
-        });
+        return axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback);
     }
 }
 

@@ -64,10 +64,12 @@ class ProjectMark extends Component {
         }
         if (success) {
             const projectID = this.props.match.params.projectID;
-            this.props.markProject(projectID, feedback, () => {
+            this.props.markProject(projectID, feedback).then(() => {
                 Alert.info(`Feedback for ${this.props.projects[projectID].data.title} sent.`);
                 this.props.history.push("/");
-            });
+            }).catch(error => (
+                Alert.error(error.message)
+            ));
         }
     }
 
@@ -102,7 +104,7 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchUser: (userID) => dispatch(fetchUser(userID)),
         fetchProject: (projectID) => dispatch(fetchProject(projectID)),
-        markProject: (projectID, feedback, callback) => dispatch(markProject(projectID, feedback, callback))
+        markProject: (projectID, feedback) => dispatch(markProject(projectID, feedback))
     }
 };
 
