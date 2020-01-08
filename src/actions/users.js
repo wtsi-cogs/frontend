@@ -179,7 +179,7 @@ export const sendReceipt = rotationID => dispatch => (
 
 // Assign projects to all students in a rotation.
 // TODO: convert this function and its callers to use promises (#6).
-export function saveStudentProjects(choices, rotation, callback=()=>{}) {
+export function saveStudentProjects(choices, rotation) {
     return function (dispatch) {
         return axios.put(`${api_url}/api/users/assign_projects`, {
             choices,
@@ -195,14 +195,13 @@ export function saveStudentProjects(choices, rotation, callback=()=>{}) {
             users.forEach(user => {
                 dispatch(receiveUser(user));
             });
-            callback();
         });
     }
 }
 
 // Finalise project assignments for a rotation.
 // TODO: convert this function and its callers to use promises (#6).
-export function unsetVotes(rotation, callback=()=>{}) {
+export function unsetVotes(rotation) {
     return function (dispatch, getState) {
         const state = getState();
         return axios.post(`${api_url}/api/users/unset_votes`, {
@@ -236,7 +235,6 @@ export function unsetVotes(rotation, callback=()=>{}) {
             });
             dispatch(requestRotations(1));
             dispatch(receiveRotation(latestRotation));
-            callback();
         });
     }
 }

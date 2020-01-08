@@ -106,8 +106,8 @@ class RotationChoiceEditor extends Component {
     // Submit the choices made so far to the server. If this component
     // is about to be unmounted, there is no need to ensure that the
     // list of project assignments displayed is up-to-date.
-    onSave(unmounted=false, cb=()=>{}) {
-        this.props.saveStudentProjects(this.state.choices, this.props.rotation.data.id, () => {
+    onSave(unmounted=false) {
+        return this.props.saveStudentProjects(this.state.choices, this.props.rotation.data.id).then(() => {
             Alert.info("Saved choices.");
             if (!unmounted) {
                 Object.values(this.getProjects()).forEach(project => {
@@ -118,7 +118,6 @@ class RotationChoiceEditor extends Component {
                     }
                 });
             }
-            cb();
         });
     }
 
@@ -173,7 +172,7 @@ class RotationChoiceEditor extends Component {
                         this.onSave(true);
                         this.props.history.push(`/rotations/${rotation.series}/${rotation.part}/cogs`);
                     }}
-                    onSave={(cb) => this.onSave(false, cb)}
+                    onSave={() => this.onSave(false)}
                 />
             </div>
         );

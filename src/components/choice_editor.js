@@ -159,8 +159,8 @@ class ChoiceEditor extends Component {
                                 "Do you wish to continue?",
                                 buttons: [
                                     {label: "Yes", onClick: () => {
-                                        this.props.onSave(() => {
-                                            this.props.unsetVotes(this.props.rotationID, () => {
+                                        return this.props.onSave().then(() => {
+                                            return this.props.unsetVotes(this.props.rotationID).then(() => {
                                                 Alert.info("Finalised Student choices. Emails have been sent out. Students may now upload.");
                                                 this.props.onSubmit();
                                             });

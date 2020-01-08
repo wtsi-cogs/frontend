@@ -207,8 +207,7 @@ export function downloadProject(project, callback) {
 }
 
 // Submit marks/feedback for a project.
-// TODO: convert this function and its callers to use promises (#6).
-export function markProject(projectID, feedback, callback) {
+export function markProject(projectID, feedback) {
     return function (dispatch) {
         return axios.post(`${api_url}/api/projects/${projectID}/mark`, feedback);
     }
@@ -216,7 +215,7 @@ export function markProject(projectID, feedback, callback) {
 
 // Set the CoGS markers for a set of projects.
 // TODO: convert this function and its callers to use promises (#6).
-export function saveCogsMarkers(project_user_map, callback=()=>{}) {
+export function saveCogsMarkers(project_user_map) {
     return function (dispatch, getState) {
         function getCogsURL(userID) {
             if (userID === null) return null;
@@ -233,7 +232,6 @@ export function saveCogsMarkers(project_user_map, callback=()=>{}) {
                 });
                 dispatch(receiveProject(project));
             });
-            callback();
         });
     }
 }

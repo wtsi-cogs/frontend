@@ -60,10 +60,9 @@ class RotationCogsEditor extends Component {
     }
 
     // Submit the currently-selected markers to the server.
-    save(cb=()=>{}) {
-        this.props.saveCogsMarkers(this.state.cogsMarkers, () => {
+    save() {
+        this.props.saveCogsMarkers(this.state.cogsMarkers).then(() => {
             Alert.info("Saved CoGS markers.");
-            cb();
         });
     }
 
@@ -136,7 +135,7 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchProjects: (series, part) => dispatch(fetchProjects(series, part)),
         fetchRotation: (series, part) => dispatch(fetchRotation(series, part)),
-        saveCogsMarkers: (project_user_map, callback) => dispatch(saveCogsMarkers(project_user_map, callback))
+        saveCogsMarkers: (project_user_map) => dispatch(saveCogsMarkers(project_user_map))
     }
 };
 
