@@ -23,6 +23,7 @@ import {connect} from 'react-redux';
 import MultiselectDropDown from './multiselect_dropdown';
 import RichTextEditor from 'react-rte';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
+import Select from 'react-select';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
@@ -121,6 +122,8 @@ class ProjectEditor extends Component {
     }
 
     render() {
+        // From: https://github.com/JedWatson/react-select/issues/1537
+        const selectStyles = { menu: styles => ({ ...styles, zIndex: 999 }) };
         return (
             <div className="container">
                 <div className="col-md-1"></div>
@@ -198,44 +201,39 @@ class ProjectEditor extends Component {
                         </div>
                         <div className="row form-group">
                             <div className="col-xs-6">
-                                <DropdownButton
-                                    // TODO: rewrite this with optional chaining!
-                                    title={this.state.supervisor != null ? `Supervisor: ${this.props.supervisors[this.state.supervisor] != null ? this.props.supervisors[this.state.supervisor].data.name : this.props.usersFetching > 0 ? "Loading" : "Unknown"}` : "Select supervisor"}
+                                <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
                                     id="assign_supervisor_dropdown"
-                                    className="form-control"
-                                    disabled={!this.props.canSelectSupervisor}
-                                >
-                                    {Object.keys(this.props.supervisors).map(userID => (
-                                        <MenuItem
-                                            eventKey={userID}
-                                            key={userID}
-                                            onSelect={userID => {
-                                                this.setState({supervisor: parseInt(userID, 10)})
-                                            }}
-                                        >
-                                            {this.props.supervisors[userID].data.name}
-                                        </MenuItem>
+                                    placeholder="Select Supervisor..."
+                                    options={Object.keys(this.props.supervisors).map(userID => (
+                                            {value: userID, label: this.props.supervisors[userID].data.name}
                                     ))}
-                                </DropdownButton>
+                                    value={{value: this.state.supervisor || '', label: this.state.supervisor != null ? `Supervisor: ${this.props.supervisors[this.state.supervisor] != null ? this.props.supervisors[this.state.supervisor].data.name : this.props.usersFetching > 0 ? "Loading" : "Unknown"}` : "Select supervisor"}}
+                                    isClearable={true}
+                                    styles={selectStyles}
+                                    isDisabled={!this.props.canSelectSupervisor} 
+                                    onChange={option => {
+                                                this.setState({supervisor: option!== null? parseInt(option.value, 10) : null })
+                                            }}
+                                />
                             </div>
+
                             <div className="col-xs-6">
-                                <DropdownButton
-                                    title={this.props.students.hasOwnProperty(this.state.student) ? `Student: ${this.props.students[this.state.student].data.name}` : "Any student"}
+                                <Select
+                                    placeholder= "Select Student..."
+                                    value={{value:this.state.student || '', label: this.props.students.hasOwnProperty(this.state.student) ? `Student: ${this.props.students[this.state.student].data.name}` : "Any student"}}
                                     id="assign_student_dropdown"
-                                    className="form-control"
-                                >
-                                    {[null].concat(Object.keys(this.props.students)).map(userID => (
-                                        <MenuItem
-                                            eventKey={userID}
-                                            key={userID}
-                                            onSelect={userID => {
-                                                this.setState({student: userID !== null ? parseInt(userID, 10) : null})
-                                            }}
-                                        >
-                                            {userID !== null ? this.props.students[userID].data.name : "Any student"}
-                                        </MenuItem>
+                                    options = {Object.keys(this.props.students).map(userID => (
+                                            {value: userID, label: this.props.students[userID].data.name}
                                     ))}
-                                </DropdownButton>
+                                    defaultValue={{value: 0, label: "Any student"}}
+                                    styles={selectStyles} 
+                                    isClearable={true}
+                                    onChange={option => {
+                                                this.setState({student: option !== null ? parseInt(option.value, 10) : null})
+                                            }}
+                                />  
                             </div>
                         </div>
                         <div className="row form-group">
