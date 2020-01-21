@@ -63,7 +63,7 @@ class ProjectEdit extends Component {
                 onSubmit={project => {
                     this.props.editProject(
                         projectID,
-                        project,
+                        project).then(
                         () => Alert.info(`"${project.title}" saved`),
                         () => Alert.error(`Failed to edit "${project.title}"`),
                     );

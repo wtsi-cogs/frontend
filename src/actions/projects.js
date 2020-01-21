@@ -114,26 +114,22 @@ export function fetchProjectMarks(projectID) {
 }
 
 // Create a new project.
-// TODO: convert this function and its callers to use promises (#6).
-export function createProject(project, onDone=()=>{}, onFail=()=>{}) {
+export function createProject(project) {
     return function (dispatch) {
         dispatch(requestProjects(1));
         return axios.post(`${api_url}/api/projects`, project).then(response => {
             dispatch(receiveProject(response.data));
-            onDone();
-        }).catch(onFail);
+        })
     }
 }
 
 // Edit an existing project.
-// TODO: convert this function and its callers to use promises (#6).
-export function editProject(projectID, project, onDone=()=>{}, onFail=()=>{}) {
+export function editProject(projectID, project) {
     return function (dispatch) {
         dispatch(requestProjects(1));
         return axios.put(`${api_url}/api/projects/${projectID}`, project).then(response => {
             dispatch(receiveProject(response.data));
-            onDone();
-        }).catch(onFail);
+        });
     }
 }
 

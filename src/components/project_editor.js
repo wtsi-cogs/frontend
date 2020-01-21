@@ -22,7 +22,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import MultiselectDropDown from './multiselect_dropdown';
 import RichTextEditor from 'react-rte';
-import {DropdownButton, MenuItem} from 'react-bootstrap';
 import Select from 'react-select';
 import update from 'immutability-helper';
 import Alert from 'react-s-alert';
