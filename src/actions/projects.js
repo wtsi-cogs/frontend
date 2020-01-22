@@ -174,11 +174,10 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
 }
 
 // Download a previously-uploaded project report.
-// TODO: convert this function and its callers to use promises (#6).
 // TODO: it's probably more sensible to just direct the browser to a URL
 // which serves the appropriate Content-Disposition to make it download
 // the page, rather than doing it in JavaScript.
-export function downloadProject(project, callback) {
+export function downloadProject(project) {
     return axios.get(`${api_url}/api/projects/${project.data.id}/file`, {
         responseType: 'blob',
         headers: {
@@ -188,16 +187,22 @@ export function downloadProject(project, callback) {
         const rotation_parts = getSeriesPart(project);
         const filename = `${rotation_parts[0]}_${rotation_parts[1]}_${project.data.title}`;
         saveAs(response.data, `${filename}.zip`);
-        callback("Download complete", false);
-    }).catch(response => {
-        if (response.response.status === 404) {
-            callback("Project not yet uploaded", true);
+        return "Download complete";
+    }).catch(error => {
+        if (error.response.status === 404) {
+            throw new Error("Project not yet uploaded");
         } else {
-            var reader = new FileReader();
-            reader.onload = function() {
-                callback(JSON.parse(reader.result).status_message, true);
-            }
-            reader.readAsText(response.response.data);
+            return new Promise((resolve, reject) => {
+                var reader = new FileReader();
+                reader.onload = ()  => {
+                    reject(JSON.parse(reader.result).status_message);
+                 }
+                 
+                reader.onerror = () => {
+                    reject(reader.error);
+                }
+        });     
+         reader.readAsText(error.response.data);
         }
     });
 }
