@@ -143,8 +143,7 @@ export function deleteProject(projectID) {
 }
 
 // Upload a project report.
-// TODO: convert this function and its callers to use promises (#6).
-export function uploadProject(projectID, blob, callback=()=>{}) {
+export function uploadProject(projectID, blob) {
     return function (dispatch, getState) {
         const project = update(getState().projects.projects[projectID], {
             data: {$merge: {
@@ -166,9 +165,9 @@ export function uploadProject(projectID, blob, callback=()=>{}) {
         ).then(response => {
             dispatch(receiveProject(project));
             dispatch(receiveProjectStatus(projectID, response.data.file_names));
-            callback(response.data.status_message);
-        }).catch(error => {
-            callback(error.response.data.status_message);
+            return response.data.status_message;
+        }, error => {
+            throw new Error(error.response.data.status_message);
         });
     }
 }
@@ -197,12 +196,13 @@ export function downloadProject(project) {
                 reader.onload = ()  => {
                     reject(JSON.parse(reader.result).status_message);
                  }
-                 
+
                 reader.onerror = () => {
                     reject(reader.error);
                 }
+            reader.readAsText(error.response.data);    
         });     
-         reader.readAsText(error.response.data);
+         
         }
     });
 }

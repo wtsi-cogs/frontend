@@ -109,7 +109,7 @@ export function renderDownload(project, label) {
             downloadProject(project).then(msg  => (
                 Alert.success(msg)
             )).catch(error => (
-                Alert.error(error.message);
+                Alert.error(error.message)
             ));
         }}>
             {label}
