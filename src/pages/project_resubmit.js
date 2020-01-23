@@ -62,14 +62,13 @@ class ProjectResubmit extends Component {
                 canSelectSupervisor={this.props.user.data.permissions.modify_permissions}
                 submitLabel="Create Project"
                 onSubmit={project => {
-                    this.props.createProject(
-                        project,
+                    this.props.createProject(project).then(
                         () => {
                             Alert.info(`"${project.title}" created`);
                             this.props.history.push("/");
                         },
-                        () => {
-                            Alert.error(`Failed to create "${project.title}"`);
+                        (error) => {
+                            Alert.error(`Failed to create "${project.title}" Error: "${error}"`);
                         }
                     );
                 }}

@@ -88,27 +88,45 @@ class ProjectUpload extends Component {
     // before trying to upload it, and then upload it.
     upload() {
         const projectID = this.props.match.params.projectID;
+        const numFiles = this.state.uploads.length;
         var zip = new JSZip();
         this.state.uploads.forEach(file => {
             zip.file(file.name, file);
         });
-        zip.generateAsync({type:"blob"}).then(blob => {
-            if (blob.size > maxFilesize) {
-                Alert.error("Selected file(s) too large");
+        zip.generateAsync({type:"blob"}).catch(error => {
+            if (error instanceof DOMException){
+                // XXX: when trying to read from a File that represents a
+                // directory, Chrome 76 raises NotFoundError, and Firefox 67
+                // raises NotReadableError. However, if the File represents a
+                // file which has been removed since it was selected, both
+                // Firefox and Chrome raise NotFoundError!
+                if (error.name === "NotReadableError") {
+                    throw new Error("Couldn't read file (directory uploads are not supported)");
+                } else if (error.name === "NotFoundError") {
+                    throw new Error("File not found (directory uploads are not supported)");
+                }
             }
-            else {
-                this.props.uploadProject(projectID, blob, (status_message) => {
+            throw error;   
+            
+        }).then(blob => {
+            if (blob.size > maxFilesize) {
+                throw new Error(`Selected file${numFiles === 1 ? '' : 's'} too large`);
+            }
+            return this.props.uploadProject(projectID, blob);
+        }).then(status_message => {
                     if (status_message === "success" || !status_message) {
                         Alert.success(`Successfully uploaded your files for ${this.props.projects[projectID].data.title}.`);
                         this.onSuccessfulUpload();
                     }
                     else {
-                        Alert.error(`Error when uploading ${this.props.projects[projectID].data.title}: ${status_message}`);
+                        throw new Error(status_message);
                     }
-                });
-            }
-        });
+                }, error => {
+                    Alert.error(`Error when uploading project: ${error.message}`);
+            });
+            
     }
+    
 
     // Add a file to the list of files to upload (the name is because as
     // well as clicking to select a file, you can drag and drop files

@@ -39,6 +39,8 @@ class ProjectCreate extends Component {
         document.title = "Create Project";
     }
 
+
+
     render() {
         const {user} = this.props;
         return (
@@ -55,14 +57,13 @@ class ProjectCreate extends Component {
                 submitLabel="Create Project"
                 extraLabel="You can edit the project later"
                 onSubmit={project => {
-                    this.props.createProject(
-                        project,
+                    this.props.createProject(project).then(
                         () => {
                             Alert.info(`"${project.title}" created`);
                             this.props.history.push("/");
                         },
-                        () => {
-                            Alert.error(`Failed to create "${project.title}"`);
+                        (error) => {
+                            Alert.error(`Failed to create "${project.title}".  Error: "$error"`);
                         }
                     );
                 }}
@@ -79,7 +80,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createProject: (project, onDone, onFail) => dispatch(createProject(project, onDone, onFail))
+        createProject: (project) => dispatch(createProject(project))
     }
 };
 
